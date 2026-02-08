@@ -1544,40 +1544,16 @@
             </div>
         </section>
 
-        <!-- Form Section -->
-        <section class="form-section">
-            <div class="form-header">
-                <h2 class="form-title">📩 Solicita Información</h2>
-                <p class="form-subtitle">Te contactaremos a la brevedad</p>
+        <!-- Form Section - Se renderiza dinámicamente -->
+        <section class="form-section" id="formSection">
+            <div class="form-header" id="formHeader">
+                <h2 class="form-title" id="formTitle">📩 Solicita Información</h2>
+                <p class="form-subtitle" id="formSubtitle">Te contactaremos a la brevedad</p>
             </div>
 
             <form id="contactForm">
-                <div class="form-group">
-                    <label class="form-label">Nombre completo *</label>
-                    <input type="text" class="form-input" id="inputNombre" placeholder="¿Cómo te llamas?" required autocomplete="name">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Teléfono *</label>
-                    <input type="tel" class="form-input" id="inputTelefono" placeholder="Tu número a 10 dígitos" required autocomplete="tel" inputmode="tel" pattern="[0-9]{10}">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="inputEmail" placeholder="correo@ejemplo.com" autocomplete="email" inputmode="email">
-                </div>
-
-                <div class="form-group" id="servicioGroup">
-                    <label class="form-label">¿Qué servicio te interesa?</label>
-                    <select class="form-input" id="inputServicio">
-                        <option value="">Selecciona una opción</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Cuéntanos más</label>
-                    <textarea class="form-input" id="inputMensaje" placeholder="¿En qué podemos ayudarte?"></textarea>
-                </div>
+                <!-- Campos se generan dinámicamente -->
+                <div id="formFieldsContainer"></div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
                     <span class="btn-text">Enviar Solicitud</span>
@@ -1588,8 +1564,8 @@
             <!-- Success State -->
             <div class="success-state" id="successState">
                 <div class="success-icon">✓</div>
-                <h2 class="success-title">¡Mensaje Enviado!</h2>
-                <p class="success-text">
+                <h2 class="success-title" id="successTitle">¡Mensaje Enviado!</h2>
+                <p class="success-text" id="successText">
                     Gracias por tu interés.<br>
                     Nos pondremos en contacto contigo muy pronto.
                 </p>
@@ -1895,6 +1871,206 @@ END:VCARD`;
         };
 
         // ═══════════════════════════════════════════════════════════════════════
+        // CONFIGURACIÓN DINÁMICA DE FORMULARIO (sincronizado con la app)
+        // ═══════════════════════════════════════════════════════════════════════
+        let formConfig = null;
+        let formFields = [];
+
+        const cargarConfigFormulario = async (negocioId, tarjetaId, modulo) => {
+            try {
+                console.log('📋 Cargando config formulario para negocio:', negocioId);
+                let config = null;
+                
+                // Primero buscar config específica de la tarjeta
+                if (tarjetaId) {
+                    const res = await supabaseRequest(
+                        `formularios_qr_config?tarjeta_servicio_id=eq.${tarjetaId}&select=*`
+                    );
+                    if (res && res.length > 0) {
+                        config = res[0];
+                        console.log('✅ Config encontrada para tarjeta específica');
+                    }
+                }
+                
+                // Si no hay, buscar config del módulo para el negocio
+                if (!config && negocioId) {
+                    const res = await supabaseRequest(
+                        `formularios_qr_config?negocio_id=eq.${negocioId}&modulo=eq.${modulo || 'general'}&tarjeta_servicio_id=is.null&select=*`
+                    );
+                    if (res && res.length > 0) {
+                        config = res[0];
+                        console.log('✅ Config encontrada para módulo:', modulo);
+                    }
+                }
+                
+                // Si no hay config específica, buscar config general del negocio
+                if (!config && negocioId) {
+                    const res = await supabaseRequest(
+                        `formularios_qr_config?negocio_id=eq.${negocioId}&modulo=eq.general&tarjeta_servicio_id=is.null&select=*`
+                    );
+                    if (res && res.length > 0) {
+                        config = res[0];
+                        console.log('✅ Config general encontrada');
+                    }
+                }
+                
+                if (config) {
+                    formConfig = config;
+                    formFields = config.campos || [];
+                    console.log('📝 Campos configurados:', formFields.length);
+                } else {
+                    console.log('⚠️ No hay config, usando campos por defecto');
+                    formConfig = null;
+                    formFields = [];
+                }
+                
+                return config;
+            } catch (e) {
+                console.error('Error cargando config formulario:', e);
+                return null;
+            }
+        };
+
+        const renderFormulario = (tarjeta) => {
+            const container = document.getElementById('formFieldsContainer');
+            const formHeader = document.getElementById('formHeader');
+            
+            // Aplicar colores y textos de la config
+            if (formConfig) {
+                const titulo = formConfig.titulo_header || '📩 Solicita Información';
+                const subtitulo = formConfig.subtitulo_header || 'Te contactaremos a la brevedad';
+                const colorHeader = formConfig.color_header || '#00D9FF';
+                
+                document.getElementById('formTitle').innerHTML = `📩 ${titulo}`;
+                document.getElementById('formSubtitle').textContent = subtitulo;
+                
+                // Aplicar color al header del formulario
+                formHeader.style.borderLeft = `4px solid ${colorHeader}`;
+                
+                // Mensaje de éxito personalizado
+                const mensajeExito = formConfig.mensaje_exito || '¡Gracias! Tu solicitud ha sido enviada.';
+                document.getElementById('successTitle').textContent = '¡Mensaje Enviado!';
+                document.getElementById('successText').innerHTML = mensajeExito;
+            }
+            
+            // Ordenar campos por orden
+            const camposOrdenados = [...formFields].filter(c => c.activo !== false).sort((a, b) => (a.orden || 99) - (b.orden || 99));
+            
+            // Si no hay campos configurados, usar campos por defecto
+            if (camposOrdenados.length === 0) {
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Nombre completo *</label>
+                        <input type="text" class="form-input" id="field_nombre" name="nombre" placeholder="¿Cómo te llamas?" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono *</label>
+                        <input type="tel" class="form-input" id="field_telefono" name="telefono" placeholder="Tu número a 10 dígitos" required autocomplete="tel" inputmode="tel" pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="field_email" name="email" placeholder="correo@ejemplo.com" autocomplete="email" inputmode="email">
+                    </div>
+                    <div class="form-group" id="servicioGroup">
+                        <label class="form-label">¿Qué servicio te interesa?</label>
+                        <select class="form-input" id="field_servicio" name="servicio_interes">
+                            <option value="">Selecciona una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cuéntanos más</label>
+                        <textarea class="form-input" id="field_mensaje" name="mensaje" placeholder="¿En qué podemos ayudarte?"></textarea>
+                    </div>
+                `;
+                
+                // Llenar select de servicios si hay
+                const servicios = tarjeta.servicios || [];
+                if (servicios.length > 0) {
+                    const selectServicio = document.getElementById('field_servicio');
+                    servicios.forEach(s => {
+                        const option = document.createElement('option');
+                        option.value = s;
+                        option.textContent = s;
+                        selectServicio.appendChild(option);
+                    });
+                } else {
+                    document.getElementById('servicioGroup').style.display = 'none';
+                }
+                return;
+            }
+            
+            // Generar campos dinámicos
+            let html = '';
+            camposOrdenados.forEach(campo => {
+                const id = campo.id || campo.codigo || 'field_' + Math.random().toString(36).substr(2, 9);
+                const tipo = campo.tipo || 'text';
+                const label = campo.label || 'Campo';
+                const placeholder = campo.placeholder || '';
+                const requerido = campo.requerido === true;
+                const opciones = campo.opciones || [];
+                
+                html += `<div class="form-group">`;
+                html += `<label class="form-label">${label}${requerido ? ' *' : ''}</label>`;
+                
+                if (tipo === 'textarea') {
+                    html += `<textarea class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''}></textarea>`;
+                } else if (tipo === 'select' && opciones.length > 0) {
+                    html += `<select class="form-input" id="field_${id}" name="${id}" ${requerido ? 'required' : ''}>`;
+                    html += `<option value="">Selecciona una opción</option>`;
+                    opciones.forEach(opt => {
+                        html += `<option value="${opt}">${opt}</option>`;
+                    });
+                    html += `</select>`;
+                } else if (tipo === 'tel') {
+                    html += `<input type="tel" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} autocomplete="tel" inputmode="tel" pattern="[0-9]{10}">`;
+                } else if (tipo === 'email') {
+                    html += `<input type="email" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} autocomplete="email" inputmode="email">`;
+                } else if (tipo === 'number') {
+                    html += `<input type="number" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} inputmode="numeric">`;
+                } else if (tipo === 'date') {
+                    html += `<input type="date" class="form-input" id="field_${id}" name="${id}" ${requerido ? 'required' : ''}>`;
+                } else {
+                    html += `<input type="text" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} autocomplete="${id === 'nombre' ? 'name' : 'off'}">`;
+                }
+                
+                html += `</div>`;
+            });
+            
+            // Agregar campo de servicio si hay servicios en la tarjeta y no está ya en los campos
+            const servicios = tarjeta.servicios || [];
+            const tieneServicioCampo = camposOrdenados.some(c => c.id === 'servicio' || c.id === 'servicio_interes');
+            if (servicios.length > 0 && !tieneServicioCampo) {
+                html += `
+                    <div class="form-group">
+                        <label class="form-label">¿Qué servicio te interesa?</label>
+                        <select class="form-input" id="field_servicio_interes" name="servicio_interes">
+                            <option value="">Selecciona una opción</option>
+                            ${servicios.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        };
+
+        const recopilarDatosFormulario = () => {
+            const container = document.getElementById('formFieldsContainer');
+            const inputs = container.querySelectorAll('input, textarea, select');
+            const datos = {};
+            
+            inputs.forEach(input => {
+                const name = input.name || input.id.replace('field_', '');
+                const value = input.value?.trim() || null;
+                if (name && value) {
+                    datos[name] = value;
+                }
+            });
+            
+            return datos;
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
         // UI RENDERING
         // ═══════════════════════════════════════════════════════════════════════
         const renderTarjeta = (tarjeta) => {
@@ -2016,19 +2192,12 @@ END:VCARD`;
                 servicesList.innerHTML = servicios.map(s => 
                     `<span class="service-chip">${s}</span>`
                 ).join('');
-                
-                // Llenar select de servicios
-                const selectServicio = document.getElementById('inputServicio');
-                servicios.forEach(s => {
-                    const option = document.createElement('option');
-                    option.value = s;
-                    option.textContent = s;
-                    selectServicio.appendChild(option);
-                });
             } else {
                 document.getElementById('servicesSection').style.display = 'none';
-                document.getElementById('servicioGroup').style.display = 'none';
             }
+            
+            // Renderizar formulario con config de la app
+            renderFormulario(tarjeta);
             
             // Redes Sociales
             renderSocialLinks(tarjeta);
@@ -2118,6 +2287,10 @@ END:VCARD`;
                 
                 console.log('✅ Tarjeta cargada:', tarjeta.nombre_negocio);
                 currentTarjeta = tarjeta;
+                
+                // Cargar configuración del formulario desde la app
+                await cargarConfigFormulario(tarjeta.negocio_id, tarjeta.id, tarjeta.modulo);
+                
                 renderTarjeta(tarjeta);
                 registrarEscaneo(tarjeta);
                 showContent();
@@ -2155,23 +2328,51 @@ END:VCARD`;
             btn.disabled = true;
             
             try {
+                // Recopilar datos dinámicos del formulario
+                const camposDinamicos = recopilarDatosFormulario();
+                
+                // Preparar datos base
                 const data = {
                     tarjeta_id: currentTarjeta.id,
                     negocio_id: currentTarjeta.negocio_id,
                     modulo: currentTarjeta.modulo,
-                    nombre: document.getElementById('inputNombre').value.trim(),
-                    telefono: document.getElementById('inputTelefono').value.trim(),
-                    email: document.getElementById('inputEmail').value.trim() || null,
-                    servicio_interes: document.getElementById('inputServicio').value || null,
-                    mensaje: document.getElementById('inputMensaje').value.trim() || null,
                     origen: detectDevice().isMobile ? 'mobile' : 'web',
-                    estado: 'pendiente'
+                    estado: 'pendiente',
+                    // Campos estándar (compatibilidad)
+                    nombre: camposDinamicos.nombre || null,
+                    telefono: camposDinamicos.telefono || null,
+                    email: camposDinamicos.email || null,
+                    servicio_interes: camposDinamicos.servicio_interes || camposDinamicos.servicio || null,
+                    mensaje: camposDinamicos.mensaje || null
                 };
+                
+                // También guardar en formularios_qr_envios si hay config
+                if (formConfig && formConfig.id) {
+                    try {
+                        await supabaseRequest('formularios_qr_envios', {
+                            method: 'POST',
+                            prefer: 'return=minimal',
+                            body: JSON.stringify({
+                                formulario_id: formConfig.id,
+                                negocio_id: currentTarjeta.negocio_id,
+                                tarjeta_id: currentTarjeta.id,
+                                datos: camposDinamicos,
+                                origen: data.origen,
+                                estado: 'nuevo'
+                            })
+                        });
+                        console.log('✅ Guardado en formularios_qr_envios');
+                    } catch (err) {
+                        console.warn('No se pudo guardar en formularios_qr_envios:', err);
+                    }
+                }
                 
                 await enviarSolicitud(data);
                 
                 // Guardar nombre para el chat
-                guardarNombreVisitante();
+                if (camposDinamicos.nombre) {
+                    localStorage.setItem('rd_chat_nombre', camposDinamicos.nombre);
+                }
                 // Registrar que generó solicitud
                 registrarAccion('formulario');
                 
@@ -2190,11 +2391,6 @@ END:VCARD`;
                 btn.classList.remove('loading');
                 btn.disabled = false;
             }
-        });
-
-        // Validación del teléfono
-        document.getElementById('inputTelefono').addEventListener('input', (e) => {
-            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
         });
 
         // Click en botones para registrar acciones
