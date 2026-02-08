@@ -1906,20 +1906,39 @@ END:VCARD`;
             document.getElementById('logoTagline').textContent = `• ${nombreCorto.toUpperCase()} •`;
             document.getElementById('cardBadge').textContent = slogan.length > 20 ? 'PROFESSIONAL' : slogan.toUpperCase();
             
-            // Contacto en reverso
+            // Contacto en reverso - OCULTAR SI ESTÁ VACÍO
             const phone = tarjeta.telefono_principal || tarjeta.whatsapp || '';
             const email = tarjeta.email || '';
             const ciudad = tarjeta.ciudad || '';
             
+            const contactWebEl = document.getElementById('contactWeb');
+            const contactPhoneEl = document.getElementById('contactPhone');
+            const contactCityEl = document.getElementById('contactCity');
+            
             if (email) {
-                const domain = email.split('@')[1] || 'TUNEGOCIO.COM';
-                document.getElementById('contactWeb').innerHTML = `<span class="contact-prefix">WWW.</span>${domain.toUpperCase()}`;
+                const domain = email.split('@')[1] || '';
+                if (domain) {
+                    contactWebEl.innerHTML = `<span class="contact-prefix">WWW.</span>${domain.toUpperCase()}`;
+                    contactWebEl.style.display = 'block';
+                } else {
+                    contactWebEl.style.display = 'none';
+                }
+            } else {
+                contactWebEl.style.display = 'none';
             }
+            
             if (phone) {
-                document.getElementById('contactPhone').innerHTML = `<span class="contact-prefix">☎</span> ${phone}`;
+                contactPhoneEl.innerHTML = `<span class="contact-prefix">☎</span> ${phone}`;
+                contactPhoneEl.style.display = 'block';
+            } else {
+                contactPhoneEl.style.display = 'none';
             }
+            
             if (ciudad) {
-                document.getElementById('contactCity').textContent = ciudad.toUpperCase();
+                contactCityEl.textContent = ciudad.toUpperCase();
+                contactCityEl.style.display = 'block';
+            } else {
+                contactCityEl.style.display = 'none';
             }
             
             // Handle @usuario
