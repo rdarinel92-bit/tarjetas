@@ -1787,6 +1787,8 @@ END:VCARD`;
         // API CALLS
         // ═══════════════════════════════════════════════════════════════════════
         const supabaseRequest = async (endpoint, options = {}) => {
+            console.log('🔄 Supabase request:', endpoint);
+            
             const headers = {
                 'apikey': CONFIG.SUPABASE_KEY,
                 'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`,
@@ -1803,25 +1805,38 @@ END:VCARD`;
                 fetchOptions.body = options.body;
             }
             
-            const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${endpoint}`, fetchOptions);
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Supabase error:', response.status, errorText);
-                throw new Error(`HTTP ${response.status}: ${errorText}`);
+            try {
+                console.log('📡 Fetching:', `${CONFIG.SUPABASE_URL}/rest/v1/${endpoint}`);
+                const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${endpoint}`, fetchOptions);
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Supabase error:', response.status, errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                // Para return=minimal, no hay body
+                if (options.prefer === 'return=minimal') {
+                    console.log('✅ return=minimal success');
+                    return { success: true };
+                }
+                
+                const text = await response.text();
+                console.log('📦 Response text length:', text.length);
+                const result = text ? JSON.parse(text) : [];
+                console.log('✅ Parsed result:', result);
+                return result;
+            } catch (error) {
+                console.error('🔥 Fetch error:', error);
+                throw error;
             }
-            
-            // Para return=minimal, no hay body
-            if (options.prefer === 'return=minimal') {
-                return { success: true };
-            }
-            
-            const text = await response.text();
-            return text ? JSON.parse(text) : [];
         };
 
         const cargarTarjeta = async (codigo) => {
+            console.log('🎴 Cargando tarjeta con código:', codigo);
             const data = await supabaseRequest(`tarjetas_servicio?codigo=eq.${codigo}&activa=eq.true&select=*`);
+            console.log('📋 Data recibida:', data);
             return data && data.length > 0 ? data[0] : null;
         };
 
