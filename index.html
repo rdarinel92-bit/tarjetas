@@ -548,8 +548,8 @@
            ═══════════════════════════════════════════════════════════════════ */
         .quick-actions {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
             padding: 0 16px 20px;
             animation: fadeIn 0.8s ease-out 0.5s both;
         }
@@ -597,6 +597,17 @@
         .quick-btn.location .btn-icon { color: #EF4444; }
         .quick-btn.save .btn-icon { color: #8B5CF6; }
         .quick-btn.share .btn-icon { color: var(--primary); }
+        .quick-btn.app .btn-icon { color: #10B981; }
+        
+        .quick-btn.app {
+            background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.05) 100%);
+            border-color: rgba(16,185,129,0.3);
+        }
+        
+        .quick-btn.app:hover, .quick-btn.app:active {
+            border-color: #10B981;
+            box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+        }
 
         .btn-icon {
             font-size: 22px;
@@ -1508,6 +1519,10 @@
             <a href="javascript:void(0)" class="quick-btn share" id="btnShare" onclick="compartirTarjeta()">
                 <span class="btn-icon">📤</span>
                 <span class="btn-label">Compartir</span>
+            </a>
+            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v10.56/app-release.apk" class="quick-btn app" id="btnApp">
+                <span class="btn-icon">📱</span>
+                <span class="btn-label">App</span>
             </a>
         </div>
 
