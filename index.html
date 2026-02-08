@@ -1955,8 +1955,7 @@ END:VCARD`;
                 document.documentElement.style.setProperty('--primary', tarjeta.color_primario);
             }
             
-            // Quick Actions
-            const phone = tarjeta.telefono_principal || tarjeta.whatsapp;
+            // Quick Actions (reusar 'phone' ya declarado arriba)
             const whatsapp = tarjeta.whatsapp || tarjeta.telefono_principal;
             
             if (whatsapp) {
