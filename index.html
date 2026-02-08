@@ -1406,6 +1406,134 @@
 
         /* Ocultar elementos */
         .hidden { display: none !important; }
+        
+        /* ═══════════════════════════════════════════════════════════════════
+           MODAL INICIAR SESIÓN
+           ═══════════════════════════════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-box {
+            background: linear-gradient(145deg, var(--bg-card) 0%, #12121A 100%);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 24px;
+            max-width: 340px;
+            width: 100%;
+            padding: 32px 24px;
+            text-align: center;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212,175,55,0.1);
+        }
+        
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        
+        .modal-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .modal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #10B981;
+            margin-bottom: 24px;
+        }
+        
+        .modal-btn-primary {
+            display: block;
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--bg-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-bottom: 12px;
+        }
+        
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(212,175,55,0.4);
+        }
+        
+        .modal-btn-secondary {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn-secondary:hover {
+            border-color: rgba(255,255,255,0.4);
+            color: var(--text-white);
+        }
+        
+        .modal-note {
+            font-size: 11px;
+            color: var(--text-subtle);
+            margin-top: 16px;
+        }
     </style>
 </head>
 <body>
@@ -1413,6 +1541,30 @@
     <div class="loading-screen" id="loadingScreen">
         <div class="loader"></div>
         <p class="loading-text">Cargando información...</p>
+    </div>
+
+    <!-- Modal Iniciar Sesión -->
+    <div class="modal-overlay" id="modalLogin" onclick="cerrarModalLogin(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <span class="modal-icon">🔐</span>
+            <h2 class="modal-title">Acceso a Clientes</h2>
+            <p class="modal-text">
+                Para iniciar sesión necesitas ser un <strong>cliente registrado</strong> en nuestro sistema.
+            </p>
+            <div class="modal-badge">
+                <span>✓</span>
+                Descarga gratuita para Android
+            </div>
+            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v10.56/app-release.apk" class="modal-btn-primary">
+                📱 Descargar Aplicación
+            </a>
+            <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)">
+                Cancelar
+            </button>
+            <p class="modal-note">
+                ¿No eres cliente? Contáctanos por WhatsApp para registrarte.
+            </p>
+        </div>
     </div>
 
     <!-- Error State -->
@@ -1520,9 +1672,9 @@
                 <span class="btn-icon">📤</span>
                 <span class="btn-label">Compartir</span>
             </a>
-            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v10.56/app-release.apk" class="quick-btn app" id="btnApp">
-                <span class="btn-icon">📱</span>
-                <span class="btn-label">App</span>
+            <a href="javascript:void(0)" class="quick-btn app" id="btnApp" onclick="mostrarModalLogin()">
+                <span class="btn-icon">🔐</span>
+                <span class="btn-label">Acceder</span>
             </a>
         </div>
 
@@ -1715,6 +1867,27 @@
                 toast.classList.remove('show');
             }, 3000);
         };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MODAL INICIAR SESIÓN - DESCARGA APP
+        // ═══════════════════════════════════════════════════════════════════════
+        const mostrarModalLogin = () => {
+            document.getElementById('modalLogin').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const cerrarModalLogin = (event) => {
+            if (event) event.stopPropagation();
+            document.getElementById('modalLogin').classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarModalLogin();
+            }
+        });
 
         // ═══════════════════════════════════════════════════════════════════════
         // vCard - GUARDAR CONTACTO
