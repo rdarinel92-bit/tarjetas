@@ -841,6 +841,17 @@
             padding-right: 48px;
         }
 
+        select.form-input option {
+            background: #1A1A2E;
+            color: white;
+            padding: 12px;
+        }
+
+        select.form-input option:hover {
+            background: #D4AF37;
+            color: black;
+        }
+
         .submit-btn {
             width: 100%;
             padding: 18px;
@@ -1877,7 +1888,7 @@ END:VCARD`;
         };
 
         const enviarSolicitud = async (data) => {
-            return supabaseRequest('tarjetas_solicitudes', {
+            return supabaseRequest('tarjetas_servicio_solicitudes', {
                 method: 'POST',
                 body: JSON.stringify(data)
             });
