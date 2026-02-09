@@ -1534,9 +1534,440 @@
             color: var(--text-subtle);
             margin-top: 16px;
         }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           PROMOCIÓN BANNER
+           ═══════════════════════════════════════════════════════════════════ */
+        .promo-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: pulse-promo 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-promo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .promo-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .promo-content {
+            flex: 1;
+        }
+
+        .promo-text {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .promo-discount {
+            font-size: 18px;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           UBICACIÓN / MAPA
+           ═══════════════════════════════════════════════════════════════════ */
+        .location-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .location-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .location-address {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .location-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .location-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px;
+            background: linear-gradient(135deg, #4285F4, #34A853);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .location-btn.secondary {
+            background: linear-gradient(135deg, #33CCFF, #00AAFF);
+        }
+
+        .location-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           GALERÍA DE TRABAJOS
+           ═══════════════════════════════════════════════════════════════════ */
+        .gallery-section {
+            padding: 0 0 24px 0;
+        }
+
+        .gallery-section .section-title {
+            padding: 0 16px;
+        }
+
+        .gallery-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 16px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .gallery-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-item {
+            flex: 0 0 200px;
+            scroll-snap-align: start;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:active img {
+            transform: scale(1.05);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           CATÁLOGO DE PRECIOS
+           ═══════════════════════════════════════════════════════════════════ */
+        .catalog-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .catalog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .catalog-item {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .catalog-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-white);
+        }
+
+        .catalog-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           RESEÑAS / TESTIMONIOS
+           ═══════════════════════════════════════════════════════════════════ */
+        .reviews-section {
+            padding: 0 0 24px 0;
+        }
+
+        .reviews-section .section-title {
+            padding: 0 16px;
+        }
+
+        .reviews-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 16px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .reviews-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .review-card {
+            flex: 0 0 280px;
+            scroll-snap-align: start;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .review-stars {
+            color: #FFD700;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .review-author {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-white);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           AGENDAR CITA
+           ═══════════════════════════════════════════════════════════════════ */
+        .booking-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .booking-card {
+            background: linear-gradient(135deg, var(--bg-card), rgba(212,175,55,0.1));
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+
+        .booking-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .booking-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            color: #000;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .booking-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           MODAL AGENDAR CITA
+           ═══════════════════════════════════════════════════════════════════ */
+        .modal-booking {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-booking.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-booking-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-booking-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-booking-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        .booking-form-group {
+            margin-bottom: 16px;
+        }
+
+        .booking-form-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .booking-form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: var(--text-white);
+            font-size: 14px;
+        }
+
+        .booking-form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .booking-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           TEMA CLARO / TOGGLE
+           ═══════════════════════════════════════════════════════════════════ */
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.9);
+        }
+
+        /* Light Theme */
+        body.light-theme {
+            --bg-dark: #F5F5F5;
+            --bg-card: #FFFFFF;
+            --bg-input: #F0F0F0;
+            --text-white: #1A1A2E;
+            --text-muted: rgba(26,26,46,0.7);
+            --text-subtle: rgba(26,26,46,0.5);
+        }
+
+        body.light-theme .card-front,
+        body.light-theme .card-back {
+            border-color: rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">
+        🌙
+    </button>
+
+    <!-- Modal Agendar Cita -->
+    <div class="modal-booking" id="modalBooking" onclick="cerrarModalBooking(event)">
+        <div class="modal-booking-content" onclick="event.stopPropagation()">
+            <div class="modal-booking-header">
+                <h2 class="modal-booking-title">📅 Agendar Cita</h2>
+            </div>
+            <form id="bookingForm" onsubmit="enviarCita(event)">
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Tu nombre</label>
+                    <input type="text" class="booking-form-input" id="bookingNombre" required placeholder="¿Cómo te llamas?">
+                </div>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Tu teléfono</label>
+                    <input type="tel" class="booking-form-input" id="bookingTelefono" required placeholder="Ej: 5512345678">
+                </div>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Fecha deseada</label>
+                    <input type="date" class="booking-form-input" id="bookingFecha" required>
+                </div>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Hora preferida</label>
+                    <input type="time" class="booking-form-input" id="bookingHora" required>
+                </div>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Servicio o comentario</label>
+                    <input type="text" class="booking-form-input" id="bookingServicio" placeholder="¿Qué necesitas?">
+                </div>
+                <button type="submit" class="booking-submit-btn">
+                    ✅ Confirmar Cita
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader"></div>
@@ -1716,6 +2147,83 @@
             </h2>
             <div class="horario-card" id="horarioCard">
                 <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Promoción Activa -->
+        <section class="promo-section" id="promoSection" style="display: none;">
+            <div class="promo-banner" id="promoBanner">
+                <div class="promo-badge">🔥 OFERTA</div>
+                <div class="promo-content">
+                    <p class="promo-text" id="promoText">¡Promoción especial!</p>
+                    <span class="promo-discount" id="promoDiscount">20% OFF</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ubicación / Mapa -->
+        <section class="location-section" id="locationSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">📍</span>
+                Ubicación
+            </h2>
+            <div class="location-card" id="locationCard">
+                <p class="location-address" id="locationAddress"></p>
+                <div class="location-actions">
+                    <a href="#" class="location-btn" id="btnMaps" target="_blank">
+                        <span>🗺️</span> Abrir en Maps
+                    </a>
+                    <a href="#" class="location-btn secondary" id="btnWaze" target="_blank">
+                        <span>🚗</span> Abrir en Waze
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galería de Trabajos -->
+        <section class="gallery-section" id="gallerySection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">📸</span>
+                Nuestros Trabajos
+            </h2>
+            <div class="gallery-scroll" id="galleryList">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Catálogo de Precios -->
+        <section class="catalog-section" id="catalogSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">💰</span>
+                Precios
+            </h2>
+            <div class="catalog-list" id="catalogList">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Reseñas / Testimonios -->
+        <section class="reviews-section" id="reviewsSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">⭐</span>
+                Opiniones de Clientes
+            </h2>
+            <div class="reviews-scroll" id="reviewsList">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Agendar Cita -->
+        <section class="booking-section" id="bookingSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">📅</span>
+                Agendar Cita
+            </h2>
+            <div class="booking-card">
+                <p class="booking-text">Reserva tu cita de forma rápida y sencilla</p>
+                <button class="booking-btn" id="btnBooking" onclick="abrirModalBooking()">
+                    📅 Agendar Ahora
+                </button>
             </div>
         </section>
 
@@ -2436,11 +2944,19 @@ END:VCARD`;
             // Renderizar formulario con config de la app
             renderFormulario(tarjeta);
             
-            // Redes Sociales
-            renderSocialLinks(tarjeta);
+            // Redes Sociales (extendidas con YouTube y sitio web)
+            renderSocialLinksExtended(tarjeta);
             
             // Horario
             renderHorario(tarjeta);
+            
+            // ═══ NUEVAS SECCIONES V2 ═══
+            renderPromo(tarjeta);
+            renderLocation(tarjeta);
+            renderGallery(tarjeta);
+            renderCatalog(tarjeta);
+            renderReviews(tarjeta);
+            renderBooking(tarjeta);
             
             // Inicializar Chat
             setTimeout(initChat, 500);
@@ -2811,8 +3327,284 @@ END:VCARD`;
             }
         };
 
+        // ═══════════════════════════════════════════════════════════════════════
+        // NUEVAS FUNCIONES - MEJORAS V2
+        // ═══════════════════════════════════════════════════════════════════════
+
+        // ═══ TOGGLE TEMA CLARO/OSCURO ═══
+        const toggleTheme = () => {
+            const body = document.body;
+            const btn = document.getElementById('themeToggle');
+            
+            body.classList.toggle('light-theme');
+            
+            const isLight = body.classList.contains('light-theme');
+            btn.textContent = isLight ? '☀️' : '🌙';
+            
+            // Guardar preferencia
+            localStorage.setItem('rd_theme', isLight ? 'light' : 'dark');
+        };
+
+        // Cargar tema guardado
+        const loadSavedTheme = () => {
+            const savedTheme = localStorage.getItem('rd_theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeToggle').textContent = '☀️';
+            }
+        };
+
+        // ═══ RENDERIZAR PROMOCIÓN ═══
+        const renderPromo = (tarjeta) => {
+            const section = document.getElementById('promoSection');
+            if (!tarjeta.promocion_activa || !tarjeta.promocion_texto) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            const text = document.getElementById('promoText');
+            const discount = document.getElementById('promoDiscount');
+            
+            text.textContent = tarjeta.promocion_texto;
+            
+            if (tarjeta.promocion_descuento) {
+                discount.textContent = `-${tarjeta.promocion_descuento}% OFF`;
+            } else {
+                discount.style.display = 'none';
+            }
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR UBICACIÓN/MAPA ═══
+        const renderLocation = (tarjeta) => {
+            const section = document.getElementById('locationSection');
+            
+            // Necesitamos lat/long o al menos dirección
+            if (!tarjeta.latitud && !tarjeta.longitud && !tarjeta.direccion) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            const address = document.getElementById('locationAddress');
+            const btnMaps = document.getElementById('btnMaps');
+            const btnWaze = document.getElementById('btnWaze');
+            
+            // Mostrar dirección
+            let direccionTexto = '';
+            if (tarjeta.direccion) direccionTexto = tarjeta.direccion;
+            if (tarjeta.ciudad) direccionTexto += (direccionTexto ? ', ' : '') + tarjeta.ciudad;
+            address.textContent = direccionTexto || 'Ver ubicación';
+            
+            // Generar enlaces de mapas
+            if (tarjeta.latitud && tarjeta.longitud) {
+                const lat = tarjeta.latitud;
+                const lng = tarjeta.longitud;
+                btnMaps.href = `https://www.google.com/maps?q=${lat},${lng}`;
+                btnWaze.href = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+            } else if (tarjeta.direccion) {
+                const query = encodeURIComponent(tarjeta.direccion + (tarjeta.ciudad ? ', ' + tarjeta.ciudad : ''));
+                btnMaps.href = `https://www.google.com/maps/search/${query}`;
+                btnWaze.href = `https://waze.com/ul?q=${query}`;
+            }
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR GALERÍA ═══
+        const renderGallery = (tarjeta) => {
+            const section = document.getElementById('gallerySection');
+            const scroll = section.querySelector('.gallery-scroll');
+            
+            // galeria_fotos debe ser un array de URLs
+            const fotos = tarjeta.galeria_fotos || [];
+            
+            if (!Array.isArray(fotos) || fotos.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            scroll.innerHTML = fotos.map((url, i) => `
+                <div class="gallery-item" onclick="abrirImagen('${url}')">
+                    <img src="${url}" alt="Trabajo ${i + 1}" loading="lazy">
+                </div>
+            `).join('');
+            
+            section.style.display = 'block';
+        };
+
+        // Abrir imagen en pantalla completa
+        const abrirImagen = (url) => {
+            window.open(url, '_blank');
+        };
+
+        // ═══ RENDERIZAR CATÁLOGO ═══
+        const renderCatalog = (tarjeta) => {
+            const section = document.getElementById('catalogSection');
+            const list = section.querySelector('.catalog-list');
+            
+            // catalogo_precios debe ser un array: [{nombre: 'Corte', precio: 100}, ...]
+            const precios = tarjeta.catalogo_precios || [];
+            
+            if (!Array.isArray(precios) || precios.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            list.innerHTML = precios.map(item => `
+                <div class="catalog-item">
+                    <span class="catalog-name">${item.nombre || item.servicio || 'Servicio'}</span>
+                    <span class="catalog-price">$${item.precio || 0}</span>
+                </div>
+            `).join('');
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR RESEÑAS ═══
+        const renderReviews = (tarjeta) => {
+            const section = document.getElementById('reviewsSection');
+            const scroll = section.querySelector('.reviews-scroll');
+            
+            // resenas debe ser un array: [{nombre: 'Juan', texto: '...', estrellas: 5}, ...]
+            const resenas = tarjeta.resenas || [];
+            
+            if (!Array.isArray(resenas) || resenas.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            scroll.innerHTML = resenas.map(r => {
+                const estrellas = '⭐'.repeat(r.estrellas || 5);
+                return `
+                    <div class="review-card">
+                        <div class="review-stars">${estrellas}</div>
+                        <p class="review-text">"${r.texto || r.comentario || '...'}"</p>
+                        <span class="review-author">— ${r.nombre || 'Cliente'}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR SECCIÓN AGENDAR ═══
+        const renderBooking = (tarjeta) => {
+            const section = document.getElementById('bookingSection');
+            
+            if (!tarjeta.permite_agendar) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            // Establecer fecha mínima (mañana)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('bookingFecha').min = tomorrow.toISOString().split('T')[0];
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ MODAL DE AGENDAR CITA ═══
+        const abrirModalBooking = () => {
+            document.getElementById('modalBooking').classList.add('active');
+        };
+
+        const cerrarModalBooking = (e) => {
+            if (e.target === e.currentTarget || e.target.classList.contains('modal-booking')) {
+                document.getElementById('modalBooking').classList.remove('active');
+            }
+        };
+
+        const enviarCita = async (e) => {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('bookingNombre').value.trim();
+            const telefono = document.getElementById('bookingTelefono').value.trim();
+            const fecha = document.getElementById('bookingFecha').value;
+            const hora = document.getElementById('bookingHora').value;
+            const servicio = document.getElementById('bookingServicio').value.trim();
+            
+            if (!currentTarjeta) return;
+            
+            // Enviar por WhatsApp
+            const whatsapp = currentTarjeta.whatsapp || currentTarjeta.telefono_principal;
+            if (whatsapp) {
+                const waNumber = formatPhone(whatsapp);
+                const mensaje = `📅 *SOLICITUD DE CITA*\n\n👤 Nombre: ${nombre}\n📞 Teléfono: ${telefono}\n📆 Fecha: ${fecha}\n🕐 Hora: ${hora}${servicio ? '\n💼 Servicio: ' + servicio : ''}\n\n_Enviado desde tarjeta digital_`;
+                const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(mensaje)}`;
+                window.open(waUrl, '_blank');
+            }
+            
+            // También registrar en solicitudes
+            try {
+                await supabaseRequest('tarjetas_servicio_solicitudes', {
+                    method: 'POST',
+                    prefer: 'return=minimal',
+                    body: JSON.stringify({
+                        tarjeta_id: currentTarjeta.id,
+                        negocio_id: currentTarjeta.negocio_id,
+                        nombre: nombre,
+                        telefono: telefono,
+                        mensaje: `CITA: ${fecha} ${hora} - ${servicio}`,
+                        estado: 'pendiente',
+                        origen: 'web'
+                    })
+                });
+            } catch (err) {
+                console.warn('No se pudo registrar cita:', err);
+            }
+            
+            // Cerrar modal y mostrar confirmación
+            document.getElementById('modalBooking').classList.remove('active');
+            showToast('¡Cita solicitada! Te contactaremos pronto.', '✅', true);
+            
+            // Limpiar formulario
+            document.getElementById('bookingForm').reset();
+        };
+
+        // ═══ RENDERIZAR REDES SOCIALES EXTENDIDAS ═══
+        const renderSocialLinksExtended = (tarjeta) => {
+            const socialLinks = document.getElementById('socialLinks');
+            const socialSection = document.getElementById('socialSection');
+            let html = '';
+            let hasLinks = false;
+            
+            if (tarjeta.facebook) {
+                html += `<a href="${tarjeta.facebook}" target="_blank" class="social-btn facebook">📘</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.instagram) {
+                html += `<a href="${tarjeta.instagram}" target="_blank" class="social-btn instagram">📸</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.tiktok) {
+                html += `<a href="${tarjeta.tiktok}" target="_blank" class="social-btn tiktok">🎵</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.youtube) {
+                html += `<a href="${tarjeta.youtube}" target="_blank" class="social-btn youtube" style="background: linear-gradient(135deg, #FF0000, #CC0000);">▶️</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.sitio_web) {
+                html += `<a href="${tarjeta.sitio_web}" target="_blank" class="social-btn website" style="background: linear-gradient(135deg, #667eea, #764ba2);">🌐</a>`;
+                hasLinks = true;
+            }
+            
+            if (hasLinks) {
+                socialLinks.innerHTML = html;
+                socialSection.style.display = 'block';
+            }
+        };
+
+        // ═══ MODIFICAR RENDER TARJETA PARA INCLUIR NUEVAS SECCIONES ═══
+        const originalRenderTarjeta = renderTarjeta;
+
         // Iniciar
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedTheme();
+            init();
+        });
     </script>
 </body>
 </html>
