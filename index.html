@@ -1553,11 +1553,19 @@
             </p>
             <div class="modal-badge">
                 <span>✓</span>
-                Descarga gratuita para Android
+                Descarga gratuita para Android (~100 MB)
             </div>
-            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v10.56/app-release.apk" class="modal-btn-primary">
+            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v10.56/app-release.apk" 
+               class="modal-btn-primary" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               download="RobertDarin.apk"
+               onclick="iniciarDescarga(event)">
                 📱 Descargar Aplicación
             </a>
+            <p id="downloadProgress" style="display:none; font-size: 12px; color: var(--success); margin-top: 12px;">
+                ⏳ Descarga iniciada... Por favor espera, el archivo es grande (~100 MB)
+            </p>
             <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)">
                 Cancelar
             </button>
@@ -1880,6 +1888,34 @@
             if (event) event.stopPropagation();
             document.getElementById('modalLogin').classList.remove('active');
             document.body.style.overflow = '';
+            // Ocultar mensaje de progreso
+            const prog = document.getElementById('downloadProgress');
+            if (prog) prog.style.display = 'none';
+        };
+
+        // Iniciar descarga con feedback visual
+        const iniciarDescarga = (event) => {
+            // Mostrar mensaje de espera
+            const prog = document.getElementById('downloadProgress');
+            if (prog) {
+                prog.style.display = 'block';
+            }
+            
+            // Cambiar texto del botón temporalmente
+            const btn = event.target.closest('a');
+            if (btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⏳ Iniciando descarga...';
+                btn.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.pointerEvents = 'auto';
+                }, 3000);
+            }
+            
+            // No prevenir default - dejar que el link funcione normalmente
+            return true;
         };
 
         // Cerrar modal con ESC
