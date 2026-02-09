@@ -1858,7 +1858,20 @@
         const formatPhone = (phone) => {
             if (!phone) return '';
             const cleaned = phone.replace(/\D/g, '');
-            return cleaned.startsWith('52') ? cleaned : '52' + cleaned;
+            // Soportar números internacionales
+            // Si empieza con 1 (USA/Canadá) o 52 (México), dejarlo así
+            // Si es número de 10 dígitos sin código, asumir México (52)
+            if (cleaned.startsWith('1') && cleaned.length === 11) {
+                return cleaned; // USA/Canadá: 1 + 10 dígitos
+            }
+            if (cleaned.startsWith('52')) {
+                return cleaned; // México con código
+            }
+            if (cleaned.length === 10) {
+                return '52' + cleaned; // México sin código
+            }
+            // Para otros países, devolver tal cual
+            return cleaned;
         };
 
         const showToast = (message, icon = '✓', isSuccess = true) => {
