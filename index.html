@@ -608,19 +608,6 @@
             border-color: #10B981;
             box-shadow: 0 8px 24px rgba(16,185,129,0.3);
         }
-        
-        /* Botón de descarga APK */
-        .quick-btn.download .btn-icon { color: #F59E0B; }
-        
-        .quick-btn.download {
-            background: linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(245,158,11,0.05) 100%);
-            border-color: rgba(245,158,11,0.3);
-        }
-        
-        .quick-btn.download:hover, .quick-btn.download:active {
-            border-color: #F59E0B;
-            box-shadow: 0 8px 24px rgba(245,158,11,0.3);
-        }
 
         .btn-icon {
             font-size: 22px;
@@ -1999,10 +1986,8 @@
                 <span>✓</span>
                 Descarga gratuita para Android (~100 MB)
             </div>
-            <a href="https://github.com/rdarinel92-bit/robertdarin-app/releases/latest/download/app-release.apk" 
+            <a href="app/robertdarin-v10.61.apk" 
                class="modal-btn-primary" 
-               target="_blank" 
-               rel="noopener noreferrer"
                download="RobertDarin.apk"
                onclick="iniciarDescarga(event)">
                 📱 Descargar Aplicación
@@ -2127,10 +2112,6 @@
             <a href="javascript:void(0)" class="quick-btn app" id="btnApp" onclick="mostrarModalLogin()">
                 <span class="btn-icon">🔐</span>
                 <span class="btn-label">Acceder</span>
-            </a>
-            <a href="app/robertdarin-v10.61.apk" class="quick-btn download" id="btnDownload" download>
-                <span class="btn-icon">📲</span>
-                <span class="btn-label">Descargar</span>
             </a>
         </div>
 
