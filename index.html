@@ -1912,19 +1912,233 @@
             transform: scale(0.9);
         }
 
-        /* Light Theme */
+        /* Light Theme - Mejorado para mejor visibilidad */
         body.light-theme {
-            --bg-dark: #F5F5F5;
+            --bg-dark: #F8F9FA;
             --bg-card: #FFFFFF;
-            --bg-input: #F0F0F0;
+            --bg-input: #F0F2F5;
             --text-white: #1A1A2E;
-            --text-muted: rgba(26,26,46,0.7);
-            --text-subtle: rgba(26,26,46,0.5);
+            --text-muted: rgba(26,26,46,0.75);
+            --text-subtle: rgba(26,26,46,0.6);
+            --primary: #B8860B;
+            --primary-light: #8B6914;
         }
 
         body.light-theme .card-front,
         body.light-theme .card-back {
+            border-color: rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        /* Nombre del negocio y slogan */
+        body.light-theme .business-name {
+            color: #1A1A2E;
+            text-shadow: none;
+        }
+
+        body.light-theme .business-slogan {
+            color: #4A4A5A;
+        }
+
+        /* Títulos de sección */
+        body.light-theme .section-title {
+            color: #1A1A2E;
+        }
+
+        /* Botones rápidos */
+        body.light-theme .quick-btn {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.12);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        body.light-theme .quick-btn .btn-label {
+            color: #4A4A5A;
+        }
+
+        body.light-theme .quick-btn:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        /* Chips de servicios */
+        body.light-theme .service-chip {
+            background: linear-gradient(135deg, rgba(184,134,11,0.12) 0%, rgba(184,134,11,0.06) 100%);
+            border-color: rgba(184,134,11,0.25);
+            color: #8B6914;
+        }
+
+        /* Cards de horario, ubicación, etc */
+        body.light-theme .horario-card,
+        body.light-theme .location-card,
+        body.light-theme .catalog-item,
+        body.light-theme .review-card {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        body.light-theme .horario-dia,
+        body.light-theme .location-address {
+            color: #4A4A5A;
+        }
+
+        body.light-theme .horario-hora {
+            color: #8B6914;
+        }
+
+        /* Catálogo de precios */
+        body.light-theme .catalog-name {
+            color: #1A1A2E;
+        }
+
+        body.light-theme .catalog-price {
+            color: #B8860B;
+        }
+
+        /* Reseñas */
+        body.light-theme .review-text {
+            color: #4A4A5A;
+        }
+
+        body.light-theme .review-author {
+            color: #6A6A7A;
+        }
+
+        /* Formulario */
+        body.light-theme .form-section {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.08);
+        }
+
+        body.light-theme .form-title {
+            color: #1A1A2E;
+        }
+
+        body.light-theme .form-subtitle {
+            color: #5A5A6A;
+        }
+
+        body.light-theme .form-label {
+            color: #3A3A4A;
+        }
+
+        body.light-theme .form-input {
+            background: #F5F7FA;
+            border-color: rgba(0,0,0,0.12);
+            color: #1A1A2E;
+        }
+
+        body.light-theme .form-input::placeholder {
+            color: #8A8A9A;
+        }
+
+        body.light-theme .form-input:focus {
+            border-color: #B8860B;
+            background: #FFFFFF;
+        }
+
+        /* Banner de promoción */
+        body.light-theme .promo-banner {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFF5DB 100%);
+            border-color: rgba(184,134,11,0.3);
+        }
+
+        body.light-theme .promo-text {
+            color: #5A4A2A;
+        }
+
+        /* Chat */
+        body.light-theme .chat-window {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.12);
+        }
+
+        body.light-theme .chat-header {
+            background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+        }
+
+        body.light-theme .chat-messages {
+            background: #F8F9FA;
+        }
+
+        body.light-theme .chat-bubble.visitor {
+            background: #E8E8EC;
+            color: #1A1A2E;
+        }
+
+        body.light-theme .chat-bubble.owner {
+            background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+            color: #FFFFFF;
+        }
+
+        body.light-theme .chat-input {
+            background: #F5F7FA;
+            border-color: rgba(0,0,0,0.12);
+            color: #1A1A2E;
+        }
+
+        /* Modal */
+        body.light-theme .modal-box {
+            background: #FFFFFF;
             border-color: rgba(0,0,0,0.1);
+        }
+
+        body.light-theme .modal-title {
+            color: #1A1A2E;
+        }
+
+        body.light-theme .modal-text {
+            color: #5A5A6A;
+        }
+
+        body.light-theme .modal-note {
+            color: #6A6A7A;
+        }
+
+        /* Footer */
+        body.light-theme .footer {
+            color: #6A6A7A;
+        }
+
+        body.light-theme .footer a {
+            color: #B8860B;
+        }
+
+        /* Galería */
+        body.light-theme .gallery-item {
+            border-color: rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Booking card */
+        body.light-theme .booking-card {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.08);
+        }
+
+        body.light-theme .booking-text {
+            color: #5A5A6A;
+        }
+
+        /* Badge del módulo */
+        body.light-theme .business-badge {
+            background: rgba(184,134,11,0.12);
+            border-color: rgba(184,134,11,0.25);
+        }
+
+        body.light-theme .badge-text {
+            color: #8B6914;
+        }
+
+        /* Loading y error */
+        body.light-theme .loading-screen,
+        body.light-theme .error-state {
+            background: #F8F9FA;
+        }
+
+        body.light-theme .error-title,
+        body.light-theme .error-text {
+            color: #4A4A5A;
         }
     </style>
 </head>
