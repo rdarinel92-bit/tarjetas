@@ -3368,6 +3368,25 @@ END:VCARD`;
         // CHAT NATIVO - SISTEMA DE MENSAJERÍA
         // ═══════════════════════════════════════════════════════════════════════
         let chatOpen = false;
+        let lastMessageCount = 0;
+
+        // Sistema de sonidos de notificacion
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const playNotificationSound = () => {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1108, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) { console.warn('Sonido no disponible'); }
+        };
+
         let visitanteId = null;
         let chatMessages = [];
         let pollingInterval = null;
@@ -3416,6 +3435,12 @@ END:VCARD`;
                 if (data && data.length > 0) {
                     // Solo actualizar si hay cambios
                     if (JSON.stringify(data) !== JSON.stringify(chatMessages)) {
+                        // Detectar mensajes nuevos de respuesta (del negocio)
+                        const newResponses = data.filter(m => m.es_respuesta && !chatMessages.find(c => c.id === m.id));
+                        if (newResponses.length > 0 && chatMessages.length > 0) {
+                            playNotificationSound();
+                            console.log('🔔 Nuevo mensaje recibido!');
+                        }
                         chatMessages = data;
                         renderMensajesChat();
                     }
