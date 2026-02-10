@@ -755,6 +755,217 @@
             font-weight: 500;
         }
         
+        /* ═══ NUEVAS CARACTERÍSTICAS ═══ */
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 14px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            z-index: 5000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .toast.success {
+            border-color: var(--success);
+        }
+        
+        .toast-icon {
+            font-size: 20px;
+        }
+        
+        .toast-text {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 80px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 200;
+            font-size: 20px;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .theme-toggle:active {
+            transform: scale(0.9);
+        }
+        
+        /* Light Theme */
+        body.light-theme {
+            --bg-primary: #F8F9FA;
+            --bg-card: #FFFFFF;
+            --bg-surface: #F0F2F5;
+            --text-primary: #1A1A2E;
+            --text-secondary: rgba(26,26,46,0.75);
+            --text-muted: rgba(26,26,46,0.6);
+            --border: rgba(0,0,0,0.12);
+        }
+        
+        body.light-theme .header {
+            box-shadow: 0 4px 20px rgba(255,107,0,0.2);
+        }
+        
+        body.light-theme .product-card,
+        body.light-theme .calculator-card,
+        body.light-theme .cart-item {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        /* Search Bar */
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 16px;
+            padding: 0 16px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .search-wrapper {
+            position: relative;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: var(--text-muted);
+        }
+        
+        /* Validation */
+        .form-group.error input,
+        .form-group.error textarea {
+            border-color: #EF4444;
+        }
+        
+        .form-group.success input {
+            border-color: var(--success);
+        }
+        
+        .error-message {
+            color: #EF4444;
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+        
+        /* Historial de pedidos */
+        .history-section {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .history-item {
+            background: var(--bg-surface);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+        
+        .history-item:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        
+        .history-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .history-total {
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        /* Delivery Time Selector */
+        .time-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        /* Top Actions */
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .share-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .share-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+        
         /* Responsive */
         @media (max-width: 400px) {
             .header h1 {
@@ -775,6 +986,11 @@
         🚫 Lo sentimos, estamos cerrados en este momento
     </div>
 
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">
+        🌙
+    </button>
+
     <!-- Header -->
     <div class="header">
         <h1>🍗 <span id="businessName">Pollos Asados</span></h1>
@@ -783,6 +999,18 @@
             <span id="businessPhone">📞 --</span>
             <span id="businessHours">⏰ --</span>
         </div>
+    </div>
+    
+    <!-- Top Actions -->
+    <div class="top-actions">
+        <button class="share-btn" onclick="shareMenu()">
+            <span>📤</span>
+            <span>Compartir menú</span>
+        </button>
+        <button class="share-btn" onclick="showHistory()" id="historyBtn" style="display: none;">
+            <span>🕐</span>
+            <span>Mis pedidos</span>
+        </button>
     </div>
 
     <!-- Calculadora de pollos -->
@@ -817,6 +1045,14 @@
 
     <!-- Contenido -->
     <div class="container">
+        <!-- Búsqueda -->
+        <div class="search-bar">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar productos..." oninput="searchProducts()">
+            </div>
+        </div>
+        
         <!-- Categorías -->
         <div class="categories" id="categoriesContainer">
             <button class="category-btn active" data-category="todos">📋 Todos</button>
@@ -879,18 +1115,33 @@
             
             <div class="form-section">
                 <h3>👤 Tus datos</h3>
-                <div class="form-group">
+                <div class="form-group" id="nombreGroup">
                     <label>Nombre *</label>
-                    <input type="text" id="inputNombre" placeholder="Tu nombre">
+                    <input type="text" id="inputNombre" placeholder="Tu nombre" oninput="validateForm()">
+                    <div class="error-message" id="nombreError"></div>
+                </div>
+                <div class="form-group" id="telefonoGroup">
+                    <label>Teléfono *</label>
+                    <input type="tel" id="inputTelefono" placeholder="10 dígitos" maxlength="10" oninput="validatePhone()">
+                    <div class="error-message" id="telefonoError"></div>
                 </div>
                 <div class="form-group">
-                    <label>Teléfono *</label>
-                    <input type="tel" id="inputTelefono" placeholder="10 dígitos">
+                    <label>¿Cuándo lo quieres?</label>
+                    <div class="time-selector">
+                        <input type="date" class="form-group input" id="inputFecha" style="padding: 12px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary);">
+                        <input type="time" class="form-group input" id="inputHora" style="padding: 12px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-primary);">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Notas (opcional)</label>
                     <textarea id="inputNotas" placeholder="Indicaciones especiales..."></textarea>
                 </div>
+            </div>
+            
+            <!-- Historial de pedidos -->
+            <div class="history-section" id="historySection" style="display: none;">
+                <h3>🕐 Repetir pedido anterior</h3>
+                <div id="historyList"></div>
             </div>
             
             <div class="totals">
@@ -908,10 +1159,16 @@
                 </div>
             </div>
             
-            <button id="submitBtn" class="submit-btn" onclick="submitOrder()">
-                ✅ Enviar Pedido
+            <button id="submitBtn" class="submit-btn" onclick="submitOrder()" disabled>
+                ✅ Enviar Pedido por WhatsApp
             </button>
         </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon">✓</span>
+        <span class="toast-text" id="toastText">Producto agregado</span>
     </div>
 
     <!-- Modal Éxito -->
@@ -944,6 +1201,249 @@
         let tipoEntrega = 'recoger';
         let costoDelivery = 30;
         let recommendedChickens = { whole: 1, half: 0 };
+        let searchTerm = '';
+        let orderHistory = [];
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // UTILIDADES
+        // ═══════════════════════════════════════════════════════════════════
+        const showToast = (message, icon = '✓', isSuccess = true) => {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastText.textContent = message;
+            toastIcon.textContent = icon;
+            toast.classList.toggle('success', isSuccess);
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        };
+        
+        const vibrate = (pattern = [50]) => {
+            if (navigator.vibrate) {
+                navigator.vibrate(pattern);
+            }
+        };
+        
+        const formatPhone = (phone) => {
+            if (!phone) return '';
+            const cleaned = phone.replace(/\D/g, '');
+            if (cleaned.startsWith('52')) return cleaned;
+            if (cleaned.length === 10) return '52' + cleaned;
+            return cleaned;
+        };
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // TEMA CLARO/OSCURO
+        // ═══════════════════════════════════════════════════════════════════
+        const toggleTheme = () => {
+            const body = document.body;
+            const btn = document.getElementById('themeToggle');
+            
+            body.classList.toggle('light-theme');
+            
+            const isLight = body.classList.contains('light-theme');
+            btn.textContent = isLight ? '☀️' : '🌙';
+            
+            localStorage.setItem('pollos_theme', isLight ? 'light' : 'dark');
+        };
+        
+        const loadSavedTheme = () => {
+            const savedTheme = localStorage.getItem('pollos_theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeToggle').textContent = '☀️';
+            }
+        };
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // PERSISTENCIA DEL CARRITO
+        // ═══════════════════════════════════════════════════════════════════
+        const saveCart = () => {
+            localStorage.setItem('pollos_carrito', JSON.stringify(carrito));
+            localStorage.setItem('pollos_tipoEntrega', tipoEntrega);
+        };
+        
+        const loadCart = () => {
+            const saved = localStorage.getItem('pollos_carrito');
+            if (saved) {
+                carrito = JSON.parse(saved);
+                updateCartUI();
+            }
+            
+            const savedTipo = localStorage.getItem('pollos_tipoEntrega');
+            if (savedTipo) {
+                setDeliveryType(savedTipo);
+            }
+        };
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // HISTORIAL DE PEDIDOS
+        // ═══════════════════════════════════════════════════════════════════
+        const saveToHistory = (order) => {
+            orderHistory = JSON.parse(localStorage.getItem('pollos_historial') || '[]');
+            orderHistory.unshift({
+                date: new Date().toLocaleDateString('es-MX'),
+                items: order.items,
+                total: order.total,
+                timestamp: Date.now()
+            });
+            
+            // Mantener solo los últimos 5
+            orderHistory = orderHistory.slice(0, 5);
+            localStorage.setItem('pollos_historial', JSON.stringify(orderHistory));
+            
+            updateHistoryButton();
+        };
+        
+        const loadHistory = () => {
+            orderHistory = JSON.parse(localStorage.getItem('pollos_historial') || '[]');
+            updateHistoryButton();
+        };
+        
+        const updateHistoryButton = () => {
+            const btn = document.getElementById('historyBtn');
+            if (orderHistory.length > 0) {
+                btn.style.display = 'flex';
+            }
+        };
+        
+        const showHistory = () => {
+            const section = document.getElementById('historySection');
+            const list = document.getElementById('historyList');
+            
+            if (orderHistory.length === 0) {
+                showToast('No tienes pedidos anteriores', 'ℹ️', false);
+                return;
+            }
+            
+            list.innerHTML = orderHistory.map((order, index) => `
+                <div class="history-item" onclick="repeatOrder(${index})">
+                    <div class="history-header">
+                        <span class="history-date">${order.date}</span>
+                        <span class="history-total">$${order.total.toFixed(0)}</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">
+                        ${order.items.length} producto${order.items.length > 1 ? 's' : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            section.style.display = 'block';
+            
+            // Scroll al historial
+            setTimeout(() => {
+                section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        };
+        
+        const repeatOrder = (index) => {
+            const order = orderHistory[index];
+            carrito = JSON.parse(JSON.stringify(order.items));
+            saveCart();
+            updateCartUI();
+            renderProducts(document.querySelector('.category-btn.active')?.dataset.category || 'todos');
+            document.getElementById('historySection').style.display = 'none';
+            showToast('¡Pedido repetido! Revisa tu carrito', '🔁', true);
+            vibrate([50, 50, 50]);
+        };
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // BÚSQUEDA
+        // ═══════════════════════════════════════════════════════════════════
+        const searchProducts = () => {
+            searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            renderProducts('todos');
+        };
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // COMPARTIR
+        // ═══════════════════════════════════════════════════════════════════
+        const shareMenu = async () => {
+            const shareData = {
+                title: config?.nombre_negocio || 'Pollos Asados',
+                text: `¡Mira este menú de ${config?.nombre_negocio || 'pollos asados'}! Haz tu pedido online 🍗`,
+                url: window.location.href
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                    showToast('¡Gracias por compartir!', '📤');
+                } else {
+                    await navigator.clipboard.writeText(window.location.href);
+                    showToast('Link copiado al portapapeles', '📋');
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        showToast('Link copiado', '📋');
+                    } catch {
+                        showToast('No se pudo compartir', '❌', false);
+                    }
+                }
+            }
+        };
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // VALIDACIÓN
+        // ═══════════════════════════════════════════════════════════════════
+        const validatePhone = () => {
+            const input = document.getElementById('inputTelefono');
+            const group = document.getElementById('telefonoGroup');
+            const error = document.getElementById('telefonoError');
+            const value = input.value.replace(/\D/g, '');
+            
+            input.value = value;
+            
+            if (value.length === 0) {
+                group.classList.remove('error', 'success');
+                error.textContent = '';
+            } else if (value.length < 10) {
+                group.classList.add('error');
+                group.classList.remove('success');
+                error.textContent = 'Debe tener 10 dígitos';
+            } else {
+                group.classList.remove('error');
+                group.classList.add('success');
+                error.textContent = '';
+            }
+            
+            validateForm();
+        };
+        
+        const validateForm = () => {
+            const nombre = document.getElementById('inputNombre').value.trim();
+            const telefono = document.getElementById('inputTelefono').value.trim();
+            const direccion = document.getElementById('inputDireccion')?.value.trim() || '';
+            
+            const nombreGroup = document.getElementById('nombreGroup');
+            const nombreError = document.getElementById('nombreError');
+            
+            if (nombre.length === 0) {
+                nombreGroup.classList.remove('error', 'success');
+                nombreError.textContent = '';
+            } else if (nombre.length < 3) {
+                nombreGroup.classList.add('error');
+                nombreGroup.classList.remove('success');
+                nombreError.textContent = 'Nombre muy corto';
+            } else {
+                nombreGroup.classList.remove('error');
+                nombreGroup.classList.add('success');
+                nombreError.textContent = '';
+            }
+            
+            const isValid = nombre.length >= 3 && 
+                          telefono.length === 10 && 
+                          carrito.length > 0 &&
+                          (tipoEntrega === 'recoger' || direccion.length > 0);
+            
+            document.getElementById('submitBtn').disabled = !isValid;
+        };
         
         // ═══════════════════════════════════════════════════════════════════
         // CALCULADORA DE POLLOS
@@ -1055,9 +1555,23 @@
         // INICIALIZACIÓN
         // ═══════════════════════════════════════════════════════════════════
         document.addEventListener('DOMContentLoaded', async () => {
+            loadSavedTheme();
             await loadConfig();
             await loadProducts();
             setupCategoryButtons();
+            loadCart();
+            loadHistory();
+            
+            // Set fecha mínima (hoy)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputFecha').min = today;
+            document.getElementById('inputFecha').value = today;
+            
+            // Set hora actual + 1 hora
+            const now = new Date();
+            now.setHours(now.getHours() + 1);
+            const timeStr = now.toTimeString().slice(0, 5);
+            document.getElementById('inputHora').value = timeStr;
         });
         
         async function loadConfig() {
@@ -1117,9 +1631,17 @@
         // ═══════════════════════════════════════════════════════════════════
         function renderProducts(categoria) {
             const container = document.getElementById('productsContainer');
-            const filtrados = categoria === 'todos' 
+            let filtrados = categoria === 'todos' 
                 ? productos 
                 : productos.filter(p => p.categoria === categoria);
+            
+            // Aplicar búsqueda
+            if (searchTerm) {
+                filtrados = filtrados.filter(p => 
+                    p.nombre.toLowerCase().includes(searchTerm) ||
+                    (p.descripcion && p.descripcion.toLowerCase().includes(searchTerm))
+                );
+            }
             
             if (filtrados.length === 0) {
                 container.innerHTML = `
@@ -1199,8 +1721,13 @@
                 });
             }
             
+            saveCart();
             updateCartUI();
-            renderProducts(document.querySelector('.category-btn.active').dataset.category);
+            renderProducts(document.querySelector('.category-btn.active')?.dataset.category || 'todos');
+            
+            // Feedback visual
+            showToast(`${product.nombre} agregado`, '✅');
+            vibrate();
         }
         
         function updateQty(productId, delta) {
@@ -1210,17 +1737,21 @@
             item.qty += delta;
             if (item.qty <= 0) {
                 carrito = carrito.filter(c => c.id !== productId);
+                showToast('Producto eliminado', '🗑️');
             }
             
+            saveCart();
             updateCartUI();
-            renderProducts(document.querySelector('.category-btn.active').dataset.category);
+            renderProducts(document.querySelector('.category-btn.active')?.dataset.category || 'todos');
         }
         
         function removeFromCart(productId) {
             carrito = carrito.filter(c => c.id !== productId);
+            saveCart();
             updateCartUI();
             renderCartItems();
-            renderProducts(document.querySelector('.category-btn.active').dataset.category);
+            renderProducts(document.querySelector('.category-btn.active')?.dataset.category || 'todos');
+            showToast('Producto eliminado', '🗑️');
         }
         
         function updateCartUI() {
@@ -1311,42 +1842,46 @@
                 feeRow.style.display = 'none';
             }
             
+            saveCart();
             updateCartUI();
+            validateForm();
         }
         
         // ═══════════════════════════════════════════════════════════════════
-        // ENVIAR PEDIDO
+        // ENVIAR PEDIDO POR WHATSAPP
         // ═══════════════════════════════════════════════════════════════════
         async function submitOrder() {
             const nombre = document.getElementById('inputNombre').value.trim();
             const telefono = document.getElementById('inputTelefono').value.trim();
-            const direccion = document.getElementById('inputDireccion').value.trim();
+            const direccion = document.getElementById('inputDireccion')?.value.trim() || '';
             const notas = document.getElementById('inputNotas').value.trim();
+            const fecha = document.getElementById('inputFecha').value;
+            const hora = document.getElementById('inputHora').value;
             
             // Validaciones
-            if (!nombre) {
-                alert('Por favor ingresa tu nombre');
+            if (!nombre || nombre.length < 3) {
+                showToast('Por favor ingresa tu nombre completo', '⚠️', false);
                 return;
             }
             
             if (!telefono || telefono.length < 10) {
-                alert('Por favor ingresa un teléfono válido (10 dígitos)');
+                showToast('Por favor ingresa un teléfono válido', '⚠️', false);
                 return;
             }
             
             if (tipoEntrega === 'domicilio' && !direccion) {
-                alert('Por favor ingresa la dirección de entrega');
+                showToast('Por favor ingresa la dirección de entrega', '⚠️', false);
                 return;
             }
             
             if (carrito.length === 0) {
-                alert('Tu carrito está vacío');
+                showToast('Tu carrito está vacío', '⚠️', false);
                 return;
             }
             
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
-            btn.textContent = '⏳ Enviando...';
+            btn.textContent = '⏳ Preparando...';
             
             try {
                 const subtotal = carrito.reduce((sum, c) => sum + (c.precio * c.qty), 0);
@@ -1355,6 +1890,49 @@
                 
                 // Generar número de pedido (últimos 4 dígitos del timestamp + random)
                 const numeroPedido = Math.floor(Date.now() / 1000).toString().slice(-4) + Math.floor(Math.random() * 100).toString().padStart(2, '0');
+                
+                // Construir mensaje de WhatsApp
+                let mensaje = `🍗 *NUEVO PEDIDO #${numeroPedido}*\n\n`;
+                mensaje += `👤 *Cliente:* ${nombre}\n`;
+                mensaje += `📞 *Teléfono:* ${telefono}\n`;
+                mensaje += `📦 *Tipo:* ${tipoEntrega === 'recoger' ? 'Recoger en tienda' : 'Envío a domicilio'}\n`;
+                
+                if (tipoEntrega === 'domicilio') {
+                    mensaje += `📍 *Dirección:* ${direccion}\n`;
+                }
+                
+                mensaje += `\n📅 *Fecha/Hora:* ${fecha} ${hora}\n`;
+                mensaje += `\n🛒 *PRODUCTOS:*\n`;
+                
+                carrito.forEach(item => {
+                    mensaje += `\n• ${item.nombre}\n`;
+                    mensaje += `  ${item.qty} x $${item.precio.toFixed(0)} = $${(item.precio * item.qty).toFixed(0)}`;
+                });
+                
+                mensaje += `\n\n💰 *TOTAL PEDIDO:*\n`;
+                mensaje += `Subtotal: $${subtotal.toFixed(0)}\n`;
+                
+                if (tipoEntrega === 'domicilio') {
+                    mensaje += `Envío: $${delivery.toFixed(0)}\n`;
+                }
+                
+                mensaje += `*TOTAL: $${total.toFixed(0)}*\n`;
+                
+                if (notas) {
+                    mensaje += `\n📝 *Notas:* ${notas}\n`;
+                }
+                
+                mensaje += `\n_Pedido generado desde web_`;
+                
+                // Obtener WhatsApp del negocio
+                const whatsappNumero = config?.whatsapp || config?.telefono;
+                
+                if (!whatsappNumero) {
+                    throw new Error('No se encontró número de WhatsApp');
+                }
+                
+                const waNumber = formatPhone(whatsappNumero);
+                const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(mensaje)}`;
                 
                 // Crear pedido
                 const { data: pedido, error: pedidoError } = await supabase
@@ -1394,32 +1972,63 @@
                 
                 if (detalleError) throw detalleError;
                 
+                // Guardar en historial
+                saveToHistory({
+                    items: carrito.map(c => ({...c})),
+                    total: total
+                });
+                
+                // Abrir WhatsApp
+                window.open(waUrl, '_blank');
+                
                 // Mostrar éxito
                 document.getElementById('orderNumber').textContent = '#' + numeroPedido;
                 document.getElementById('successModal').classList.add('show');
                 closeCart();
                 
+                // Vibrar
+                vibrate([100, 50, 100]);
+                
             } catch (e) {
                 console.error('Error enviando pedido:', e);
-                alert('Error al enviar el pedido. Por favor intenta de nuevo.');
+                showToast(e.message || 'Error al preparar el pedido', '❌', false);
             } finally {
                 btn.disabled = false;
-                btn.textContent = '✅ Enviar Pedido';
+                btn.textContent = '✅ Enviar Pedido por WhatsApp';
             }
         }
         
         function newOrder() {
             carrito = [];
+            localStorage.removeItem('pollos_carrito');
             document.getElementById('inputNombre').value = '';
             document.getElementById('inputTelefono').value = '';
-            document.getElementById('inputDireccion').value = '';
+            if (document.getElementById('inputDireccion')) {
+                document.getElementById('inputDireccion').value = '';
+            }
             document.getElementById('inputNotas').value = '';
+            document.getElementById('searchInput').value = '';
+            searchTerm = '';
+            
+            // Reset fecha/hora
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('inputFecha').value = today;
+            const now = new Date();
+            now.setHours(now.getHours() + 1);
+            document.getElementById('inputHora').value = now.toTimeString().slice(0, 5);
             
             setDeliveryType('recoger');
             updateCartUI();
             renderProducts('todos');
             
             document.getElementById('successModal').classList.remove('show');
+            document.getElementById('historySection').style.display = 'none';
+            
+            // Reset validaciones
+            document.getElementById('nombreGroup').classList.remove('error', 'success');
+            document.getElementById('telefonoGroup').classList.remove('error', 'success');
+            document.getElementById('nombreError').textContent = '';
+            document.getElementById('telefonoError').textContent = '';
             
             // Scroll al inicio
             window.scrollTo({ top: 0, behavior: 'smooth' });
