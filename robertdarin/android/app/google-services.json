@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "335490239010",
+    "project_id": "robert-darin-fintech",
+    "storage_bucket": "robert-darin-fintech.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335490239010:android:c621413651f71e562ed87b",
+        "android_client_info": {
+          "package_name": "com.robertdarin.fintech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFmUp6L2hKN1ySDziuZzvzRcl7TLOfuCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

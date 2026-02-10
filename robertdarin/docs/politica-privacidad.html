@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - Uniko</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0D0D14 0%, #1A1A2E 100%);
+            color: #E0E0E0;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #00D9FF;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        .date {
+            color: #888;
+            font-size: 0.9em;
+        }
+        h2 {
+            color: #8B5CF6;
+            font-size: 1.4em;
+            margin: 35px 0 15px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        h3 {
+            color: #00D9FF;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        ul {
+            margin: 15px 0 15px 25px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .highlight {
+            background: rgba(0, 217, 255, 0.1);
+            border-left: 4px solid #00D9FF;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #EF4444;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .success {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10B981;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #666;
+        }
+        a {
+            color: #00D9FF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            h2 { font-size: 1.2em; }
+            .container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🔐</div>
+            <h1>Política de Privacidad</h1>
+            <p class="date">Última actualización: 20 de enero de 2026</p>
+        </header>
+
+        <h2>1. Introducción</h2>
+        <p><strong>Uniko</strong> ("nosotros", "la aplicación") es una aplicación móvil Multi-Sistema de gestión empresarial para préstamos, tandas, servicios HVAC, purificadoras, ventas y más. Esta política describe cómo recopilamos, usamos y protegemos su información personal conforme a la <strong>Ley Federal de Protección de Datos Personales en Posesión de los Particulares (LFPDPPP)</strong> de México.</p>
+
+        <h2>2. Información que Recopilamos</h2>
+        
+        <h3>2.1 Información proporcionada por el usuario:</h3>
+        <ul>
+            <li><strong>Datos de registro:</strong> nombre, correo electrónico, teléfono</li>
+            <li><strong>Información financiera:</strong> préstamos, pagos, historial de transacciones</li>
+            <li><strong>Documentos:</strong> comprobantes de pago, identificaciones (opcional)</li>
+            <li><strong>Datos de clientes:</strong> información de sus clientes para gestión de préstamos</li>
+        </ul>
+
+        <h3>2.2 Información recopilada automáticamente:</h3>
+        <ul>
+            <li><strong>Datos del dispositivo:</strong> modelo, sistema operativo, identificadores únicos</li>
+            <li><strong>Datos de ubicación:</strong> solo cuando usted lo autoriza explícitamente para funciones de cobranza</li>
+            <li><strong>Registros de uso:</strong> acciones dentro de la aplicación para auditoría</li>
+        </ul>
+
+        <h2>3. Uso de la Información</h2>
+        <p>Utilizamos su información para:</p>
+        <ul>
+            <li>Proporcionar y mantener los servicios de la aplicación</li>
+            <li>Procesar y registrar transacciones financieras</li>
+            <li>Generar reportes y estadísticas de su negocio</li>
+            <li>Enviar notificaciones sobre pagos y vencimientos</li>
+            <li>Mejorar y personalizar la experiencia del usuario</li>
+            <li>Cumplir con obligaciones legales</li>
+        </ul>
+
+        <h2>4. Almacenamiento y Seguridad</h2>
+        <div class="highlight">
+            <ul>
+                <li>Los datos se almacenan en servidores seguros de <strong>Supabase (AWS)</strong></li>
+                <li>Utilizamos encriptación <strong>SSL/TLS</strong> para todas las transmisiones</li>
+                <li>Los datos sensibles se encriptan en reposo</li>
+                <li>Implementamos políticas de seguridad a nivel de fila (RLS)</li>
+                <li>El acceso está restringido por roles y permisos</li>
+            </ul>
+        </div>
+
+        <h2>5. Compartir Información</h2>
+        <div class="success">
+            <p><strong>❌ No vendemos ni compartimos su información personal</strong> con terceros, excepto:</p>
+        </div>
+        <ul>
+            <li>Con su consentimiento explícito</li>
+            <li>Para cumplir con requerimientos legales</li>
+            <li>Con proveedores de servicios necesarios para operar la app (Supabase para almacenamiento)</li>
+        </ul>
+
+        <h2>6. Permisos de la Aplicación</h2>
+        <p>La aplicación solicita los siguientes permisos:</p>
+        <ul>
+            <li><strong>Internet:</strong> para sincronizar datos con el servidor</li>
+            <li><strong>Cámara:</strong> para capturar comprobantes de pago (opcional)</li>
+            <li><strong>Almacenamiento:</strong> para guardar documentos y reportes (opcional)</li>
+            <li><strong>Ubicación:</strong> para verificar ubicación de cobranzas (opcional)</li>
+            <li><strong>Notificaciones:</strong> para alertas de pagos y vencimientos (opcional)</li>
+        </ul>
+        <p>Cada permiso se solicita en el momento necesario y puede denegarlo.</p>
+
+        <h2>7. Retención de Datos</h2>
+        <ul>
+            <li>Mantenemos sus datos mientras su cuenta esté activa</li>
+            <li>Los registros de transacciones se conservan por requisitos legales (5 años)</li>
+            <li>Puede solicitar eliminación de su cuenta y datos en cualquier momento</li>
+        </ul>
+
+        <h2>8. Sus Derechos (ARCO)</h2>
+        <p>Usted tiene derecho a:</p>
+        <ul>
+            <li><strong>Acceder</strong> a sus datos personales</li>
+            <li><strong>Rectificar</strong> información inexacta</li>
+            <li><strong>Cancelar</strong> (solicitar eliminación de) sus datos</li>
+            <li><strong>Oponerse</strong> al tratamiento de sus datos</li>
+            <li>Exportar sus datos en formato legible</li>
+            <li>Revocar consentimientos otorgados</li>
+        </ul>
+
+        <h2>9. Menores de Edad</h2>
+        <div class="warning">
+            <p>Esta aplicación <strong>no está dirigida a menores de 18 años</strong>. No recopilamos intencionalmente información de menores.</p>
+        </div>
+
+        <h2>10. Cambios a esta Política</h2>
+        <p>Podemos actualizar esta política ocasionalmente. Le notificaremos de cambios significativos a través de la aplicación.</p>
+
+        <h2>11. Contacto</h2>
+        <p>Para preguntas sobre privacidad o ejercer sus derechos ARCO:</p>
+        <ul>
+            <li><strong>Correo privacidad:</strong> <a href="mailto:privacidad@uniko.app">privacidad@uniko.app</a></li>
+            <li><strong>Correo legal:</strong> <a href="mailto:legal@uniko.app">legal@uniko.app</a></li>
+            <li><strong>Soporte:</strong> Desde la sección de ayuda en la aplicación</li>
+            <li><strong>Ubicación:</strong> Emiliano Zapata, Tabasco, México</li>
+        </ul>
+
+        <h2>12. Autoridad de Protección de Datos</h2>
+        <p>Si considera que sus derechos no han sido respetados, puede acudir al <strong>Instituto Nacional de Transparencia, Acceso a la Información y Protección de Datos Personales (INAI)</strong>: <a href="https://www.inai.org.mx" target="_blank">www.inai.org.mx</a></p>
+
+        <h2>13. Consentimiento</h2>
+        <div class="highlight">
+            <p>Al usar <strong>Uniko</strong>, usted acepta los términos de esta política de privacidad.</p>
+        </div>
+
+        <footer>
+            <p><strong>Uniko - Multi System</strong></p>
+            <p>© 2026 Robert-Darin • Todos los derechos reservados</p>
+            <p style="margin-top: 20px; font-size: 0.85em;">
+                <a href="terminos-condiciones.html">Términos y Condiciones</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
