@@ -73,6 +73,155 @@
             font-size: 0.85rem;
         }
         
+        /* Calculadora de pollos */
+        .calculator-section {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        .calculator-card {
+            background: linear-gradient(135deg, var(--bg-surface) 0%, #2a2a3e 100%);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(255, 138, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(255, 138, 0, 0.1);
+        }
+        
+        .calc-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .calc-icon {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .calc-header h3 {
+            color: white;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .calc-body {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .calc-input-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .calc-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .calc-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .calc-btn:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+        }
+        
+        .calc-controls input {
+            width: 80px;
+            height: 50px;
+            border-radius: 12px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .calc-controls input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .calc-result {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 138, 0, 0.1);
+            border: 1px dashed var(--accent);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .result-icon {
+            font-size: 2.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .result-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .result-main {
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .result-main strong {
+            color: var(--accent);
+        }
+        
+        .result-sub {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .calc-add-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .calc-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 138, 0, 0.4);
+        }
+
         /* Container */
         .container {
             max-width: 600px;
@@ -636,6 +785,36 @@
         </div>
     </div>
 
+    <!-- Calculadora de pollos -->
+    <div class="calculator-section">
+        <div class="calculator-card">
+            <div class="calc-header">
+                <span class="calc-icon">🧮</span>
+                <h3>¿Cuántos pollos necesito?</h3>
+            </div>
+            <div class="calc-body">
+                <div class="calc-input-group">
+                    <label>¿Cuántas personas van a comer?</label>
+                    <div class="calc-controls">
+                        <button class="calc-btn" onclick="adjustPeople(-1)">−</button>
+                        <input type="number" id="peopleCount" value="4" min="1" max="100" onchange="calculateChickens()">
+                        <button class="calc-btn" onclick="adjustPeople(1)">+</button>
+                    </div>
+                </div>
+                <div class="calc-result" id="calcResult">
+                    <div class="result-icon">🍗</div>
+                    <div class="result-text">
+                        <span class="result-main">Te recomendamos: <strong>1 pollo entero</strong></span>
+                        <span class="result-sub">Rinde para 4-5 personas</span>
+                    </div>
+                </div>
+                <button class="calc-add-btn" onclick="addRecommendedToCart()">
+                    Agregar al pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Contenido -->
     <div class="container">
         <!-- Categorías -->
@@ -764,6 +943,113 @@
         let carrito = [];
         let tipoEntrega = 'recoger';
         let costoDelivery = 30;
+        let recommendedChickens = { whole: 1, half: 0 };
+        
+        // ═══════════════════════════════════════════════════════════════════
+        // CALCULADORA DE POLLOS
+        // ═══════════════════════════════════════════════════════════════════
+        function adjustPeople(delta) {
+            const input = document.getElementById('peopleCount');
+            let value = parseInt(input.value) || 1;
+            value = Math.max(1, Math.min(100, value + delta));
+            input.value = value;
+            calculateChickens();
+        }
+        
+        function calculateChickens() {
+            const people = parseInt(document.getElementById('peopleCount').value) || 1;
+            const resultDiv = document.getElementById('calcResult');
+            
+            // Lógica: ~4 personas por pollo entero, ~2 por medio
+            let wholeChickens = 0;
+            let halfChickens = 0;
+            let message = '';
+            let subMessage = '';
+            
+            if (people <= 2) {
+                halfChickens = 1;
+                message = '1 medio pollo';
+                subMessage = 'Perfecto para 1-2 personas';
+            } else if (people <= 4) {
+                wholeChickens = 1;
+                message = '1 pollo entero';
+                subMessage = 'Rinde para 3-4 personas';
+            } else if (people <= 6) {
+                wholeChickens = 1;
+                halfChickens = 1;
+                message = '1 pollo entero + 1 medio';
+                subMessage = 'Ideal para 5-6 personas';
+            } else if (people <= 8) {
+                wholeChickens = 2;
+                message = '2 pollos enteros';
+                subMessage = 'Perfecto para 7-8 personas';
+            } else if (people <= 12) {
+                wholeChickens = 3;
+                message = '3 pollos enteros';
+                subMessage = 'Alcanza para 9-12 personas';
+            } else if (people <= 16) {
+                wholeChickens = 4;
+                message = '4 pollos enteros';
+                subMessage = 'Para 13-16 personas';
+            } else {
+                wholeChickens = Math.ceil(people / 4);
+                message = wholeChickens + ' pollos enteros';
+                subMessage = 'Para ' + people + ' personas aprox.';
+            }
+            
+            recommendedChickens = { whole: wholeChickens, half: halfChickens };
+            
+            resultDiv.innerHTML = `
+                <div class="result-icon">🍗</div>
+                <div class="result-text">
+                    <span class="result-main">Te recomendamos: <strong>${message}</strong></span>
+                    <span class="result-sub">${subMessage}</span>
+                </div>
+            `;
+        }
+        
+        function addRecommendedToCart() {
+            // Buscar productos de pollo entero y medio
+            const polloEntero = productos.find(p => 
+                p.nombre.toLowerCase().includes('entero') && 
+                p.categoria === 'pollos'
+            );
+            const polloMedio = productos.find(p => 
+                (p.nombre.toLowerCase().includes('medio') || p.nombre.toLowerCase().includes('1/2')) && 
+                p.categoria === 'pollos'
+            );
+            
+            let added = false;
+            
+            if (recommendedChickens.whole > 0 && polloEntero) {
+                for (let i = 0; i < recommendedChickens.whole; i++) {
+                    addToCart(polloEntero.id);
+                }
+                added = true;
+            }
+            
+            if (recommendedChickens.half > 0 && polloMedio) {
+                for (let i = 0; i < recommendedChickens.half; i++) {
+                    addToCart(polloMedio.id);
+                }
+                added = true;
+            }
+            
+            if (added) {
+                // Mostrar notificación
+                const btn = document.querySelector('.calc-add-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ ¡Agregado!';
+                btn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = 'linear-gradient(135deg, var(--accent), var(--accent-light))';
+                }, 1500);
+            } else {
+                alert('⚠️ No se encontraron productos de pollo en el menú. Selecciona manualmente del menú abajo.');
+            }
+        }
         
         // ═══════════════════════════════════════════════════════════════════
         // INICIALIZACIÓN
