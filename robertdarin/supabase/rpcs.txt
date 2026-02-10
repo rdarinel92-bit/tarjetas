@@ -1,7 +1,0 @@
-climas_aprobar_solicitud_qr
-crear_chat_privado
-crear_comisiones_multinivel_nice
-crear_empleado_completo
-enviar_mensaje
-marcar_conversacion_leida
-stripe_crear_cliente

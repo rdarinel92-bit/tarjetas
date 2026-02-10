@@ -1,2 +1,0 @@
-v_tarjetas_completas
-v_transacciones_completas

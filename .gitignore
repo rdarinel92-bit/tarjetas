@@ -1,8 +1,11 @@
-# Flutter
-/robertdarin/.dart_tool/
-/robertdarin/.flutter-plugins
-/robertdarin/.flutter-plugins-dependencies
-/robertdarin/.packages
+# Flutter - Carpeta completa privada
+/robertdarin/
+
+# Flutter artifacts específicos (por si se necesitan en el futuro)
+# /robertdarin/.dart_tool/
+# /robertdarin/.flutter-plugins
+# /robertdarin/.flutter-plugins-dependencies
+# /robertdarin/.packages
 /robertdarin/.pub-cache/
 /robertdarin/.pub/
 /robertdarin/build/
