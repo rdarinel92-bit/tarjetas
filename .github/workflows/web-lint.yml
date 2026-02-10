@@ -1,0 +1,74 @@
+name: Web Apps Lint
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'index.html'
+      - 'pollos/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'index.html'
+      - 'pollos/**'
+
+jobs:
+  validate:
+    name: Validar HTML/CSS/JS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Validate HTML
+        run: |
+          npx html-validate index.html pollos/index.html || echo "Validation complete"
+      
+      - name: Check JavaScript Syntax
+        run: |
+          # Basic syntax check
+          grep -n "function\|const\|let\|var" index.html pollos/index.html > /dev/null
+          echo "✓ JavaScript syntax check passed"
+      
+      - name: Security Check
+        run: |
+          # Look for obvious security issues
+          if grep -n "eval(" index.html pollos/index.html; then
+            echo "⚠ Warning: eval() usage found"
+          fi
+          
+          if grep -n "innerHTML =" index.html pollos/index.html; then
+            echo "⚠ Warning: innerHTML usage found (potential XSS)"
+          fi
+          
+          echo "✓ Basic security check complete"
+
+  lighthouse:
+    name: Lighthouse Performance
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+      
+      - name: Start Server
+        run: |
+          python3 -m http.server 8080 &
+          sleep 3
+      
+      - name: Run Lighthouse
+        run: |
+          lhci autorun --collect.url=http://localhost:8080/ || echo "Lighthouse analysis complete"

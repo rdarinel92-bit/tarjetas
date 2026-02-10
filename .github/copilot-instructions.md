@@ -1,6 +1,174 @@
-# Copilot Instructions - Tarjetas Digitales
+# Copilot Instructions - Robert Darin Fintech
 
-## Arquitectura General
+## Visión General del Ecosistema
+
+Este repositorio contiene **3 aplicaciones independientes pero integradas**:
+
+1. **App Flutter** (`/robertdarin/`) - Aplicación Android de gestión fintech (~12,000 líneas Dart)
+2. **Tarjetas Web** (`/index.html`) - Sistema de tarjetas digitales de contacto (3,873 líneas)
+3. **Sistema Pollos** (`/pollos/index.html`) - Plataforma de pedidos online (1,430 líneas)
+
+**Backend unificado:** Supabase (PostgreSQL + Auth + Storage + Realtime)
+
+---
+
+## 📱 PARTE 1: App Flutter (Robertdarin)
+
+### Arquitectura de la App
+
+**Stack tecnológico:**
+```yaml
+Flutter: >=3.3.0 <4.0.0
+Backend: Supabase 2.0.8
+Estado: Provider 6.1.2
+Arquitectura: Clean Architecture (Modelos → Repos → Controllers → Views)
+Seguridad: flutter_secure_storage + local_auth
+Push: Firebase Cloud Messaging
+Analytics: Firebase Analytics + Crashlytics
+Deep Links: app_links (QR → App directa)
+```
+
+### Estructura de Módulos
+
+```
+lib/
+├── modules/                  # Módulos por feature
+│   ├── auth/                # Login, registro, seguridad
+│   ├── chat/                # Chat nativo avanzado
+│   ├── clientes/            # Gestión de usuarios
+│   ├── finanzas/
+│   │   ├── prestamos/       # Préstamos con amortización
+│   │   ├── tandas/          # Ahorro grupal
+│   │   └── avales/          # Sistema de garantías
+│   └── roles/               # Permisos granulares
+├── ui/
+│   ├── navigation/          # Routing y menús por rol
+│   ├── components/          # Widgets premium reutilizables
+│   └── viewmodels/          # Lógica de presentación
+├── data/
+│   ├── models/              # Entidades de negocio
+│   ├── repositories/        # Acceso a datos
+│   └── services/            # APIs externas
+└── core/
+    ├── theme/               # Diseño premium 4K
+    └── utils/               # Helpers y constantes
+```
+
+### Sistema de Roles (4 niveles)
+
+| Rol | Nivel | Acceso |
+|-----|-------|--------|
+| **Superadmin** | 1 | Control total: Centro de Control, Auditoría, Roles, Usuarios |
+| **Admin** | 2 | Gerente: Clientes, Préstamos, Empleados, Reportes, Configuración |
+| **Operador** | 3 | Cajero: Registro de cobros, visualización operativa |
+| **Cliente** | 4 | Usuario final: Sus préstamos, tandas, avales |
+
+**23 permisos granulares** definidos en `roles_permisos`:
+```
+usuarios.*, clientes.*, prestamos.*, pagos.*, tandas.*, 
+reportes.*, configuracion.*, auditoria.*
+```
+
+### Módulos Críticos
+
+#### Motor de Préstamos (V2.4)
+**Ubicación:** `lib/modules/finanzas/prestamos/`
+
+**Tipos de préstamo:**
+- Mensual, Quincenal, Semanal (campo `frecuencia_pago`)
+- Diario/Arquilado (cobro diario con cuota fija)
+
+**Calculadora dual:**
+- Por **% interés** o **cuota fija**
+- Generación automática de tabla de amortización
+- Tabla `cuotas_prestamo` con proyección completa
+
+**Documentos:** Table `comprobantes_prestamo` para contratos/pagarés digitales
+
+#### Sistema de Tandas (V2.0)
+**Ubicación:** `lib/modules/finanzas/tandas/`
+
+**Características:**
+- Asignación manual de turnos por Superadmin
+- Soporte de avales en tandas
+- Tracking: `ha_pagado_cuota_actual`, `ha_recibido_bolsa`
+- Migración automática de participantes entre tandas
+
+#### Chat Nativo Avanzado (V2.0)
+**Ubicación:** `lib/modules/chat/`
+
+**Tablas:**
+- Legacy: `chats`, `mensajes` (chat 1-a-1)
+- Avanzadas: `chat_conversaciones`, `chat_mensajes`, `chat_participantes`
+
+**Tipos de mensaje:** texto, imagen, documento, audio, ubicación
+
+**Seguridad:** 
+- Campo `hash_contenido` (SHA-256) para verificación
+- RLS por participante
+
+#### Módulo Nice Joyería MLM (V10.20)
+**Sistema completo de venta por catálogo estilo NICE & BELLA**
+
+**Características:**
+- Catálogos por temporada con vigencia
+- 8 categorías de productos
+- 6 niveles MLM: Inicio → Bronce → Plata → Oro → Platino → Diamante
+- Comisiones multinivel (3 niveles de profundidad)
+- Clientes por vendedora
+- Cálculo automático de ganancia por pedido
+
+### Funciones RPC Optimizadas
+
+```sql
+get_dashboard_stats(negocio_id)           -- KPIs principales con cache
+get_cuotas_proximas(negocio_id, dias)     -- Cuotas por vencer
+get_cuotas_vencidas(negocio_id, limit)    -- Lista de mora
+get_resumen_cartera(negocio_id)           -- Por estado y sucursal
+get_historial_pagos_cliente(cliente_id)   -- Historial completo
+get_estado_cuenta_prestamo(prestamo_id)   -- Desglose detallado
+get_nice_dashboard_vendedora(vendedora_id)-- Dashboard MLM
+```
+
+### Componentes Premium UI
+
+**PremiumScaffold** - Scaffold con AppBar + Logout + Back button
+**PremiumCard** - Cards con glassmorphism
+**PremiumButton** - Botones estilizados con gradientes
+**PremiumDialog** - Diálogos con diseño premium
+
+### Sistema de Notificaciones
+
+**Push Notifications (Firebase):**
+- Configurado en `lib/services/push_notification_service.dart`
+- Background handler para mensajes cuando app cerrada
+- Deep links para abrir pantallas específicas
+
+**Notificaciones in-app:**
+- Tabla `notificaciones` con tipos: info, warning, success, error
+- Auto-trigger en pagos vencidos
+- Badge counter en menú lateral
+
+### Convenciones Flutter
+
+**Naming:**
+- Screens: `*_screen.dart` (ej: `prestamos_screen.dart`)
+- ViewModels: `*_viewmodel.dart` (ej: `auth_viewmodel.dart`)
+- Widgets: `*_widget.dart` (ej: `prestamo_card_widget.dart`)
+- Controllers: `*_controller.dart` (módulos nuevos)
+
+**Estado:**
+- Provider para estado global
+- `ChangeNotifier` para ViewModels
+- `Consumer<T>` para rebuild específico
+
+**Navegación:**
+- Navigator 2.0 con routes definidas en `app_routes.dart`
+- Menu lateral por rol en `app_shell.dart`
+
+---
+
+## 🌐 PARTE 2: Tarjetas Digitales Web
 
 Este proyecto es un **sistema de tarjetas digitales de contacto** con pedidos online, construido sin frameworks JavaScript. Todo el código está autocontenido en archivos HTML monolíticos con CSS y JS inline.
 
