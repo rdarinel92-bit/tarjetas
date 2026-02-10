@@ -2823,6 +2823,29 @@ END:VCARD`;
         };
 
         const enviarSolicitud = async (data) => {
+            // Enviar a tabla específica según módulo
+            if (data.modulo === 'climas') {
+                // Mapear campos para tabla de climas
+                const climasData = {
+                    negocio_id: data.negocio_id,
+                    nombre_completo: data.nombre,
+                    telefono: data.telefono,
+                    email: data.email,
+                    direccion: data.mensaje || 'Sin dirección',
+                    tipo_servicio: data.servicio_interes || 'cotizacion',
+                    notas_cliente: data.mensaje,
+                    estado: 'nueva',
+                    fuente: 'qr_web'
+                };
+                console.log('📤 Enviando a climas_solicitudes_qr:', climasData);
+                return supabaseRequest('climas_solicitudes_qr', {
+                    method: 'POST',
+                    body: JSON.stringify(climasData)
+                });
+            }
+            
+            // Para otros módulos (finanzas, etc) usar tabla general
+            console.log('📤 Enviando a tarjetas_servicio_solicitudes:', data);
             return supabaseRequest('tarjetas_servicio_solicitudes', {
                 method: 'POST',
                 body: JSON.stringify(data)
