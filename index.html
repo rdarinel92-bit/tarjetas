@@ -3053,6 +3053,76 @@ END:VCARD`;
         };
 
         // ═══════════════════════════════════════════════════════════════════════
+        // V11.2: TEXTOS PERSONALIZADOS DEL REVERSO
+        // ═══════════════════════════════════════════════════════════════════════
+        const renderTextosPersonalizados = (titulo, detalle, extra) => {
+            // Buscar o crear el contenedor
+            let container = document.getElementById('textosPersonalizadosSection');
+            
+            // Si no hay textos, ocultar y salir
+            if (!titulo && !detalle && !extra) {
+                if (container) container.style.display = 'none';
+                return;
+            }
+            
+            // Crear contenedor si no existe
+            if (!container) {
+                container = document.createElement('section');
+                container.id = 'textosPersonalizadosSection';
+                container.className = 'glass-section fade-in';
+                container.style.marginTop = '1rem';
+                
+                container.innerHTML = `
+                    <div class="section-header">
+                        <span class="section-icon">📝</span>
+                        <h3>Información Adicional</h3>
+                    </div>
+                    <div class="textos-content" style="padding: 1rem;">
+                        <div id="textoTraseroTituloEl" style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;"></div>
+                        <div id="textoTraseroDetalleEl" style="font-size:0.95rem;color:var(--text);line-height:1.5;margin-bottom:0.5rem;"></div>
+                        <div id="textoTraseroExtraEl" style="font-size:0.85rem;color:var(--text-muted);font-style:italic;"></div>
+                    </div>
+                `;
+                
+                // Insertar después de quickActions
+                const quickActions = document.getElementById('quickActionsSection');
+                if (quickActions && quickActions.parentNode) {
+                    quickActions.parentNode.insertBefore(container, quickActions.nextSibling);
+                } else {
+                    document.querySelector('.container').appendChild(container);
+                }
+            }
+            
+            // Llenar contenido
+            const tituloEl = document.getElementById('textoTraseroTituloEl');
+            const detalleEl = document.getElementById('textoTraseroDetalleEl');
+            const extraEl = document.getElementById('textoTraseroExtraEl');
+            
+            if (titulo) {
+                tituloEl.textContent = titulo;
+                tituloEl.style.display = 'block';
+            } else {
+                tituloEl.style.display = 'none';
+            }
+            
+            if (detalle) {
+                detalleEl.textContent = detalle;
+                detalleEl.style.display = 'block';
+            } else {
+                detalleEl.style.display = 'none';
+            }
+            
+            if (extra) {
+                extraEl.textContent = extra;
+                extraEl.style.display = 'block';
+            } else {
+                extraEl.style.display = 'none';
+            }
+            
+            container.style.display = 'block';
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
         // UI RENDERING
         // ═══════════════════════════════════════════════════════════════════════
         const renderTarjeta = (tarjeta) => {
@@ -3061,19 +3131,43 @@ END:VCARD`;
             const slogan = tarjeta.slogan || 'Servicio profesional garantizado';
             const modulo = (tarjeta.modulo || 'general').toLowerCase();
             
+            // V11.2: Textos personalizados (prioridad sobre valores por defecto)
+            const textoFrontalTitulo = tarjeta.texto_frontal_titulo || nombreNegocio;
+            const textoFrontalSubtitulo = tarjeta.texto_frontal_subtitulo || slogan;
+            const textoFrontalExtra = tarjeta.texto_frontal_extra || '';
+            const textoTraseroTitulo = tarjeta.texto_trasero_titulo || '';
+            const textoTraseroDetalle = tarjeta.texto_trasero_detalle || '';
+            const textoTraseroExtra = tarjeta.texto_trasero_extra || '';
+            
             // Logo/Iniciales (compatibilidad)
             document.getElementById('initials').textContent = initials;
             
             // ═══ TARJETA DE PRESENTACIÓN 3D ═══
-            // Frente dorado
+            // Frente dorado - V11.2: Usa textos personalizados
             document.getElementById('cardInitials').textContent = initials;
-            document.getElementById('cardNameFront').textContent = `• ${nombreNegocio.toUpperCase()} •`;
+            document.getElementById('cardNameFront').textContent = `• ${textoFrontalTitulo.toUpperCase()} •`;
+            
+            // Texto extra frontal (si existe)
+            const cardFront = document.querySelector('.card-front');
+            let extraFrontalEl = document.getElementById('textoFrontalExtra');
+            if (textoFrontalExtra) {
+                if (!extraFrontalEl) {
+                    extraFrontalEl = document.createElement('div');
+                    extraFrontalEl.id = 'textoFrontalExtra';
+                    extraFrontalEl.style.cssText = 'position:absolute;bottom:25px;left:0;right:0;text-align:center;font-size:0.7rem;color:#1A1A1A;letter-spacing:2px;font-weight:500;';
+                    cardFront.appendChild(extraFrontalEl);
+                }
+                extraFrontalEl.textContent = textoFrontalExtra.toUpperCase();
+                extraFrontalEl.style.display = 'block';
+            } else if (extraFrontalEl) {
+                extraFrontalEl.style.display = 'none';
+            }
             
             // Reverso negro
             document.getElementById('logoInitials').textContent = initials;
-            const nombreCorto = nombreNegocio.split(' ').slice(0, 2).join(' ');
+            const nombreCorto = textoFrontalTitulo.split(' ').slice(0, 2).join(' ');
             document.getElementById('logoTagline').textContent = `• ${nombreCorto.toUpperCase()} •`;
-            document.getElementById('cardBadge').textContent = slogan.length > 20 ? 'PROFESSIONAL' : slogan.toUpperCase();
+            document.getElementById('cardBadge').textContent = textoFrontalSubtitulo.length > 20 ? textoFrontalSubtitulo.substring(0,18).toUpperCase() + '...' : textoFrontalSubtitulo.toUpperCase();
             
             // Contacto en reverso - OCULTAR SI ESTÁ VACÍO
             const phone = tarjeta.telefono_principal || tarjeta.whatsapp || '';
@@ -3130,9 +3224,12 @@ END:VCARD`;
                 qrFallback.style.display = 'block';
             };
             
-            // Info del negocio (debajo de tarjeta)
-            document.getElementById('businessName').textContent = nombreNegocio;
-            document.getElementById('businessSlogan').textContent = slogan;
+            // Info del negocio (debajo de tarjeta) - V11.2: Usa textos personalizados
+            document.getElementById('businessName').textContent = textoFrontalTitulo;
+            document.getElementById('businessSlogan').textContent = textoFrontalSubtitulo;
+            
+            // V11.2: Textos traseros personalizados (se muestran en sección especial)
+            renderTextosPersonalizados(textoTraseroTitulo, textoTraseroDetalle, textoTraseroExtra);
             
             // Badge del módulo
             document.getElementById('badgeIcon').textContent = MODULO_ICONS[modulo] || '💼';
