@@ -188,85 +188,90 @@
             overflow: hidden;
         }
 
-        /* ═══ FRENTE - DORADO METÁLICO ═══ */
+        /* ═══ FRENTE - DINÁMICO (colores del negocio) ═══ */
         .card-front {
-            background: linear-gradient(135deg, 
-                #D4AF37 0%, 
-                #C9A227 25%, 
-                #F5E6A3 45%,
-                #CFB53B 55%,
-                #B8860B 75%, 
-                #D4AF37 100%);
-            box-shadow: 
-                0 15px 40px rgba(212,175,55,0.4),
-                0 5px 15px rgba(0,0,0,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.4);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, var(--card-color1, #D4AF37) 0%, var(--card-color2, #B8860B) 100%);
+            box-shadow: 
+                0 15px 40px rgba(0,0,0,0.3),
+                0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
         }
 
         .card-front::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 60%);
-            animation: shimmerCard 4s ease-in-out infinite;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+            pointer-events: none;
         }
 
-        @keyframes shimmerCard {
-            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
-            50% { transform: translate(100%, 100%); opacity: 0.8; }
-        }
-
-        .card-initials {
-            font-family: 'Playfair Display', serif;
-            font-size: 64px;
-            font-weight: 300;
-            color: rgba(26, 26, 26, 0.85);
-            letter-spacing: 6px;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
-            position: relative;
-            z-index: 1;
-        }
-
-        .card-name-front {
+        .card-front-top {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-top: 8px;
+            justify-content: space-between;
             position: relative;
             z-index: 1;
         }
 
-        .card-line {
-            width: 30px;
-            height: 1px;
-            background: rgba(26,26,26,0.3);
+        .card-modulo-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--card-text, #1A1A2E);
+            opacity: 0.6;
         }
 
-        .card-name-text {
+        .card-promo-badge {
+            background: #EF4444;
+            color: white;
+            font-size: 7px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .card-front-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--card-text, #1A1A2E);
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+            max-height: 56px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-front-subtitle {
             font-size: 11px;
-            font-weight: 600;
-            color: rgba(26,26,26,0.8);
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            color: var(--card-text, #1A1A2E);
+            opacity: 0.7;
+            margin-top: 4px;
+            position: relative;
+            z-index: 1;
         }
 
         .card-tap-hint {
-            position: absolute;
-            bottom: 8px;
-            right: 12px;
-            font-size: 8px;
-            color: rgba(26,26,26,0.4);
             display: flex;
             align-items: center;
             gap: 4px;
+            font-size: 8px;
+            color: var(--card-text, #1A1A2E);
+            opacity: 0.4;
+            background: rgba(0,0,0,0.05);
+            padding: 3px 8px;
+            border-radius: 10px;
+            width: fit-content;
+            position: relative;
+            z-index: 1;
         }
 
         /* ═══ REVERSO - NEGRO MATE CON QR ═══ */
@@ -1371,9 +1376,9 @@
         @media (max-width: 380px) {
             .hero { padding: 16px 12px 16px; }
             .business-card-container { max-width: 280px; }
-            .card-initials { font-size: 48px; }
-            .card-name-text { font-size: 9px; }
-            .card-line { width: 20px; }
+            .card-front-title { font-size: 18px; }
+            .card-front-subtitle { font-size: 9px; }
+            .card-modulo-badge { font-size: 7px; }
             .logo-frame { padding: 6px 8px; }
             .logo-initials { font-size: 14px; }
             .card-badge { font-size: 6px; }
@@ -1391,7 +1396,7 @@
 
         @media (min-width: 381px) and (max-width: 480px) {
             .business-card-container { max-width: 320px; }
-            .card-initials { font-size: 56px; }
+            .card-front-title { font-size: 20px; }
         }
 
         /* iOS Safe Area */
@@ -2233,14 +2238,19 @@
                 <!-- ═══ TARJETA DE PRESENTACIÓN 3D ═══ -->
                 <div class="business-card-container">
                     <div class="business-card" id="businessCard" onclick="this.classList.toggle('flipped')">
-                        <!-- FRENTE DORADO -->
-                        <div class="business-card-face card-front">
-                            <span class="card-initials" id="cardInitials">RD</span>
-                            <div class="card-name-front">
-                                <div class="card-line"></div>
-                                <span class="card-name-text" id="cardNameFront">• MI NEGOCIO •</span>
-                                <div class="card-line"></div>
+                        <!-- FRENTE DINÁMICO (colores del negocio) -->
+                        <div class="business-card-face card-front" id="cardFront">
+                            <div class="card-front-top">
+                                <div class="card-modulo-badge">
+                                    <span id="cardModuloIcon">💼</span>
+                                    <span id="cardModuloText">GENERAL</span>
+                                </div>
+                                <div class="card-promo-badge" id="cardPromoBadge" style="display:none;">PROMO</div>
                             </div>
+                            <div style="flex:1;"></div>
+                            <div class="card-front-title" id="cardFrontTitle">Mi Negocio</div>
+                            <div class="card-front-subtitle" id="cardFrontSubtitle"></div>
+                            <div style="flex:1;"></div>
                             <div class="card-tap-hint">
                                 <span>👆</span>
                                 <span>Toca para ver QR</span>
@@ -3128,8 +3138,34 @@ END:VCARD`;
         const renderTarjeta = (tarjeta) => {
             const initials = getInitials(tarjeta.nombre_negocio);
             const nombreNegocio = tarjeta.nombre_negocio || 'Mi Negocio';
-            const slogan = tarjeta.slogan || 'Servicio profesional garantizado';
+            const slogan = tarjeta.slogan || '';
             const modulo = (tarjeta.modulo || 'general').toLowerCase();
+            
+            // V11.6: Colores dinámicos del negocio
+            const color1 = tarjeta.color_primario || '#D4AF37';
+            const color2 = tarjeta.color_secundario || '#B8860B';
+            
+            // Determinar color de texto según luminosidad del fondo
+            const hexToRgb = (hex) => {
+                const r = parseInt(hex.slice(1,3), 16);
+                const g = parseInt(hex.slice(3,5), 16);
+                const b = parseInt(hex.slice(5,7), 16);
+                return {r, g, b};
+            };
+            const rgb1 = hexToRgb(color1);
+            const luminance = (0.299 * rgb1.r + 0.587 * rgb1.g + 0.114 * rgb1.b) / 255;
+            const textColor = luminance > 0.5 ? '#1A1A2E' : '#FFFFFF';
+            
+            // Aplicar colores dinámicos a la tarjeta
+            const cardFront = document.getElementById('cardFront');
+            cardFront.style.setProperty('--card-color1', color1);
+            cardFront.style.setProperty('--card-color2', color2);
+            cardFront.style.setProperty('--card-text', textColor);
+            cardFront.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+            
+            // Aplicar color de texto a los elementos del frente
+            document.getElementById('cardFrontTitle').style.color = textColor;
+            document.getElementById('cardFrontSubtitle').style.color = textColor;
             
             // V11.2: Textos personalizados (prioridad sobre valores por defecto)
             const textoFrontalTitulo = tarjeta.texto_frontal_titulo || nombreNegocio;
@@ -3139,37 +3175,54 @@ END:VCARD`;
             const textoTraseroDetalle = tarjeta.texto_trasero_detalle || '';
             const textoTraseroExtra = tarjeta.texto_trasero_extra || '';
             
+            // ═══ FRENTE DE LA TARJETA (igual que la app) ═══
+            // Módulo badge
+            document.getElementById('cardModuloIcon').textContent = MODULO_ICONS[modulo] || '💼';
+            document.getElementById('cardModuloText').textContent = modulo.toUpperCase();
+            const moduloBadge = document.querySelector('.card-modulo-badge');
+            if (moduloBadge) {
+                moduloBadge.style.color = textColor;
+                moduloBadge.style.opacity = '0.6';
+            }
+            
+            // Promo badge
+            const promoBadge = document.getElementById('cardPromoBadge');
+            if (tarjeta.promocion_activa) {
+                promoBadge.style.display = 'block';
+            } else {
+                promoBadge.style.display = 'none';
+            }
+            
+            // Título principal (nombre del negocio)
+            document.getElementById('cardFrontTitle').textContent = textoFrontalTitulo;
+            
+            // Subtítulo (slogan)
+            const subtitleEl = document.getElementById('cardFrontSubtitle');
+            if (textoFrontalSubtitulo) {
+                subtitleEl.textContent = textoFrontalSubtitulo;
+                subtitleEl.style.display = 'block';
+            } else {
+                subtitleEl.style.display = 'none';
+            }
+            
+            // Tap hint color
+            const tapHint = document.querySelector('.card-tap-hint');
+            if (tapHint) {
+                tapHint.style.color = textColor;
+            }
+            
             // Logo/Iniciales (compatibilidad)
             document.getElementById('initials').textContent = initials;
             
-            // ═══ TARJETA DE PRESENTACIÓN 3D ═══
-            // Frente dorado - V11.2: Usa textos personalizados
-            document.getElementById('cardInitials').textContent = initials;
-            document.getElementById('cardNameFront').textContent = `• ${textoFrontalTitulo.toUpperCase()} •`;
-            
-            // Texto extra frontal (si existe)
-            const cardFront = document.querySelector('.card-front');
-            let extraFrontalEl = document.getElementById('textoFrontalExtra');
-            if (textoFrontalExtra) {
-                if (!extraFrontalEl) {
-                    extraFrontalEl = document.createElement('div');
-                    extraFrontalEl.id = 'textoFrontalExtra';
-                    extraFrontalEl.style.cssText = 'position:absolute;bottom:25px;left:0;right:0;text-align:center;font-size:0.7rem;color:#1A1A1A;letter-spacing:2px;font-weight:500;';
-                    cardFront.appendChild(extraFrontalEl);
-                }
-                extraFrontalEl.textContent = textoFrontalExtra.toUpperCase();
-                extraFrontalEl.style.display = 'block';
-            } else if (extraFrontalEl) {
-                extraFrontalEl.style.display = 'none';
-            }
-            
-            // Reverso negro
+            // ═══ REVERSO DE LA TARJETA ═══
             document.getElementById('logoInitials').textContent = initials;
             const nombreCorto = textoFrontalTitulo.split(' ').slice(0, 2).join(' ');
             document.getElementById('logoTagline').textContent = `• ${nombreCorto.toUpperCase()} •`;
-            document.getElementById('cardBadge').textContent = textoFrontalSubtitulo.length > 20 ? textoFrontalSubtitulo.substring(0,18).toUpperCase() + '...' : textoFrontalSubtitulo.toUpperCase();
+            document.getElementById('cardBadge').textContent = textoFrontalSubtitulo ? 
+                (textoFrontalSubtitulo.length > 20 ? textoFrontalSubtitulo.substring(0,18).toUpperCase() + '...' : textoFrontalSubtitulo.toUpperCase()) 
+                : modulo.toUpperCase();
             
-            // Contacto en reverso - OCULTAR SI ESTÁ VACÍO
+            // Contacto en reverso
             const phone = tarjeta.telefono_principal || tarjeta.whatsapp || '';
             const email = tarjeta.email || '';
             const ciudad = tarjeta.ciudad || '';
@@ -3208,6 +3261,10 @@ END:VCARD`;
             const handle = nombreNegocio.toLowerCase().replace(/\s+/g, '').substring(0, 15);
             document.getElementById('cardHandle').textContent = `@${handle}`;
             
+            // Actualizar colores del reverso para que coincidan
+            document.documentElement.style.setProperty('--primary', color1);
+            document.documentElement.style.setProperty('--primary-dark', color2);
+            
             // Generar QR
             const qrUrl = window.location.href;
             const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}&bgcolor=ffffff&color=1A1A1A`;
@@ -3224,21 +3281,16 @@ END:VCARD`;
                 qrFallback.style.display = 'block';
             };
             
-            // Info del negocio (debajo de tarjeta) - V11.2: Usa textos personalizados
+            // Info del negocio (debajo de tarjeta)
             document.getElementById('businessName').textContent = textoFrontalTitulo;
             document.getElementById('businessSlogan').textContent = textoFrontalSubtitulo;
             
-            // V11.2: Textos traseros personalizados (se muestran en sección especial)
+            // V11.2: Textos traseros personalizados
             renderTextosPersonalizados(textoTraseroTitulo, textoTraseroDetalle, textoTraseroExtra);
             
             // Badge del módulo
             document.getElementById('badgeIcon').textContent = MODULO_ICONS[modulo] || '💼';
             document.getElementById('badgeText').textContent = modulo.toUpperCase();
-            
-            // Actualizar color primario si existe
-            if (tarjeta.color_primario) {
-                document.documentElement.style.setProperty('--primary', tarjeta.color_primario);
-            }
             
             // Quick Actions (reusar 'phone' ya declarado arriba)
             const whatsapp = tarjeta.whatsapp || tarjeta.telefono_principal;
