@@ -653,6 +653,93 @@
         }
 
         /* ═══════════════════════════════════════════════════════════════════
+           ABOUT / FEATURE CARDS SECTION
+           ═══════════════════════════════════════════════════════════════════ */
+        .about-section {
+            padding: 0 20px 20px;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .feature-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feature-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: featureSlideIn 0.5s ease-out both;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.25s; }
+        .feature-card:nth-child(3) { animation-delay: 0.4s; }
+
+        .feature-card:hover {
+            border-color: rgba(212,175,55,0.2);
+            background: linear-gradient(135deg, rgba(212,175,55,0.06) 0%, rgba(255,255,255,0.02) 100%);
+            transform: translateX(4px);
+        }
+
+        .feature-card-icon {
+            font-size: 28px;
+            line-height: 1;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(212,175,55,0.15);
+        }
+
+        .feature-card-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .feature-card-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .feature-card:first-child .feature-card-text {
+            font-weight: 600;
+            color: var(--primary-light, var(--gold));
+            font-size: 15px;
+        }
+
+        .feature-card:last-child .feature-card-text {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        @keyframes featureSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
            SOCIAL SECTION
            ═══════════════════════════════════════════════════════════════════ */
         .social-section {
@@ -2299,6 +2386,17 @@
             </div>
         </section>
 
+        <!-- About / Feature Cards -->
+        <section class="about-section" id="aboutSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">💡</span>
+                Sobre Nosotros
+            </h2>
+            <div class="feature-cards" id="featureCards">
+                <!-- Se llenan dinámicamente -->
+            </div>
+        </section>
+
         <!-- Social Links -->
         <section class="social-section" id="socialSection" style="display: none;">
             <h2 class="section-title">
@@ -3012,73 +3110,70 @@ END:VCARD`;
         };
 
         // ═══════════════════════════════════════════════════════════════════════
-        // V11.2: TEXTOS PERSONALIZADOS DEL REVERSO
+        // V11.7.3: FEATURE CARDS - TEXTOS PERSONALIZADOS CON ÍCONOS INTELIGENTES
         // ═══════════════════════════════════════════════════════════════════════
+        const detectIcon = (text) => {
+            if (!text) return '📌';
+            const t = text.toLowerCase();
+            // Climatización / HVAC
+            if (/clima|aire|refrig|hvac|inverter|minisplit|ventilaci|calefacci|enfri/.test(t)) return '❄️';
+            // Instalación / Construcción
+            if (/instalaci|montaje|configur|puesta en marcha|construcci/.test(t)) return '🔧';
+            // Mantenimiento
+            if (/mantenim|reparaci|servicio t|diagn[oó]stic|revisión|limpieza/.test(t)) return '🛠️';
+            // Garantía / Calidad
+            if (/garant[ií]a|calidad|premium|certificad|profesional/.test(t)) return '✅';
+            // Tecnología
+            if (/tech|tecnolog|digital|software|app|sistema|equipo/.test(t)) return '💻';
+            // Finanzas
+            if (/pr[eé]stamo|finanz|cr[eé]dito|ahorro|tanda|cobr|pago/.test(t)) return '💰';
+            // Comida
+            if (/comida|restaur|cocina|pollo|aliment|menu|platillo/.test(t)) return '🍽️';
+            // Salud
+            if (/salud|m[eé]dic|doctor|dental|cl[ií]nic|hospital|terap/.test(t)) return '🏥';
+            // Belleza
+            if (/belleza|est[eé]tic|spa|salon|u[ñn]as|cabello|maquilla/.test(t)) return '💅';
+            // Educación
+            if (/educa|escuela|curso|capacitaci|clase|taller|aprend/.test(t)) return '📚';
+            // Legal
+            if (/legal|abogad|jur[ií]dic|asesor[ií]a|contrat/.test(t)) return '⚖️';
+            // Transporte
+            if (/transport|log[ií]stic|envío|mudanza|fletes/.test(t)) return '🚛';
+            // Hogar
+            if (/hogar|residencial|casa|inmueble|propiedad|departamento/.test(t)) return '🏠';
+            // Comercial
+            if (/comercial|negocio|empresa|corporativ/.test(t)) return '🏢';
+            // Soluciones integrales
+            if (/soluci[oó]n|integral|completo|todo en uno/.test(t)) return '🎯';
+            return '📌';
+        };
+
         const renderTextosPersonalizados = (titulo, detalle, extra) => {
-            // Buscar o crear el contenedor
-            let container = document.getElementById('textosPersonalizadosSection');
+            const section = document.getElementById('aboutSection');
+            const container = document.getElementById('featureCards');
             
-            // Si no hay textos, ocultar y salir
             if (!titulo && !detalle && !extra) {
-                if (container) container.style.display = 'none';
+                if (section) section.style.display = 'none';
                 return;
             }
             
-            // Crear contenedor si no existe
-            if (!container) {
-                container = document.createElement('section');
-                container.id = 'textosPersonalizadosSection';
-                container.className = 'glass-section fade-in';
-                container.style.marginTop = '1rem';
-                
-                container.innerHTML = `
-                    <div class="section-header">
-                        <span class="section-icon">📝</span>
-                        <h3>Información Adicional</h3>
-                    </div>
-                    <div class="textos-content" style="padding: 1rem;">
-                        <div id="textoTraseroTituloEl" style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;"></div>
-                        <div id="textoTraseroDetalleEl" style="font-size:0.95rem;color:var(--text);line-height:1.5;margin-bottom:0.5rem;"></div>
-                        <div id="textoTraseroExtraEl" style="font-size:0.85rem;color:var(--text-muted);font-style:italic;"></div>
+            let html = '';
+            const textos = [titulo, detalle, extra].filter(Boolean);
+            
+            textos.forEach(texto => {
+                const icon = detectIcon(texto);
+                html += `
+                    <div class="feature-card">
+                        <div class="feature-card-icon">${icon}</div>
+                        <div class="feature-card-content">
+                            <p class="feature-card-text">${texto}</p>
+                        </div>
                     </div>
                 `;
-                
-                // Insertar después de quickActions
-                const quickActions = document.getElementById('quickActionsSection');
-                if (quickActions && quickActions.parentNode) {
-                    quickActions.parentNode.insertBefore(container, quickActions.nextSibling);
-                } else {
-                    document.querySelector('.container').appendChild(container);
-                }
-            }
+            });
             
-            // Llenar contenido
-            const tituloEl = document.getElementById('textoTraseroTituloEl');
-            const detalleEl = document.getElementById('textoTraseroDetalleEl');
-            const extraEl = document.getElementById('textoTraseroExtraEl');
-            
-            if (titulo) {
-                tituloEl.textContent = titulo;
-                tituloEl.style.display = 'block';
-            } else {
-                tituloEl.style.display = 'none';
-            }
-            
-            if (detalle) {
-                detalleEl.textContent = detalle;
-                detalleEl.style.display = 'block';
-            } else {
-                detalleEl.style.display = 'none';
-            }
-            
-            if (extra) {
-                extraEl.textContent = extra;
-                extraEl.style.display = 'block';
-            } else {
-                extraEl.style.display = 'none';
-            }
-            
-            container.style.display = 'block';
+            container.innerHTML = html;
+            section.style.display = 'block';
         };
 
         // ═══════════════════════════════════════════════════════════════════════
