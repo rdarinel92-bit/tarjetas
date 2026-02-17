@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0D0D14">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Robert Darin Fintech - Portal</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0D0D14;
+            --bg-card: #1A1A2E;
+            --bg-card2: #16213E;
+            --bg-input: #12121A;
+            --accent-cyan: #00D9FF;
+            --accent-purple: #8B5CF6;
+            --success: #10B981;
+            --warning: #FBBF24;
+            --error: #EF4444;
+            --primary: #D4AF37;
+            --text-white: #FFFFFF;
+            --text-muted: rgba(255,255,255,0.6);
+            --text-subtle: rgba(255,255,255,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            color: var(--text-white);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ═══ LOADING ═══ */
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); display: flex; align-items: center; justify-content: center;
+            z-index: 9999; transition: opacity 0.5s;
+        }
+        .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+        .spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent-cyan); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ═══ LOGIN SCREEN ═══ */
+        .login-screen {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            padding: 20px; position: relative; overflow: hidden;
+        }
+        .login-screen::before {
+            content: ''; position: absolute; width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--accent-purple) 0%, transparent 70%);
+            opacity: 0.06; top: -100px; right: -100px; border-radius: 50%;
+        }
+        .login-screen::after {
+            content: ''; position: absolute; width: 300px; height: 300px;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 70%);
+            opacity: 0.05; bottom: -50px; left: -50px; border-radius: 50%;
+        }
+        .login-box {
+            background: var(--bg-card); border-radius: 20px; padding: 40px 32px;
+            width: 100%; max-width: 400px; position: relative; z-index: 1;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .login-logo { text-align: center; margin-bottom: 8px; font-size: 48px; }
+        .login-title { text-align: center; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+        .login-subtitle { text-align: center; color: var(--text-muted); font-size: 13px; margin-bottom: 28px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; color: var(--text-muted); font-size: 12px; font-weight: 500; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-input {
+            width: 100%; padding: 14px 16px; background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px; color: var(--text-white); font-size: 15px; font-family: inherit;
+            transition: border-color 0.3s, box-shadow 0.3s; outline: none;
+        }
+        .form-input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(0,217,255,0.1); }
+        .form-input::placeholder { color: var(--text-subtle); }
+
+        .btn-login {
+            width: 100%; padding: 15px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none; border-radius: 12px; color: white; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: transform 0.2s, opacity 0.2s; font-family: inherit;
+            margin-top: 8px;
+        }
+        .btn-login:hover { transform: translateY(-1px); }
+        .btn-login:active { transform: scale(0.98); }
+        .btn-login:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .login-error {
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 10px; padding: 12px; margin-bottom: 16px; display: none;
+            color: var(--error); font-size: 13px; text-align: center;
+        }
+        .login-error.show { display: block; animation: shake 0.4s ease; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+        .login-footer { text-align: center; margin-top: 20px; color: var(--text-subtle); font-size: 11px; }
+        .login-footer a { color: var(--accent-cyan); text-decoration: none; }
+
+        /* ═══ PORTAL LAYOUT ═══ */
+        .portal { display: none; min-height: 100vh; }
+        .portal.active { display: flex; flex-direction: column; }
+
+        /* ═══ TOPBAR ═══ */
+        .topbar {
+            background: var(--bg-card); border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .topbar-left { display: flex; align-items: center; gap: 12px; }
+        .topbar-logo { font-size: 24px; }
+        .topbar-title { font-size: 16px; font-weight: 700; }
+        .topbar-subtitle { font-size: 11px; color: var(--accent-cyan); font-weight: 500; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .topbar-user {
+            display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05);
+            padding: 6px 14px 6px 6px; border-radius: 20px; cursor: pointer;
+        }
+        .topbar-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
+        }
+        .topbar-username { font-size: 13px; font-weight: 500; }
+        .btn-logout {
+            background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3);
+            color: var(--error); padding: 8px 16px; border-radius: 10px; font-size: 12px;
+            cursor: pointer; font-family: inherit; font-weight: 500; transition: all 0.2s;
+        }
+        .btn-logout:hover { background: rgba(239,68,68,0.25); }
+
+        /* ═══ SIDEBAR + CONTENT ═══ */
+        .portal-body { display: flex; flex: 1; }
+
+        .sidebar {
+            width: 240px; background: var(--bg-card); border-right: 1px solid rgba(255,255,255,0.06);
+            padding: 16px 12px; flex-shrink: 0;
+        }
+        .sidebar-section { margin-bottom: 24px; }
+        .sidebar-label { font-size: 10px; color: var(--text-subtle); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; padding: 0 12px; margin-bottom: 8px; }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s; color: var(--text-muted); font-size: 13px; font-weight: 500;
+        }
+        .sidebar-item:hover { background: rgba(255,255,255,0.05); color: var(--text-white); }
+        .sidebar-item.active { background: rgba(0,217,255,0.1); color: var(--accent-cyan); }
+        .sidebar-item .icon { font-size: 18px; width: 24px; text-align: center; }
+        .sidebar-badge {
+            margin-left: auto; background: var(--accent-cyan); color: var(--bg-dark);
+            font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+        }
+
+        .main-content { flex: 1; padding: 24px; overflow-y: auto; max-height: calc(100vh - 60px); }
+
+        /* ═══ PAGE HEADER ═══ */
+        .page-header { margin-bottom: 24px; }
+        .page-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .page-subtitle { color: var(--text-muted); font-size: 13px; }
+
+        /* ═══ STAT CARDS ═══ */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card {
+            background: var(--bg-card); border-radius: 16px; padding: 20px;
+            border: 1px solid rgba(255,255,255,0.06); transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .stat-card-icon {
+            width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;
+        }
+        .stat-card-icon.cyan { background: rgba(0,217,255,0.15); }
+        .stat-card-icon.purple { background: rgba(139,92,246,0.15); }
+        .stat-card-icon.green { background: rgba(16,185,129,0.15); }
+        .stat-card-icon.yellow { background: rgba(251,191,36,0.15); }
+        .stat-card-value { font-size: 28px; font-weight: 800; }
+        .stat-card-label { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+
+        /* ═══ PROFILE CARD ═══ */
+        .profile-card {
+            background: var(--bg-card); border-radius: 20px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06); margin-bottom: 24px;
+        }
+        .profile-banner {
+            height: 120px; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            position: relative;
+        }
+        .profile-avatar-container {
+            position: absolute; bottom: -40px; left: 24px;
+        }
+        .profile-avatar {
+            width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--bg-card);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; font-weight: 800; color: white;
+        }
+        .profile-info { padding: 52px 24px 24px; }
+        .profile-name { font-size: 22px; font-weight: 700; }
+        .profile-role {
+            display: inline-block; background: rgba(0,217,255,0.15); color: var(--accent-cyan);
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+            margin-top: 6px;
+        }
+        .profile-email { color: var(--text-muted); font-size: 13px; margin-top: 8px; }
+
+        /* ═══ INFO GRID ═══ */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .info-card {
+            background: var(--bg-card); border-radius: 16px; padding: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .info-card-title {
+            font-size: 13px; font-weight: 600; color: var(--accent-cyan);
+            margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+        }
+        .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-muted); font-size: 13px; }
+        .info-value { font-size: 13px; font-weight: 600; text-align: right; }
+
+        /* ═══ TABLE ═══ */
+        .data-table-container {
+            background: var(--bg-card); border-radius: 16px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .data-table-header {
+            padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .data-table-title { font-size: 16px; font-weight: 600; }
+        .data-table-search {
+            padding: 8px 14px; background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px; color: var(--text-white); font-size: 13px; outline: none;
+            font-family: inherit; width: 220px;
+        }
+        .data-table-search:focus { border-color: var(--accent-cyan); }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th {
+            padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600;
+            color: var(--text-subtle); text-transform: uppercase; letter-spacing: 1px;
+            background: rgba(255,255,255,0.02);
+        }
+        .data-table td {
+            padding: 14px 16px; font-size: 13px; border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .badge {
+            display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+        }
+        .badge-active { background: rgba(16,185,129,0.15); color: var(--success); }
+        .badge-inactive { background: rgba(239,68,68,0.15); color: var(--error); }
+        .badge-admin { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+        .badge-operador { background: rgba(0,217,255,0.15); color: var(--accent-cyan); }
+
+        .employee-row { cursor: pointer; transition: all 0.2s; }
+        .employee-row:hover td { background: rgba(0,217,255,0.05); }
+
+        /* ═══ COMISIONES TABLE ═══ */
+        .comision-monto { color: var(--success); font-weight: 700; }
+        .comision-pendiente { color: var(--warning); }
+
+        /* ═══ EMPTY STATE ═══ */
+        .empty-state {
+            text-align: center; padding: 60px 20px; color: var(--text-muted);
+        }
+        .empty-state-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+        .empty-state-text { font-size: 14px; }
+
+        /* ═══ TOAST ═══ */
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 24px; border-radius: 12px; z-index: 9999;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); font-size: 13px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 8px;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .main-content { padding: 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .info-grid { grid-template-columns: 1fr; }
+            .topbar-subtitle { display: none; }
+            .data-table-search { width: 140px; }
+
+            /* Mobile bottom nav */
+            .mobile-nav {
+                display: flex !important; position: fixed; bottom: 0; left: 0; width: 100%;
+                background: var(--bg-card); border-top: 1px solid rgba(255,255,255,0.06);
+                padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 100;
+            }
+            .mobile-nav-item {
+                flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+                padding: 6px; cursor: pointer; color: var(--text-muted); font-size: 10px; font-weight: 500;
+                transition: color 0.2s;
+            }
+            .mobile-nav-item.active { color: var(--accent-cyan); }
+            .mobile-nav-item .icon { font-size: 20px; }
+            .main-content { max-height: calc(100vh - 120px); padding-bottom: 80px; }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-nav { display: none !important; }
+        }
+
+        /* ═══ ANIMATIONS ═══ */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeIn 0.4s ease both; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* ═══ BACK BTN ═══ */
+        .btn-back {
+            display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted);
+            font-size: 13px; cursor: pointer; padding: 6px 12px; border-radius: 8px;
+            transition: all 0.2s; background: none; border: none; font-family: inherit;
+            margin-bottom: 16px;
+        }
+        .btn-back:hover { color: var(--text-white); background: rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">🏦</div>
+            <h1 class="login-title">Robert Darin Fintech</h1>
+            <p class="login-subtitle">Portal de Empleados y Administración</p>
+
+            <div class="login-error" id="loginError"></div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="tu@email.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn">Iniciar Sesión</button>
+            </form>
+
+            <p class="login-footer">Powered by <a href="#">Robert Darin Fintech</a> &copy; 2026</p>
+        </div>
+    </div>
+
+    <!-- PORTAL -->
+    <div class="portal" id="portal">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <span class="topbar-logo">🏦</span>
+                <div>
+                    <div class="topbar-title">Robert Darin</div>
+                    <div class="topbar-subtitle">Portal Fintech</div>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <div class="topbar-user" id="topbarUser">
+                    <div class="topbar-avatar" id="topbarAvatar">RD</div>
+                    <span class="topbar-username" id="topbarName">Usuario</span>
+                </div>
+                <button class="btn-logout" onclick="handleLogout()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <div class="portal-body">
+            <!-- SIDEBAR (desktop) -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-label">Principal</div>
+                    <div class="sidebar-item active" onclick="navigateTo('dashboard')" data-page="dashboard">
+                        <span class="icon">📊</span> Dashboard
+                    </div>
+                    <div class="sidebar-item" onclick="navigateTo('profile')" data-page="profile">
+                        <span class="icon">👤</span> Mi Perfil
+                    </div>
+                    <div class="sidebar-item" onclick="navigateTo('comisiones')" data-page="comisiones">
+                        <span class="icon">💰</span> Mis Comisiones
+                    </div>
+                </div>
+                <div class="sidebar-section" id="adminSection" style="display:none;">
+                    <div class="sidebar-label">Administración</div>
+                    <div class="sidebar-item" onclick="navigateTo('empleados')" data-page="empleados">
+                        <span class="icon">👥</span> Empleados
+                        <span class="sidebar-badge" id="badgeEmpleados">0</span>
+                    </div>
+                    <div class="sidebar-item" onclick="navigateTo('negocios')" data-page="negocios">
+                        <span class="icon">🏢</span> Negocios
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="main-content" id="mainContent">
+                <!-- Pages rendered dynamically -->
+            </div>
+        </div>
+
+        <!-- MOBILE NAV -->
+        <div class="mobile-nav">
+            <div class="mobile-nav-item active" onclick="navigateTo('dashboard')" data-page="dashboard">
+                <span class="icon">📊</span> Inicio
+            </div>
+            <div class="mobile-nav-item" onclick="navigateTo('profile')" data-page="profile">
+                <span class="icon">👤</span> Perfil
+            </div>
+            <div class="mobile-nav-item" onclick="navigateTo('comisiones')" data-page="comisiones">
+                <span class="icon">💰</span> Comisiones
+            </div>
+            <div class="mobile-nav-item" onclick="navigateTo('empleados')" data-page="empleados" id="mobileAdminTab" style="display:none;">
+                <span class="icon">👥</span> Equipo
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"><span id="toastIcon">✓</span> <span id="toastText"></span></div>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════════
+    // CONFIG
+    // ═══════════════════════════════════════════════════════════════════
+    const _p = ['eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp','XVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn','JlZiI6InF0ZnN4ZnZ4cWlpaG5vZnJwbW','11Iiwicm9sZSI6ImFub24iLCJpYXQiOj','E3NjczMjU5MDIsImV4cCI6MjA4MjkwMT','kwMn0.D4LrG8FlnqfK0Zhi2Ex0z2UGeo','VSr6u1XR2jnxis9Bg'];
+    const SUPABASE_URL = 'https://qtfsxfvxqiihnofrpmmu.supabase.co';
+    const SUPABASE_KEY = _p.join('');
+
+    let currentUser = null;
+    let currentSession = null;
+    let userData = null; // from usuarios table
+    let empleadoData = null;
+    let userRole = null; // superadmin, admin, operador
+    let currentPage = 'dashboard';
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SUPABASE HELPERS
+    // ═══════════════════════════════════════════════════════════════════
+    const sbFetch = async (endpoint, options = {}) => {
+        const token = currentSession?.access_token || SUPABASE_KEY;
+        const headers = {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            ...(options.headers || {})
+        };
+        if (options.prefer) headers['Prefer'] = options.prefer;
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${endpoint}`, {
+            method: options.method || 'GET',
+            headers,
+            body: options.body
+        });
+        if (!res.ok) {
+            const err = await res.text();
+            throw new Error(`HTTP ${res.status}: ${err}`);
+        }
+        if (options.prefer === 'return=minimal') return { success: true };
+        const text = await res.text();
+        return text ? JSON.parse(text) : [];
+    };
+
+    const sbAuth = async (action, body) => {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/${action}`, {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error_description || err.msg || err.message || 'Auth error');
+        }
+        return res.json();
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // AUTH
+    // ═══════════════════════════════════════════════════════════════════
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('loginBtn');
+        const errEl = document.getElementById('loginError');
+        btn.disabled = true;
+        btn.textContent = 'Verificando...';
+        errEl.classList.remove('show');
+
+        try {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            const session = await sbAuth('token?grant_type=password', { email, password });
+            currentSession = session;
+            currentUser = session.user;
+
+            // Save to localStorage
+            localStorage.setItem('rd_portal_session', JSON.stringify(session));
+
+            await loadUserData();
+            showPortal();
+        } catch (err) {
+            errEl.textContent = err.message === 'Invalid login credentials'
+                ? 'Email o contraseña incorrectos'
+                : err.message;
+            errEl.classList.add('show');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Iniciar Sesión';
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('rd_portal_session');
+        currentUser = null;
+        currentSession = null;
+        userData = null;
+        empleadoData = null;
+        userRole = null;
+        document.getElementById('portal').classList.remove('active');
+        document.getElementById('loginScreen').style.display = 'flex';
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // LOAD USER DATA
+    // ═══════════════════════════════════════════════════════════════════
+    const loadUserData = async () => {
+        const uid = currentUser.id;
+
+        // Load user info
+        const users = await sbFetch(`usuarios?id=eq.${uid}&select=*`);
+        userData = users[0] || { email: currentUser.email, nombre_completo: currentUser.email };
+
+        // Load role
+        const roles = await sbFetch(`usuarios_roles?usuario_id=eq.${uid}&select=*,roles(nombre)`);
+        if (roles.length > 0 && roles[0].roles) {
+            userRole = roles[0].roles.nombre;
+        } else {
+            userRole = 'operador';
+        }
+
+        // Load empleado data
+        const empleados = await sbFetch(`empleados?usuario_id=eq.${uid}&select=*`);
+        empleadoData = empleados[0] || null;
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PORTAL INIT
+    // ═══════════════════════════════════════════════════════════════════
+    const showPortal = () => {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('portal').classList.add('active');
+        document.getElementById('loadingOverlay').classList.add('hidden');
+
+        // Set user info in topbar
+        const initials = getInitials(userData.nombre_completo);
+        document.getElementById('topbarAvatar').textContent = initials;
+        document.getElementById('topbarName').textContent = userData.nombre_completo || userData.email;
+
+        // Show admin sections if superadmin or admin
+        const isAdmin = userRole === 'superadmin' || userRole === 'admin';
+        document.getElementById('adminSection').style.display = isAdmin ? 'block' : 'none';
+        document.getElementById('mobileAdminTab').style.display = isAdmin ? 'flex' : 'none';
+
+        navigateTo('dashboard');
+    };
+
+    const getInitials = (name) => {
+        if (!name) return '??';
+        const words = name.trim().split(/\s+/);
+        return words.length >= 2
+            ? (words[0][0] + words[1][0]).toUpperCase()
+            : name.substring(0, 2).toUpperCase();
+    };
+
+    const formatMoney = (n) => {
+        if (n === null || n === undefined) return '$0.00';
+        return '$' + parseFloat(n).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const formatDate = (d) => {
+        if (!d) return '—';
+        return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════
+    const navigateTo = (page, extra = null) => {
+        currentPage = page;
+        // Update sidebar active
+        document.querySelectorAll('.sidebar-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.page === page);
+        });
+        document.querySelectorAll('.mobile-nav-item').forEach(el => {
+            el.classList.toggle('active', el.dataset.page === page);
+        });
+
+        const content = document.getElementById('mainContent');
+        content.scrollTo(0, 0);
+
+        switch (page) {
+            case 'dashboard': renderDashboard(); break;
+            case 'profile': renderProfile(); break;
+            case 'comisiones': renderComisiones(); break;
+            case 'empleados': renderEmpleados(); break;
+            case 'negocios': renderNegocios(); break;
+            case 'empleado-detail': renderEmpleadoDetail(extra); break;
+        }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // DASHBOARD PAGE
+    // ═══════════════════════════════════════════════════════════════════
+    const renderDashboard = async () => {
+        const content = document.getElementById('mainContent');
+        const isAdmin = userRole === 'superadmin' || userRole === 'admin';
+        const saludo = getSaludo();
+
+        content.innerHTML = `
+            <div class="page-header animate-in">
+                <div class="page-title">${saludo}, ${(userData.nombre_completo || '').split(' ')[0] || 'Usuario'} 👋</div>
+                <div class="page-subtitle">Bienvenido al portal de ${isAdmin ? 'administración' : 'empleados'}</div>
+            </div>
+            <div class="stats-grid" id="dashStats">
+                <div class="stat-card animate-in delay-1">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon cyan">👤</div>
+                    </div>
+                    <div class="stat-card-value" id="statRol">${userRole || '...'}</div>
+                    <div class="stat-card-label">Tu Rol</div>
+                </div>
+                <div class="stat-card animate-in delay-2">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon purple">💼</div>
+                    </div>
+                    <div class="stat-card-value" id="statPuesto">${empleadoData?.puesto || 'N/A'}</div>
+                    <div class="stat-card-label">Puesto</div>
+                </div>
+                <div class="stat-card animate-in delay-3">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon green">💰</div>
+                    </div>
+                    <div class="stat-card-value" id="statComisiones">...</div>
+                    <div class="stat-card-label">Comisiones Pendientes</div>
+                </div>
+                ${isAdmin ? `
+                <div class="stat-card animate-in delay-3">
+                    <div class="stat-card-header">
+                        <div class="stat-card-icon yellow">👥</div>
+                    </div>
+                    <div class="stat-card-value" id="statEmpleados">...</div>
+                    <div class="stat-card-label">Empleados Activos</div>
+                </div>` : ''}
+            </div>
+            <div class="info-grid">
+                <div class="info-card animate-in delay-2">
+                    <div class="info-card-title">📋 Información Rápida</div>
+                    <div class="info-row"><span class="info-label">Email</span><span class="info-value">${userData.email}</span></div>
+                    <div class="info-row"><span class="info-label">Estado</span><span class="info-value"><span class="badge badge-active">${empleadoData?.estado || 'activo'}</span></span></div>
+                    <div class="info-row"><span class="info-label">Fecha Registro</span><span class="info-value">${formatDate(userData.created_at)}</span></div>
+                    ${empleadoData?.fecha_contratacion ? `<div class="info-row"><span class="info-label">Contratación</span><span class="info-value">${formatDate(empleadoData.fecha_contratacion)}</span></div>` : ''}
+                </div>
+                <div class="info-card animate-in delay-3">
+                    <div class="info-card-title">⚡ Acciones Rápidas</div>
+                    <div style="display:flex;flex-direction:column;gap:10px;">
+                        <button onclick="navigateTo('profile')" style="padding:12px;background:rgba(0,217,255,0.1);border:1px solid rgba(0,217,255,0.2);border-radius:10px;color:var(--accent-cyan);cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;">👤 Ver Mi Perfil Completo</button>
+                        <button onclick="navigateTo('comisiones')" style="padding:12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:10px;color:var(--success);cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;">💰 Ver Mis Comisiones</button>
+                        ${isAdmin ? `<button onclick="navigateTo('empleados')" style="padding:12px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);border-radius:10px;color:var(--accent-purple);cursor:pointer;font-family:inherit;font-size:13px;font-weight:500;">👥 Gestionar Empleados</button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Load async stats
+        try {
+            if (empleadoData) {
+                const comisiones = await sbFetch(`comisiones_empleados?empleado_id=eq.${empleadoData.id}&estado=eq.pendiente&select=monto_comision`);
+                const total = comisiones.reduce((s, c) => s + parseFloat(c.monto_comision || 0), 0);
+                const el = document.getElementById('statComisiones');
+                if (el) el.textContent = formatMoney(total);
+            } else {
+                const el = document.getElementById('statComisiones');
+                if (el) el.textContent = '$0.00';
+            }
+
+            if (isAdmin) {
+                const emps = await sbFetch('empleados?activo=eq.true&select=id');
+                const el = document.getElementById('statEmpleados');
+                if (el) el.textContent = emps.length;
+                document.getElementById('badgeEmpleados').textContent = emps.length;
+            }
+        } catch (e) {
+            console.warn('Error loading stats:', e);
+        }
+    };
+
+    const getSaludo = () => {
+        const h = new Date().getHours();
+        if (h < 12) return 'Buenos días';
+        if (h < 18) return 'Buenas tardes';
+        return 'Buenas noches';
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PROFILE PAGE
+    // ═══════════════════════════════════════════════════════════════════
+    const renderProfile = () => {
+        const content = document.getElementById('mainContent');
+        const initials = getInitials(userData.nombre_completo);
+        const emp = empleadoData || {};
+
+        content.innerHTML = `
+            <div class="page-header animate-in">
+                <div class="page-title">Mi Perfil</div>
+                <div class="page-subtitle">Tu información personal y laboral</div>
+            </div>
+
+            <div class="profile-card animate-in delay-1">
+                <div class="profile-banner">
+                    <div class="profile-avatar-container">
+                        <div class="profile-avatar">${initials}</div>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name">${userData.nombre_completo || 'Sin nombre'}</div>
+                    <span class="profile-role">${userRole || 'empleado'}</span>
+                    <div class="profile-email">📧 ${userData.email}</div>
+                    ${userData.telefono ? `<div class="profile-email">📞 ${userData.telefono}</div>` : ''}
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card animate-in delay-2">
+                    <div class="info-card-title">💼 Información Laboral</div>
+                    <div class="info-row"><span class="info-label">Puesto</span><span class="info-value">${emp.puesto || 'No asignado'}</span></div>
+                    <div class="info-row"><span class="info-label">Salario</span><span class="info-value">${formatMoney(emp.salario)}</span></div>
+                    <div class="info-row"><span class="info-label">Comisión %</span><span class="info-value">${emp.comision_porcentaje || 0}%</span></div>
+                    <div class="info-row"><span class="info-label">Tipo Comisión</span><span class="info-value">${emp.comision_tipo || 'ninguna'}</span></div>
+                    <div class="info-row"><span class="info-label">Estado</span><span class="info-value"><span class="badge ${emp.estado === 'activo' || emp.activo ? 'badge-active' : 'badge-inactive'}">${emp.estado || 'activo'}</span></span></div>
+                    <div class="info-row"><span class="info-label">Contratación</span><span class="info-value">${formatDate(emp.fecha_contratacion)}</span></div>
+                </div>
+                <div class="info-card animate-in delay-3">
+                    <div class="info-card-title">🏢 Cuenta</div>
+                    <div class="info-row"><span class="info-label">ID Usuario</span><span class="info-value" style="font-size:11px;word-break:break-all;">${currentUser.id.substring(0, 18)}...</span></div>
+                    <div class="info-row"><span class="info-label">Rol</span><span class="info-value"><span class="badge ${userRole === 'superadmin' || userRole === 'admin' ? 'badge-admin' : 'badge-operador'}">${userRole}</span></span></div>
+                    <div class="info-row"><span class="info-label">Registrado</span><span class="info-value">${formatDate(userData.created_at)}</span></div>
+                    <div class="info-row"><span class="info-label">Actualizado</span><span class="info-value">${formatDate(userData.updated_at)}</span></div>
+                </div>
+            </div>
+        `;
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // COMISIONES PAGE
+    // ═══════════════════════════════════════════════════════════════════
+    const renderComisiones = async () => {
+        const content = document.getElementById('mainContent');
+
+        if (!empleadoData) {
+            content.innerHTML = `
+                <div class="page-header animate-in">
+                    <div class="page-title">Mis Comisiones</div>
+                </div>
+                <div class="empty-state animate-in delay-1">
+                    <div class="empty-state-icon">💰</div>
+                    <div class="empty-state-text">No tienes un perfil de empleado vinculado</div>
+                </div>`;
+            return;
+        }
+
+        content.innerHTML = `
+            <div class="page-header animate-in">
+                <div class="page-title">Mis Comisiones</div>
+                <div class="page-subtitle">Historial de comisiones por préstamos</div>
+            </div>
+            <div class="stats-grid animate-in delay-1">
+                <div class="stat-card"><div class="stat-card-icon green">💰</div><div class="stat-card-value" id="comPendiente">...</div><div class="stat-card-label">Pendientes</div></div>
+                <div class="stat-card"><div class="stat-card-icon cyan">✅</div><div class="stat-card-value" id="comPagadas">...</div><div class="stat-card-label">Pagadas</div></div>
+                <div class="stat-card"><div class="stat-card-icon purple">📊</div><div class="stat-card-value" id="comTotal">...</div><div class="stat-card-label">Total Generado</div></div>
+            </div>
+            <div class="data-table-container animate-in delay-2">
+                <div class="data-table-header">
+                    <div class="data-table-title">Detalle de Comisiones</div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Fecha</th><th>Préstamo</th><th>Comisión</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody id="comisionesBody"></tbody>
+                </table>
+            </div>`;
+
+        try {
+            const comisiones = await sbFetch(`comisiones_empleados?empleado_id=eq.${empleadoData.id}&select=*&order=created_at.desc`);
+
+            let pendiente = 0, pagadas = 0, total = 0;
+            comisiones.forEach(c => {
+                const m = parseFloat(c.monto_comision || 0);
+                total += m;
+                if (c.estado === 'pagada') pagadas += m;
+                else pendiente += m;
+            });
+
+            document.getElementById('comPendiente').textContent = formatMoney(pendiente);
+            document.getElementById('comPagadas').textContent = formatMoney(pagadas);
+            document.getElementById('comTotal').textContent = formatMoney(total);
+
+            const tbody = document.getElementById('comisionesBody');
+            if (comisiones.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:30px;">Sin comisiones registradas</td></tr>';
+            } else {
+                tbody.innerHTML = comisiones.map(c => `
+                    <tr>
+                        <td>${formatDate(c.fecha_generacion || c.created_at)}</td>
+                        <td style="font-size:11px;color:var(--text-muted);">${c.prestamo_id?.substring(0, 8) || '—'}...</td>
+                        <td class="comision-monto">${formatMoney(c.monto_comision)}</td>
+                        <td><span class="badge ${c.estado === 'pagada' ? 'badge-active' : 'badge-inactive'}">${c.estado}</span></td>
+                    </tr>
+                `).join('');
+            }
+        } catch (e) {
+            console.error('Error loading comisiones:', e);
+        }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EMPLEADOS PAGE (ADMIN)
+    // ═══════════════════════════════════════════════════════════════════
+    const renderEmpleados = async () => {
+        const content = document.getElementById('mainContent');
+        content.innerHTML = `
+            <div class="page-header animate-in">
+                <div class="page-title">Empleados</div>
+                <div class="page-subtitle">Gestión del equipo de trabajo</div>
+            </div>
+            <div class="data-table-container animate-in delay-1">
+                <div class="data-table-header">
+                    <div class="data-table-title">Todos los Empleados</div>
+                    <input type="text" class="data-table-search" placeholder="🔍 Buscar..." oninput="filterEmpleados(this.value)">
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Nombre</th><th>Puesto</th><th>Salario</th><th>Comisión</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody id="empleadosBody"><tr><td colspan="5" style="text-align:center;padding:30px;"><div class="spinner" style="margin:0 auto;"></div></td></tr></tbody>
+                </table>
+            </div>`;
+
+        try {
+            const empleados = await sbFetch('empleados?select=*,usuarios(nombre_completo,email)&order=created_at.desc');
+            window._allEmpleados = empleados;
+            renderEmpleadosTable(empleados);
+        } catch (e) {
+            console.error('Error loading empleados:', e);
+        }
+    };
+
+    const renderEmpleadosTable = (empleados) => {
+        const tbody = document.getElementById('empleadosBody');
+        if (!empleados || empleados.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:30px;">No hay empleados</td></tr>';
+            return;
+        }
+        tbody.innerHTML = empleados.map(emp => {
+            const nombre = emp.usuarios?.nombre_completo || emp.usuarios?.email || 'Sin usuario';
+            const initials = getInitials(nombre);
+            return `
+                <tr class="employee-row" onclick="navigateTo('empleado-detail', '${emp.id}')">
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-purple));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;">${initials}</div>
+                            <div>
+                                <div style="font-weight:600;font-size:13px;">${nombre}</div>
+                                <div style="font-size:11px;color:var(--text-muted);">${emp.usuarios?.email || ''}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${emp.puesto || '—'}</td>
+                    <td>${formatMoney(emp.salario)}</td>
+                    <td>${emp.comision_porcentaje || 0}%</td>
+                    <td><span class="badge ${emp.activo ? 'badge-active' : 'badge-inactive'}">${emp.estado || (emp.activo ? 'activo' : 'inactivo')}</span></td>
+                </tr>`;
+        }).join('');
+    };
+
+    const filterEmpleados = (query) => {
+        if (!window._allEmpleados) return;
+        const q = query.toLowerCase();
+        const filtered = window._allEmpleados.filter(emp => {
+            const nombre = (emp.usuarios?.nombre_completo || '').toLowerCase();
+            const email = (emp.usuarios?.email || '').toLowerCase();
+            const puesto = (emp.puesto || '').toLowerCase();
+            return nombre.includes(q) || email.includes(q) || puesto.includes(q);
+        });
+        renderEmpleadosTable(filtered);
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EMPLEADO DETAIL PAGE (ADMIN)
+    // ═══════════════════════════════════════════════════════════════════
+    const renderEmpleadoDetail = async (empId) => {
+        const content = document.getElementById('mainContent');
+        content.innerHTML = `<div style="text-align:center;padding:40px;"><div class="spinner" style="margin:0 auto;"></div></div>`;
+
+        try {
+            const emps = await sbFetch(`empleados?id=eq.${empId}&select=*,usuarios(nombre_completo,email,telefono,foto_url,created_at)`);
+            const emp = emps[0];
+            if (!emp) { content.innerHTML = '<div class="empty-state"><div class="empty-state-icon">❌</div><div class="empty-state-text">Empleado no encontrado</div></div>'; return; }
+
+            const nombre = emp.usuarios?.nombre_completo || 'Sin nombre';
+            const initials = getInitials(nombre);
+
+            // Load comisiones for this employee
+            const comisiones = await sbFetch(`comisiones_empleados?empleado_id=eq.${empId}&select=*&order=created_at.desc&limit=20`);
+            let totalCom = 0, pendCom = 0;
+            comisiones.forEach(c => { totalCom += parseFloat(c.monto_comision || 0); if (c.estado !== 'pagada') pendCom += parseFloat(c.monto_comision || 0); });
+
+            // Load negocios assignments
+            const asignaciones = await sbFetch(`empleados_negocios?empleado_id=eq.${empId}&select=*,negocios(nombre,tipo)`);
+
+            content.innerHTML = `
+                <button class="btn-back animate-in" onclick="navigateTo('empleados')">← Volver a Empleados</button>
+
+                <div class="profile-card animate-in delay-1">
+                    <div class="profile-banner">
+                        <div class="profile-avatar-container">
+                            <div class="profile-avatar">${initials}</div>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-name">${nombre}</div>
+                        <span class="profile-role">${emp.puesto || 'Sin puesto'}</span>
+                        <div class="profile-email">📧 ${emp.usuarios?.email || '—'}</div>
+                        ${emp.usuarios?.telefono ? `<div class="profile-email">📞 ${emp.usuarios.telefono}</div>` : ''}
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card animate-in delay-2">
+                        <div class="info-card-title">💼 Datos Laborales</div>
+                        <div class="info-row"><span class="info-label">Puesto</span><span class="info-value">${emp.puesto || '—'}</span></div>
+                        <div class="info-row"><span class="info-label">Salario</span><span class="info-value">${formatMoney(emp.salario)}</span></div>
+                        <div class="info-row"><span class="info-label">Comisión %</span><span class="info-value">${emp.comision_porcentaje || 0}%</span></div>
+                        <div class="info-row"><span class="info-label">Tipo Comisión</span><span class="info-value">${emp.comision_tipo || 'ninguna'}</span></div>
+                        <div class="info-row"><span class="info-label">Estado</span><span class="info-value"><span class="badge ${emp.activo ? 'badge-active' : 'badge-inactive'}">${emp.estado || 'activo'}</span></span></div>
+                        <div class="info-row"><span class="info-label">Contratación</span><span class="info-value">${formatDate(emp.fecha_contratacion)}</span></div>
+                    </div>
+                    <div class="info-card animate-in delay-3">
+                        <div class="info-card-title">💰 Resumen Comisiones</div>
+                        <div class="info-row"><span class="info-label">Total Generado</span><span class="info-value comision-monto">${formatMoney(totalCom)}</span></div>
+                        <div class="info-row"><span class="info-label">Pendiente</span><span class="info-value comision-pendiente">${formatMoney(pendCom)}</span></div>
+                        <div class="info-row"><span class="info-label">Registros</span><span class="info-value">${comisiones.length}</span></div>
+                    </div>
+                </div>
+
+                ${asignaciones.length > 0 ? `
+                <div class="data-table-container animate-in delay-3">
+                    <div class="data-table-header">
+                        <div class="data-table-title">🏢 Negocios Asignados</div>
+                    </div>
+                    <table class="data-table">
+                        <thead><tr><th>Negocio</th><th>Rol</th><th>Módulos</th><th>Estado</th></tr></thead>
+                        <tbody>
+                            ${asignaciones.map(a => `
+                                <tr>
+                                    <td><strong>${a.negocios?.nombre || '—'}</strong><br><span style="font-size:11px;color:var(--text-muted);">${a.negocios?.tipo || ''}</span></td>
+                                    <td><span class="badge badge-operador">${a.rol_modulo}</span></td>
+                                    <td style="font-size:11px;">${(a.modulos_acceso || []).join(', ') || '—'}</td>
+                                    <td><span class="badge ${a.activo ? 'badge-active' : 'badge-inactive'}">${a.activo ? 'Activo' : 'Inactivo'}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>` : ''}
+
+                ${comisiones.length > 0 ? `
+                <div class="data-table-container animate-in delay-3" style="margin-top:16px;">
+                    <div class="data-table-header">
+                        <div class="data-table-title">💰 Últimas Comisiones</div>
+                    </div>
+                    <table class="data-table">
+                        <thead><tr><th>Fecha</th><th>Monto Préstamo</th><th>Comisión</th><th>Estado</th></tr></thead>
+                        <tbody>
+                            ${comisiones.map(c => `
+                                <tr>
+                                    <td>${formatDate(c.fecha_generacion || c.created_at)}</td>
+                                    <td>${formatMoney(c.monto_prestamo)}</td>
+                                    <td class="comision-monto">${formatMoney(c.monto_comision)}</td>
+                                    <td><span class="badge ${c.estado === 'pagada' ? 'badge-active' : 'badge-inactive'}">${c.estado}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>` : ''}
+            `;
+        } catch (e) {
+            console.error('Error loading employee detail:', e);
+            content.innerHTML = `<div class="empty-state"><div class="empty-state-icon">❌</div><div class="empty-state-text">Error cargando datos: ${e.message}</div></div>`;
+        }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // NEGOCIOS PAGE (ADMIN)
+    // ═══════════════════════════════════════════════════════════════════
+    const renderNegocios = async () => {
+        const content = document.getElementById('mainContent');
+        content.innerHTML = `
+            <div class="page-header animate-in">
+                <div class="page-title">Negocios</div>
+                <div class="page-subtitle">Empresas registradas en el sistema</div>
+            </div>
+            <div id="negociosList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+                <div style="text-align:center;padding:40px;grid-column:1/-1;"><div class="spinner" style="margin:0 auto;"></div></div>
+            </div>`;
+
+        try {
+            const negocios = await sbFetch('negocios?activo=eq.true&select=*&order=created_at.desc');
+            const list = document.getElementById('negociosList');
+
+            if (negocios.length === 0) {
+                list.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="empty-state-icon">🏢</div><div class="empty-state-text">No hay negocios registrados</div></div>';
+                return;
+            }
+
+            list.innerHTML = negocios.map((n, i) => `
+                <div class="info-card animate-in delay-${Math.min(i + 1, 3)}" style="cursor:default;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                        <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,${n.color_primario || '#FF9800'},${n.color_secundario || '#1E1E2C'});display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🏢</div>
+                        <div>
+                            <div style="font-weight:700;font-size:15px;">${n.nombre}</div>
+                            <div style="font-size:11px;color:var(--text-muted);">${n.tipo || 'general'}</div>
+                        </div>
+                    </div>
+                    ${n.rfc ? `<div class="info-row"><span class="info-label">RFC</span><span class="info-value">${n.rfc}</span></div>` : ''}
+                    ${n.telefono ? `<div class="info-row"><span class="info-label">Teléfono</span><span class="info-value">${n.telefono}</span></div>` : ''}
+                    ${n.email ? `<div class="info-row"><span class="info-label">Email</span><span class="info-value">${n.email}</span></div>` : ''}
+                    <div class="info-row"><span class="info-label">Creado</span><span class="info-value">${formatDate(n.created_at)}</span></div>
+                </div>
+            `).join('');
+        } catch (e) {
+            console.error('Error loading negocios:', e);
+        }
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // TOAST
+    // ═══════════════════════════════════════════════════════════════════
+    const showToast = (msg, icon = '✓') => {
+        document.getElementById('toastIcon').textContent = icon;
+        document.getElementById('toastText').textContent = msg;
+        document.getElementById('toast').classList.add('show');
+        setTimeout(() => document.getElementById('toast').classList.remove('show'), 3000);
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // INIT - CHECK EXISTING SESSION
+    // ═══════════════════════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', async () => {
+        const saved = localStorage.getItem('rd_portal_session');
+        if (saved) {
+            try {
+                const session = JSON.parse(saved);
+                // Refresh token
+                const refreshed = await sbAuth('token?grant_type=refresh_token', {
+                    refresh_token: session.refresh_token
+                });
+                currentSession = refreshed;
+                currentUser = refreshed.user;
+                localStorage.setItem('rd_portal_session', JSON.stringify(refreshed));
+
+                await loadUserData();
+                showPortal();
+            } catch (e) {
+                console.warn('Session expired:', e);
+                localStorage.removeItem('rd_portal_session');
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
+        } else {
+            document.getElementById('loadingOverlay').classList.add('hidden');
+        }
+    });
+    </script>
+</body>
+</html>
