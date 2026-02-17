@@ -2346,6 +2346,191 @@
         body.light-theme .error-text {
             color: #4A4A5A;
         }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           POLLOS ORDERING SYSTEM (integrated)
+           ═══════════════════════════════════════════════════════════════════ */
+        .pollos-section { display: none; }
+
+        .pollos-header {
+            text-align: center; padding: 20px 0 12px;
+        }
+        .pollos-header-emoji { font-size: 48px; margin-bottom: 8px; animation: bounce 2s ease-in-out infinite; }
+        @keyframes pollosBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        .pollos-header-title {
+            font-size: 20px; font-weight: 800;
+            background: linear-gradient(135deg, #FF6B00, #FFAA00);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .pollos-status-badge {
+            display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 8px;
+        }
+        .pollos-status-badge.open { background: rgba(16,185,129,0.15); color: #10B981; }
+        .pollos-status-badge.closed { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .pollos-closed-banner {
+            display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 12px; padding: 12px; text-align: center; margin: 12px 0;
+            color: #EF4444; font-size: 13px; font-weight: 500;
+        }
+
+        /* Category filters */
+        .pollos-cats { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0 12px; -webkit-overflow-scrolling: touch; }
+        .pollos-cats::-webkit-scrollbar { display: none; }
+        .pollos-cat-btn {
+            flex-shrink: 0; padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; font-family: inherit;
+        }
+        .pollos-cat-btn.active { background: #FF6B00; color: white; border-color: #FF6B00; }
+        body.light-theme .pollos-cat-btn { color: #666; border-color: rgba(0,0,0,0.1); }
+        body.light-theme .pollos-cat-btn.active { background: #FF6B00; color: white; }
+
+        /* Product cards */
+        .pollos-products { display: flex; flex-direction: column; gap: 10px; }
+        .pollos-product {
+            display: flex; align-items: center; gap: 12px; padding: 14px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; transition: all 0.2s;
+        }
+        .pollos-product:hover { background: rgba(255,255,255,0.07); }
+        body.light-theme .pollos-product { background: #FFF; border-color: rgba(0,0,0,0.08); }
+        .pollos-product-emoji { font-size: 32px; flex-shrink: 0; }
+        .pollos-product-info { flex: 1; }
+        .pollos-product-name { font-size: 14px; font-weight: 600; }
+        .pollos-product-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+        body.light-theme .pollos-product-desc { color: rgba(0,0,0,0.5); }
+        .pollos-product-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+        .pollos-product-price { font-size: 16px; font-weight: 800; color: #FF6B00; }
+
+        .pollos-add-btn {
+            width: 34px; height: 34px; border-radius: 50%; border: none;
+            background: #FF6B00; color: white; font-size: 20px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s; flex-shrink: 0;
+        }
+        .pollos-add-btn:active { transform: scale(0.9); }
+
+        .pollos-qty-ctrl {
+            display: flex; align-items: center; gap: 8px;
+        }
+        .pollos-qty-btn {
+            width: 30px; height: 30px; border-radius: 50%; border: none;
+            background: rgba(255,107,0,0.15); color: #FF6B00; font-size: 16px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .pollos-qty-btn.danger { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .pollos-qty-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; }
+
+        /* Cart floating bar */
+        .pollos-cart-float {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, #FF6B00, #FF8C33);
+            padding: 12px 20px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            width: calc(100% - 40px); max-width: 440px;
+            box-shadow: 0 8px 30px rgba(255,107,0,0.4);
+            cursor: pointer; z-index: 500; transition: transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
+            color: white;
+        }
+        .pollos-cart-float.show { transform: translateX(-50%) translateY(0); }
+        .pollos-cart-left { display: flex; align-items: center; gap: 10px; }
+        .pollos-cart-badge {
+            width: 26px; height: 26px; background: rgba(255,255,255,0.25); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;
+        }
+        .pollos-cart-text { font-size: 13px; font-weight: 600; }
+        .pollos-cart-total { font-size: 18px; font-weight: 800; }
+
+        /* Cart modal */
+        .pollos-cart-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 9000; display: flex;
+            align-items: flex-end; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .pollos-cart-modal.show { opacity: 1; pointer-events: all; }
+        .pollos-cart-box {
+            background: #1A1A2E; width: 100%; max-width: 480px; max-height: 90vh;
+            border-radius: 20px 20px 0 0; padding: 20px; overflow-y: auto;
+            transform: translateY(100%); transition: transform 0.3s;
+        }
+        body.light-theme .pollos-cart-box { background: #FFF; }
+        .pollos-cart-modal.show .pollos-cart-box { transform: translateY(0); }
+        .pollos-cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .pollos-cart-title { font-size: 18px; font-weight: 700; }
+        .pollos-cart-close { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 24px; cursor: pointer; }
+        body.light-theme .pollos-cart-close { color: #999; }
+
+        .pollos-cart-item {
+            display: flex; align-items: center; gap: 12px; padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        body.light-theme .pollos-cart-item { border-color: rgba(0,0,0,0.06); }
+        .pollos-cart-item-emoji { font-size: 28px; }
+        .pollos-cart-item-info { flex: 1; }
+        .pollos-cart-item-name { font-size: 13px; font-weight: 600; }
+        .pollos-cart-item-price { font-size: 12px; color: #FF6B00; font-weight: 600; }
+        .pollos-cart-item-remove { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.5; }
+        .pollos-cart-item-remove:hover { opacity: 1; }
+
+        .pollos-cart-summary { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
+        body.light-theme .pollos-cart-summary { border-color: rgba(0,0,0,0.1); }
+        .pollos-cart-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+        .pollos-cart-row.total { font-size: 18px; font-weight: 800; margin-top: 8px; }
+
+        /* Delivery toggle */
+        .pollos-delivery-toggle { display: flex; gap: 8px; margin: 16px 0; }
+        .pollos-delivery-opt {
+            flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            background: transparent; color: rgba(255,255,255,0.6); text-align: center;
+            cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; transition: all 0.2s;
+        }
+        .pollos-delivery-opt.active { background: rgba(255,107,0,0.15); color: #FF6B00; border-color: rgba(255,107,0,0.3); }
+        body.light-theme .pollos-delivery-opt { color: #666; border-color: rgba(0,0,0,0.1); }
+        body.light-theme .pollos-delivery-opt.active { background: rgba(255,107,0,0.1); color: #FF6B00; }
+
+        .pollos-form-group { margin-bottom: 12px; }
+        .pollos-form-label { display: block; font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px; font-weight: 500; }
+        body.light-theme .pollos-form-label { color: #888; }
+        .pollos-form-input {
+            width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: white; font-size: 14px; font-family: inherit; outline: none;
+        }
+        .pollos-form-input:focus { border-color: #FF6B00; }
+        body.light-theme .pollos-form-input { background: #F5F7FA; border-color: rgba(0,0,0,0.1); color: #1A1A2E; }
+
+        .pollos-submit-btn {
+            width: 100%; padding: 16px; background: linear-gradient(135deg, #FF6B00, #FF8C33);
+            border: none; border-radius: 14px; color: white; font-size: 16px; font-weight: 700;
+            cursor: pointer; font-family: inherit; transition: all 0.2s; margin-top: 12px;
+        }
+        .pollos-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pollos-submit-btn:active:not(:disabled) { transform: scale(0.98); }
+
+        .pollos-success-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 9500; display: flex;
+            align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .pollos-success-modal.show { opacity: 1; pointer-events: all; }
+        .pollos-success-box {
+            background: #1A1A2E; border-radius: 20px; padding: 32px; text-align: center;
+            width: calc(100% - 40px); max-width: 360px;
+        }
+        body.light-theme .pollos-success-box { background: #FFF; }
+        .pollos-success-icon { font-size: 64px; margin-bottom: 12px; }
+        .pollos-success-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+        .pollos-success-num { font-size: 32px; font-weight: 800; color: #FF6B00; margin: 12px 0; }
+        .pollos-success-text { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 20px; }
+        body.light-theme .pollos-success-text { color: #666; }
+        .pollos-success-btn {
+            padding: 14px 32px; background: #FF6B00; border: none; border-radius: 12px;
+            color: white; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+        }
+
+        .pollos-empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); }
+        .pollos-empty-icon { font-size: 48px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -2662,6 +2847,31 @@
             </div>
         </section>
 
+        <!-- ═══ POLLOS ORDERING SYSTEM ═══ -->
+        <section class="pollos-section" id="pollosSection">
+            <div class="pollos-header">
+                <div class="pollos-header-emoji">🍗</div>
+                <div class="pollos-header-title" id="pollosTitle">Menú</div>
+                <div class="pollos-status-badge open" id="pollosStatus">🟢 Abierto</div>
+            </div>
+            <div class="pollos-closed-banner" id="pollosClosedBanner">
+                🚫 Estamos cerrados por el momento. ¡Vuelve pronto!
+            </div>
+            <div class="pollos-cats" id="pollosCats">
+                <button class="pollos-cat-btn active" data-cat="todos" onclick="pollosFilterCat('todos', this)">🍽️ Todos</button>
+                <button class="pollos-cat-btn" data-cat="pollos" onclick="pollosFilterCat('pollos', this)">🍗 Pollos</button>
+                <button class="pollos-cat-btn" data-cat="complementos" onclick="pollosFilterCat('complementos', this)">🍟 Extras</button>
+                <button class="pollos-cat-btn" data-cat="bebidas" onclick="pollosFilterCat('bebidas', this)">🥤 Bebidas</button>
+                <button class="pollos-cat-btn" data-cat="combos" onclick="pollosFilterCat('combos', this)">⭐ Combos</button>
+            </div>
+            <div class="pollos-products" id="pollosProducts">
+                <div class="pollos-empty">
+                    <div class="pollos-empty-icon">🍗</div>
+                    <p>Cargando menú...</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Form Section - Se renderiza dinámicamente -->
         <section class="form-section" id="formSection">
             <div class="form-header" id="formHeader">
@@ -2738,6 +2948,69 @@
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
         </svg>
     </a>
+
+    <!-- ═══ POLLOS: Cart Float ═══ -->
+    <div class="pollos-cart-float" id="pollosCartFloat" onclick="pollosOpenCart()">
+        <div class="pollos-cart-left">
+            <div class="pollos-cart-badge" id="pollosCartCount">0</div>
+            <div class="pollos-cart-text">🛒 Ver carrito</div>
+        </div>
+        <div class="pollos-cart-total">$<span id="pollosCartTotal">0</span></div>
+    </div>
+
+    <!-- ═══ POLLOS: Cart Modal ═══ -->
+    <div class="pollos-cart-modal" id="pollosCartModal" onclick="if(event.target===this)pollosCloseCart()">
+        <div class="pollos-cart-box">
+            <div class="pollos-cart-header">
+                <span class="pollos-cart-title">🛒 Tu Pedido</span>
+                <button class="pollos-cart-close" onclick="pollosCloseCart()">✕</button>
+            </div>
+            <div id="pollosCartItems"></div>
+
+            <div class="pollos-cart-summary">
+                <div class="pollos-cart-row"><span>Subtotal</span><span>$<span id="pollosSubtotal">0</span></span></div>
+                <div class="pollos-cart-row" id="pollosDeliveryRow" style="display:none;"><span>Envío</span><span>$<span id="pollosDeliveryAmt">30</span></span></div>
+                <div class="pollos-cart-row total"><span>Total</span><span>$<span id="pollosFinalTotal">0</span></span></div>
+            </div>
+
+            <div class="pollos-delivery-toggle">
+                <button class="pollos-delivery-opt active" data-type="pickup" onclick="pollosSetDelivery('pickup', this)">🏠 Recoger</button>
+                <button class="pollos-delivery-opt" data-type="delivery" onclick="pollosSetDelivery('delivery', this)">🚗 A domicilio</button>
+            </div>
+
+            <div class="pollos-form-group">
+                <label class="pollos-form-label">Tu nombre *</label>
+                <input type="text" class="pollos-form-input" id="pollosClientName" placeholder="Nombre completo">
+            </div>
+            <div class="pollos-form-group">
+                <label class="pollos-form-label">Teléfono *</label>
+                <input type="tel" class="pollos-form-input" id="pollosClientPhone" placeholder="10 dígitos">
+            </div>
+            <div class="pollos-form-group" id="pollosAddressGroup" style="display:none;">
+                <label class="pollos-form-label">Dirección de entrega *</label>
+                <input type="text" class="pollos-form-input" id="pollosClientAddress" placeholder="Calle, número, colonia">
+            </div>
+            <div class="pollos-form-group">
+                <label class="pollos-form-label">Notas (opcional)</label>
+                <input type="text" class="pollos-form-input" id="pollosNotes" placeholder="Ej: sin cebolla, extra salsa...">
+            </div>
+
+            <button class="pollos-submit-btn" id="pollosSubmitBtn" onclick="pollosSubmitOrder()">
+                ✅ Confirmar Pedido
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══ POLLOS: Success Modal ═══ -->
+    <div class="pollos-success-modal" id="pollosSuccessModal">
+        <div class="pollos-success-box">
+            <div class="pollos-success-icon">🎉</div>
+            <div class="pollos-success-title">¡Pedido Recibido!</div>
+            <div class="pollos-success-num" id="pollosOrderNum">#001</div>
+            <div class="pollos-success-text">Tu pedido está siendo procesado. Te notificaremos cuando esté listo.</div>
+            <button class="pollos-success-btn" onclick="pollosNewOrder()">Nuevo Pedido</button>
+        </div>
+    </div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
@@ -3553,6 +3826,9 @@ END:VCARD`;
             renderReviews(tarjeta);
             renderBooking(tarjeta);
             
+            // ═══ POLLOS ORDERING ═══
+            pollosInit(tarjeta);
+            
             // Inicializar Chat
             setTimeout(initChat, 500);
         };
@@ -4272,6 +4548,276 @@ END:VCARD`;
 
         // ═══ MODIFICAR RENDER TARJETA PARA INCLUIR NUEVAS SECCIONES ═══
         const originalRenderTarjeta = renderTarjeta;
+
+        // ═══════════════════════════════════════════════════════════════════
+        // POLLOS ORDERING SYSTEM (integrated into index.html)
+        // ═══════════════════════════════════════════════════════════════════
+        let pollosProductos = [];
+        let pollosCart = [];
+        let pollosConfig = null;
+        let pollosDeliveryType = 'pickup';
+        let pollosCostoDelivery = 30;
+        let pollosNegocioId = null;
+
+        const POLLOS_EMOJIS = {
+            'pollos': '🍗', 'complementos': '🍟', 'bebidas': '🥤',
+            'salsas': '🌶️', 'combos': '⭐', 'postres': '🍰'
+        };
+
+        const pollosInit = async (tarjeta) => {
+            const modulo = (tarjeta.modulo || '').toLowerCase();
+            if (modulo !== 'pollos') return;
+
+            document.getElementById('pollosSection').style.display = 'block';
+            pollosNegocioId = tarjeta.negocio_id;
+
+            // Load pollos config
+            try {
+                const cfgData = await supabaseRequest(`pollos_config?negocio_id=eq.${tarjeta.negocio_id}&select=*`);
+                if (cfgData && cfgData.length > 0) {
+                    pollosConfig = cfgData[0];
+                    document.getElementById('pollosTitle').textContent = pollosConfig.nombre_negocio || 'Menú';
+                    pollosCostoDelivery = pollosConfig.costo_delivery || 30;
+                    document.getElementById('pollosDeliveryAmt').textContent = pollosCostoDelivery;
+
+                    if (!pollosConfig.abierto) {
+                        document.getElementById('pollosClosedBanner').style.display = 'block';
+                        document.getElementById('pollosStatus').textContent = '🔴 Cerrado';
+                        document.getElementById('pollosStatus').className = 'pollos-status-badge closed';
+                        document.getElementById('pollosSubmitBtn').disabled = true;
+                        document.getElementById('pollosSubmitBtn').textContent = '🚫 Cerrado ahora';
+                    }
+                }
+            } catch (e) { console.warn('Pollos config error:', e); }
+
+            // Load products
+            try {
+                const prods = await supabaseRequest('pollos_productos?activo=eq.true&order=orden_display');
+                pollosProductos = prods || [];
+                pollosRenderProducts(pollosProductos);
+            } catch (e) {
+                console.error('Pollos products error:', e);
+                document.getElementById('pollosProducts').innerHTML = '<div class="pollos-empty"><div class="pollos-empty-icon">⚠️</div><p>Error cargando menú</p></div>';
+            }
+        };
+
+        const pollosRenderProducts = (items) => {
+            const container = document.getElementById('pollosProducts');
+            if (!items || items.length === 0) {
+                container.innerHTML = '<div class="pollos-empty"><div class="pollos-empty-icon">🍽️</div><p>No hay productos disponibles</p></div>';
+                return;
+            }
+            container.innerHTML = items.map(p => {
+                const inCart = pollosCart.find(c => c.id === p.id);
+                const emoji = p.emoji || POLLOS_EMOJIS[p.categoria] || '🍽️';
+                const priceDisplay = p.precio_promocion && p.precio_promocion < p.precio
+                    ? `<span style="text-decoration:line-through;font-size:12px;color:rgba(255,255,255,0.3);margin-right:6px;">$${p.precio}</span>$${p.precio_promocion}`
+                    : `$${p.precio}`;
+                const precio = p.precio_promocion && p.precio_promocion < p.precio ? p.precio_promocion : p.precio;
+                return `
+                    <div class="pollos-product">
+                        <div class="pollos-product-emoji">${emoji}</div>
+                        <div class="pollos-product-info">
+                            <div class="pollos-product-name">${p.nombre}</div>
+                            ${p.descripcion ? `<div class="pollos-product-desc">${p.descripcion}</div>` : ''}
+                            <div class="pollos-product-footer">
+                                <div class="pollos-product-price">${priceDisplay}</div>
+                                ${inCart ? `
+                                    <div class="pollos-qty-ctrl">
+                                        <button class="pollos-qty-btn danger" onclick="pollosRemove(${p.id})">−</button>
+                                        <span class="pollos-qty-num">${inCart.qty}</span>
+                                        <button class="pollos-qty-btn" onclick="pollosAdd(${p.id})">+</button>
+                                    </div>
+                                ` : `
+                                    <button class="pollos-add-btn" onclick="pollosAdd(${p.id})">+</button>
+                                `}
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        };
+
+        const pollosFilterCat = (cat, btn) => {
+            document.querySelectorAll('.pollos-cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filtered = cat === 'todos' ? pollosProductos : pollosProductos.filter(p => p.categoria === cat);
+            pollosRenderProducts(filtered);
+        };
+
+        const pollosAdd = (id) => {
+            const product = pollosProductos.find(p => p.id === id);
+            if (!product) return;
+            const existing = pollosCart.find(c => c.id === id);
+            if (existing) { existing.qty++; } else {
+                const precio = product.precio_promocion && product.precio_promocion < product.precio ? product.precio_promocion : product.precio;
+                pollosCart.push({ ...product, precio: precio, qty: 1 });
+            }
+            pollosUpdateCartUI();
+            pollosRefreshProducts();
+        };
+
+        const pollosRemove = (id) => {
+            const existing = pollosCart.find(c => c.id === id);
+            if (existing) {
+                existing.qty--;
+                if (existing.qty <= 0) pollosCart = pollosCart.filter(c => c.id !== id);
+            }
+            pollosUpdateCartUI();
+            pollosRefreshProducts();
+        };
+
+        const pollosRefreshProducts = () => {
+            const activeCat = document.querySelector('.pollos-cat-btn.active');
+            const cat = activeCat ? activeCat.dataset.cat : 'todos';
+            const filtered = cat === 'todos' ? pollosProductos : pollosProductos.filter(p => p.categoria === cat);
+            pollosRenderProducts(filtered);
+        };
+
+        const pollosUpdateCartUI = () => {
+            const totalQty = pollosCart.reduce((s, i) => s + i.qty, 0);
+            const subtotal = pollosCart.reduce((s, i) => s + (i.precio * i.qty), 0);
+            const delivery = pollosDeliveryType === 'delivery' ? pollosCostoDelivery : 0;
+            const total = subtotal + delivery;
+
+            document.getElementById('pollosCartCount').textContent = totalQty;
+            document.getElementById('pollosCartTotal').textContent = total;
+            document.getElementById('pollosSubtotal').textContent = subtotal;
+            document.getElementById('pollosFinalTotal').textContent = total;
+
+            const cartFloat = document.getElementById('pollosCartFloat');
+            if (totalQty > 0) { cartFloat.classList.add('show'); } else { cartFloat.classList.remove('show'); }
+        };
+
+        const pollosOpenCart = () => {
+            document.getElementById('pollosCartModal').classList.add('show');
+            pollosRenderCartItems();
+        };
+
+        const pollosCloseCart = () => {
+            document.getElementById('pollosCartModal').classList.remove('show');
+        };
+
+        const pollosRenderCartItems = () => {
+            const container = document.getElementById('pollosCartItems');
+            if (pollosCart.length === 0) {
+                container.innerHTML = '<div class="pollos-empty" style="padding:20px;"><div class="pollos-empty-icon">🛒</div><p>Tu carrito está vacío</p></div>';
+                return;
+            }
+            container.innerHTML = pollosCart.map(item => {
+                const emoji = item.emoji || POLLOS_EMOJIS[item.categoria] || '🍽️';
+                return `
+                    <div class="pollos-cart-item">
+                        <span class="pollos-cart-item-emoji">${emoji}</span>
+                        <div class="pollos-cart-item-info">
+                            <div class="pollos-cart-item-name">${item.qty}x ${item.nombre}</div>
+                            <div class="pollos-cart-item-price">$${item.precio * item.qty}</div>
+                        </div>
+                        <button class="pollos-cart-item-remove" onclick="pollosRemoveAll(${item.id})">🗑️</button>
+                    </div>`;
+            }).join('');
+        };
+
+        const pollosRemoveAll = (id) => {
+            pollosCart = pollosCart.filter(c => c.id !== id);
+            pollosUpdateCartUI();
+            pollosRenderCartItems();
+            pollosRefreshProducts();
+        };
+
+        const pollosSetDelivery = (type, btn) => {
+            pollosDeliveryType = type;
+            document.querySelectorAll('.pollos-delivery-opt').forEach(o => o.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('pollosAddressGroup').style.display = type === 'delivery' ? 'block' : 'none';
+            document.getElementById('pollosDeliveryRow').style.display = type === 'delivery' ? 'flex' : 'none';
+            pollosUpdateCartUI();
+        };
+
+        const pollosSubmitOrder = async () => {
+            const name = document.getElementById('pollosClientName').value.trim();
+            const phone = document.getElementById('pollosClientPhone').value.trim();
+            const address = document.getElementById('pollosClientAddress').value.trim();
+            const notes = document.getElementById('pollosNotes').value.trim();
+
+            if (!name || !phone) { showToast('Completa nombre y teléfono', '⚠️', false); return; }
+            if (pollosDeliveryType === 'delivery' && !address) { showToast('Ingresa tu dirección', '⚠️', false); return; }
+            if (pollosCart.length === 0) { showToast('Tu carrito está vacío', '⚠️', false); return; }
+
+            const btn = document.getElementById('pollosSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Enviando...';
+
+            try {
+                const subtotal = pollosCart.reduce((s, i) => s + (i.precio * i.qty), 0);
+                const delivery = pollosDeliveryType === 'delivery' ? pollosCostoDelivery : 0;
+
+                // Create order
+                const pedidoRes = await supabaseRequest('pollos_pedidos?select=*', {
+                    method: 'POST',
+                    headers: { 'Prefer': 'return=representation' },
+                    body: JSON.stringify({
+                        cliente_nombre: name,
+                        cliente_telefono: phone,
+                        tipo_entrega: pollosDeliveryType,
+                        direccion_entrega: pollosDeliveryType === 'delivery' ? address : null,
+                        notas: notes || null,
+                        subtotal: subtotal,
+                        costo_envio: delivery,
+                        total: subtotal + delivery,
+                        estado: 'pendiente',
+                        origen: 'web',
+                        negocio_id: pollosNegocioId
+                    })
+                });
+
+                const pedido = Array.isArray(pedidoRes) ? pedidoRes[0] : pedidoRes;
+
+                // Create detail items
+                const detalles = pollosCart.map(item => ({
+                    pedido_id: pedido.id,
+                    producto_id: item.id,
+                    producto_nombre: item.nombre,
+                    cantidad: item.qty,
+                    precio_unitario: item.precio,
+                    subtotal: item.precio * item.qty
+                }));
+
+                await supabaseRequest('pollos_pedido_detalle', {
+                    method: 'POST',
+                    headers: { 'Prefer': 'return=minimal' },
+                    body: JSON.stringify(detalles)
+                });
+
+                // Show success
+                const orderNum = String(pedido.numero_pedido || '').padStart(3, '0');
+                document.getElementById('pollosOrderNum').textContent = '#' + orderNum;
+                document.getElementById('pollosSuccessModal').classList.add('show');
+                pollosCloseCart();
+
+            } catch (e) {
+                console.error('Pollos order error:', e);
+                showToast('Error al enviar pedido', '❌', false);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '✅ Confirmar Pedido';
+                if (pollosConfig && !pollosConfig.abierto) {
+                    btn.disabled = true;
+                    btn.textContent = '🚫 Cerrado ahora';
+                }
+            }
+        };
+
+        const pollosNewOrder = () => {
+            pollosCart = [];
+            document.getElementById('pollosClientName').value = '';
+            document.getElementById('pollosClientPhone').value = '';
+            document.getElementById('pollosClientAddress').value = '';
+            document.getElementById('pollosNotes').value = '';
+            pollosSetDelivery('pickup', document.querySelector('.pollos-delivery-opt[data-type="pickup"]'));
+            pollosUpdateCartUI();
+            pollosRefreshProducts();
+            document.getElementById('pollosSuccessModal').classList.remove('show');
+        };
 
         // Iniciar
         document.addEventListener('DOMContentLoaded', () => {
