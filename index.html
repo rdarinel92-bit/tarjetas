@@ -2412,28 +2412,35 @@
     <div class="modal-overlay" id="modalLogin" onclick="cerrarModalLogin(event)">
         <div class="modal-box" onclick="event.stopPropagation()">
             <span class="modal-icon">🔐</span>
-            <h2 class="modal-title">Acceso a Clientes</h2>
+            <h2 class="modal-title">Acceso al Sistema</h2>
             <p class="modal-text">
-                Para iniciar sesión necesitas ser un <strong>cliente registrado</strong> en nuestro sistema.
+                Elige cómo deseas acceder:
             </p>
-            <div class="modal-badge">
-                <span>✓</span>
-                Descarga gratuita para Android (~100 MB)
+            <a href="portal.html" 
+               class="modal-btn-primary" 
+               style="text-decoration:none;display:block;text-align:center;">
+                🌐 Portal Web (Empleados / Admin)
+            </a>
+            <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+                <span style="color:rgba(255,255,255,0.4);font-size:12px;">o también</span>
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
             </div>
             <a href="app-release.apk" 
-               class="modal-btn-primary" 
+               class="modal-btn-secondary" 
+               style="text-decoration:none;display:block;text-align:center;border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:14px;"
                download="RobertDarin.apk"
                onclick="iniciarDescarga(event)">
-                📱 Descargar Aplicación
+                📱 Descargar App Android (~100 MB)
             </a>
             <p id="downloadProgress" style="display:none; font-size: 12px; color: var(--success); margin-top: 12px;">
                 ⏳ Descarga iniciada... Por favor espera, el archivo es grande (~100 MB)
             </p>
-            <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)">
+            <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)" style="margin-top:12px;">
                 Cancelar
             </button>
             <p class="modal-note">
-                ¿No eres cliente? Contáctanos por WhatsApp para registrarte.
+                El portal web requiere credenciales de empleado o administrador.
             </p>
         </div>
     </div>
