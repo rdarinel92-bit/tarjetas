@@ -18,10 +18,13 @@
     <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
     
+    <!-- Supabase Realtime JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -129,148 +132,6 @@
         @keyframes pulse {
             0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
-        }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           WELCOME SCREEN - BIENVENIDA ANIMADA
-           ═══════════════════════════════════════════════════════════════════ */
-        .welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9998;
-            opacity: 1;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-            overflow: hidden;
-        }
-
-        .welcome-screen.hidden {
-            opacity: 0;
-            transform: scale(1.05);
-            pointer-events: none;
-        }
-
-        .welcome-screen::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-            opacity: 0.08;
-            border-radius: 50%;
-            animation: welcomePulse 3s ease-in-out infinite;
-        }
-
-        @keyframes welcomePulse {
-            0%, 100% { transform: scale(1); opacity: 0.08; }
-            50% { transform: scale(1.5); opacity: 0.15; }
-        }
-
-        .welcome-icon {
-            font-size: 56px;
-            animation: welcomeBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
-            animation-delay: 0.2s;
-            opacity: 0;
-            filter: drop-shadow(0 4px 20px rgba(212, 175, 55, 0.3));
-        }
-
-        @keyframes welcomeBounce {
-            0% { opacity: 0; transform: scale(0) rotate(-20deg); }
-            60% { transform: scale(1.2) rotate(5deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
-        }
-
-        .welcome-greeting {
-            margin-top: 20px;
-            font-size: 15px;
-            color: var(--text-muted);
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            animation: welcomeFadeUp 0.6s ease both;
-            animation-delay: 0.5s;
-            opacity: 0;
-        }
-
-        @keyframes welcomeFadeUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .welcome-name {
-            margin-top: 12px;
-            font-size: 26px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: welcomeFadeUp 0.6s ease both;
-            animation-delay: 0.8s;
-            opacity: 0;
-            text-align: center;
-            padding: 0 20px;
-            max-width: 350px;
-        }
-
-        .welcome-line {
-            width: 60px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            margin-top: 16px;
-            animation: welcomeLineExpand 0.8s ease both;
-            animation-delay: 1.1s;
-            opacity: 0;
-        }
-
-        @keyframes welcomeLineExpand {
-            from { opacity: 0; width: 0; }
-            to { opacity: 1; width: 60px; }
-        }
-
-        .welcome-tagline {
-            margin-top: 12px;
-            font-size: 13px;
-            color: var(--text-subtle);
-            font-style: italic;
-            animation: welcomeFadeUp 0.6s ease both;
-            animation-delay: 1.3s;
-            opacity: 0;
-            text-align: center;
-            padding: 0 30px;
-            max-width: 320px;
-        }
-
-        .welcome-dots {
-            display: flex;
-            gap: 6px;
-            margin-top: 28px;
-            animation: welcomeFadeUp 0.6s ease both;
-            animation-delay: 1.5s;
-            opacity: 0;
-        }
-
-        .welcome-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--primary);
-            animation: welcomeDotPulse 1.2s ease-in-out infinite;
-        }
-
-        .welcome-dot:nth-child(2) { animation-delay: 0.2s; }
-        .welcome-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes welcomeDotPulse {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
         }
 
         /* ═══════════════════════════════════════════════════════════════════
@@ -421,15 +282,6 @@
             text-align: center;
         }
 
-        .card-front-extra {
-            font-size: 9px;
-            color: var(--card-text, #1A1A2E);
-            opacity: 0.5;
-            margin-top: 3px;
-            text-align: center;
-            font-style: italic;
-        }
-
         .card-front-line {
             width: 25%;
             height: 2px;
@@ -496,39 +348,6 @@
             font-size: 6px;
             padding: 1px 5px;
             border-radius: 3px;
-        }
-
-        .card-back-textos {
-            margin-top: 2px;
-        }
-
-        .card-back-textos-titulo {
-            font-size: 8px;
-            font-weight: 700;
-            color: var(--primary, #D4AF37);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-back-textos-detalle {
-            font-size: 6.5px;
-            color: rgba(255,255,255,0.7);
-            margin-top: 1px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-back-textos-extra {
-            font-size: 6px;
-            color: rgba(255,255,255,0.5);
-            font-style: italic;
-            margin-top: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
         .card-back-contact {
@@ -1555,6 +1374,66 @@
             line-height: 1.5;
         }
 
+        /* Status dot */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B981;
+            margin-right: 4px;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Typing indicator */
+        .chat-typing {
+            padding: 8px 16px;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-subtle);
+        }
+        .typing-dots { display: flex; gap: 3px; }
+        .typing-dots span {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--text-subtle);
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Chat badge */
+        .chat-badge {
+            display: none;
+        }
+        .chat-badge.active {
+            display: flex;
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 20px;
+            height: 20px;
+            background: #EF4444;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            border: 2px solid var(--bg-dark);
+        }
+
         /* WhatsApp link fallback (se mantiene oculto, solo para success) */
         .whatsapp-float {
             display: none !important;
@@ -1624,12 +1503,8 @@
             .business-card-container { max-width: 280px; }
             .card-front-title { font-size: 18px; }
             .card-front-subtitle { font-size: 9px; }
-            .card-front-extra { font-size: 7px; }
             .card-modulo-badge { font-size: 7px; }
             .card-back-nombre { font-size: 11px; }
-            .card-back-textos-titulo { font-size: 7px; }
-            .card-back-textos-detalle { font-size: 5.5px; }
-            .card-back-textos-extra { font-size: 5px; }
             .card-back-contact-row { font-size: 6px; }
             .qr-placeholder { width: 50px; height: 50px; }
             .business-name { font-size: 22px; }
@@ -2392,191 +2267,6 @@
         body.light-theme .error-text {
             color: #4A4A5A;
         }
-
-        /* ═══════════════════════════════════════════════════════════════════
-           POLLOS ORDERING SYSTEM (integrated)
-           ═══════════════════════════════════════════════════════════════════ */
-        .pollos-section { display: none; }
-
-        .pollos-header {
-            text-align: center; padding: 20px 0 12px;
-        }
-        .pollos-header-emoji { font-size: 48px; margin-bottom: 8px; animation: bounce 2s ease-in-out infinite; }
-        @keyframes pollosBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        .pollos-header-title {
-            font-size: 20px; font-weight: 800;
-            background: linear-gradient(135deg, #FF6B00, #FFAA00);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .pollos-status-badge {
-            display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 8px;
-        }
-        .pollos-status-badge.open { background: rgba(16,185,129,0.15); color: #10B981; }
-        .pollos-status-badge.closed { background: rgba(239,68,68,0.15); color: #EF4444; }
-        .pollos-closed-banner {
-            display: none; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-            border-radius: 12px; padding: 12px; text-align: center; margin: 12px 0;
-            color: #EF4444; font-size: 13px; font-weight: 500;
-        }
-
-        /* Category filters */
-        .pollos-cats { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0 12px; -webkit-overflow-scrolling: touch; }
-        .pollos-cats::-webkit-scrollbar { display: none; }
-        .pollos-cat-btn {
-            flex-shrink: 0; padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
-            background: transparent; color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; font-family: inherit;
-        }
-        .pollos-cat-btn.active { background: #FF6B00; color: white; border-color: #FF6B00; }
-        body.light-theme .pollos-cat-btn { color: #666; border-color: rgba(0,0,0,0.1); }
-        body.light-theme .pollos-cat-btn.active { background: #FF6B00; color: white; }
-
-        /* Product cards */
-        .pollos-products { display: flex; flex-direction: column; gap: 10px; }
-        .pollos-product {
-            display: flex; align-items: center; gap: 12px; padding: 14px;
-            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px; transition: all 0.2s;
-        }
-        .pollos-product:hover { background: rgba(255,255,255,0.07); }
-        body.light-theme .pollos-product { background: #FFF; border-color: rgba(0,0,0,0.08); }
-        .pollos-product-emoji { font-size: 32px; flex-shrink: 0; }
-        .pollos-product-info { flex: 1; }
-        .pollos-product-name { font-size: 14px; font-weight: 600; }
-        .pollos-product-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
-        body.light-theme .pollos-product-desc { color: rgba(0,0,0,0.5); }
-        .pollos-product-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
-        .pollos-product-price { font-size: 16px; font-weight: 800; color: #FF6B00; }
-
-        .pollos-add-btn {
-            width: 34px; height: 34px; border-radius: 50%; border: none;
-            background: #FF6B00; color: white; font-size: 20px; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: transform 0.2s; flex-shrink: 0;
-        }
-        .pollos-add-btn:active { transform: scale(0.9); }
-
-        .pollos-qty-ctrl {
-            display: flex; align-items: center; gap: 8px;
-        }
-        .pollos-qty-btn {
-            width: 30px; height: 30px; border-radius: 50%; border: none;
-            background: rgba(255,107,0,0.15); color: #FF6B00; font-size: 16px; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-        .pollos-qty-btn.danger { background: rgba(239,68,68,0.15); color: #EF4444; }
-        .pollos-qty-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; }
-
-        /* Cart floating bar */
-        .pollos-cart-float {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: linear-gradient(135deg, #FF6B00, #FF8C33);
-            padding: 12px 20px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: space-between;
-            width: calc(100% - 40px); max-width: 440px;
-            box-shadow: 0 8px 30px rgba(255,107,0,0.4);
-            cursor: pointer; z-index: 500; transition: transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);
-            color: white;
-        }
-        .pollos-cart-float.show { transform: translateX(-50%) translateY(0); }
-        .pollos-cart-left { display: flex; align-items: center; gap: 10px; }
-        .pollos-cart-badge {
-            width: 26px; height: 26px; background: rgba(255,255,255,0.25); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;
-        }
-        .pollos-cart-text { font-size: 13px; font-weight: 600; }
-        .pollos-cart-total { font-size: 18px; font-weight: 800; }
-
-        /* Cart modal */
-        .pollos-cart-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 9000; display: flex;
-            align-items: flex-end; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .pollos-cart-modal.show { opacity: 1; pointer-events: all; }
-        .pollos-cart-box {
-            background: #1A1A2E; width: 100%; max-width: 480px; max-height: 90vh;
-            border-radius: 20px 20px 0 0; padding: 20px; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.3s;
-        }
-        body.light-theme .pollos-cart-box { background: #FFF; }
-        .pollos-cart-modal.show .pollos-cart-box { transform: translateY(0); }
-        .pollos-cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .pollos-cart-title { font-size: 18px; font-weight: 700; }
-        .pollos-cart-close { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 24px; cursor: pointer; }
-        body.light-theme .pollos-cart-close { color: #999; }
-
-        .pollos-cart-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        body.light-theme .pollos-cart-item { border-color: rgba(0,0,0,0.06); }
-        .pollos-cart-item-emoji { font-size: 28px; }
-        .pollos-cart-item-info { flex: 1; }
-        .pollos-cart-item-name { font-size: 13px; font-weight: 600; }
-        .pollos-cart-item-price { font-size: 12px; color: #FF6B00; font-weight: 600; }
-        .pollos-cart-item-remove { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.5; }
-        .pollos-cart-item-remove:hover { opacity: 1; }
-
-        .pollos-cart-summary { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); }
-        body.light-theme .pollos-cart-summary { border-color: rgba(0,0,0,0.1); }
-        .pollos-cart-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
-        .pollos-cart-row.total { font-size: 18px; font-weight: 800; margin-top: 8px; }
-
-        /* Delivery toggle */
-        .pollos-delivery-toggle { display: flex; gap: 8px; margin: 16px 0; }
-        .pollos-delivery-opt {
-            flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
-            background: transparent; color: rgba(255,255,255,0.6); text-align: center;
-            cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 500; transition: all 0.2s;
-        }
-        .pollos-delivery-opt.active { background: rgba(255,107,0,0.15); color: #FF6B00; border-color: rgba(255,107,0,0.3); }
-        body.light-theme .pollos-delivery-opt { color: #666; border-color: rgba(0,0,0,0.1); }
-        body.light-theme .pollos-delivery-opt.active { background: rgba(255,107,0,0.1); color: #FF6B00; }
-
-        .pollos-form-group { margin-bottom: 12px; }
-        .pollos-form-label { display: block; font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px; font-weight: 500; }
-        body.light-theme .pollos-form-label { color: #888; }
-        .pollos-form-input {
-            width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px; color: white; font-size: 14px; font-family: inherit; outline: none;
-        }
-        .pollos-form-input:focus { border-color: #FF6B00; }
-        body.light-theme .pollos-form-input { background: #F5F7FA; border-color: rgba(0,0,0,0.1); color: #1A1A2E; }
-
-        .pollos-submit-btn {
-            width: 100%; padding: 16px; background: linear-gradient(135deg, #FF6B00, #FF8C33);
-            border: none; border-radius: 14px; color: white; font-size: 16px; font-weight: 700;
-            cursor: pointer; font-family: inherit; transition: all 0.2s; margin-top: 12px;
-        }
-        .pollos-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .pollos-submit-btn:active:not(:disabled) { transform: scale(0.98); }
-
-        .pollos-success-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); z-index: 9500; display: flex;
-            align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .pollos-success-modal.show { opacity: 1; pointer-events: all; }
-        .pollos-success-box {
-            background: #1A1A2E; border-radius: 20px; padding: 32px; text-align: center;
-            width: calc(100% - 40px); max-width: 360px;
-        }
-        body.light-theme .pollos-success-box { background: #FFF; }
-        .pollos-success-icon { font-size: 64px; margin-bottom: 12px; }
-        .pollos-success-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-        .pollos-success-num { font-size: 32px; font-weight: 800; color: #FF6B00; margin: 12px 0; }
-        .pollos-success-text { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 20px; }
-        body.light-theme .pollos-success-text { color: #666; }
-        .pollos-success-btn {
-            padding: 14px 32px; background: #FF6B00; border: none; border-radius: 12px;
-            color: white; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
-        }
-
-        .pollos-empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.4); }
-        .pollos-empty-icon { font-size: 48px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -2619,20 +2309,6 @@
         </div>
     </div>
 
-    <!-- Welcome Screen - Bienvenida animada -->
-    <div class="welcome-screen" id="welcomeScreen" style="display: none;">
-        <div class="welcome-icon" id="welcomeIcon">💼</div>
-        <div class="welcome-greeting">Bienvenido a</div>
-        <div class="welcome-name" id="welcomeName">Mi Negocio</div>
-        <div class="welcome-line"></div>
-        <div class="welcome-tagline" id="welcomeTagline">Tu tarjeta digital</div>
-        <div class="welcome-dots">
-            <div class="welcome-dot"></div>
-            <div class="welcome-dot"></div>
-            <div class="welcome-dot"></div>
-        </div>
-    </div>
-
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader"></div>
@@ -2643,35 +2319,28 @@
     <div class="modal-overlay" id="modalLogin" onclick="cerrarModalLogin(event)">
         <div class="modal-box" onclick="event.stopPropagation()">
             <span class="modal-icon">🔐</span>
-            <h2 class="modal-title">Acceso al Sistema</h2>
+            <h2 class="modal-title">Acceso a Clientes</h2>
             <p class="modal-text">
-                Elige cómo deseas acceder:
+                Para iniciar sesión necesitas ser un <strong>cliente registrado</strong> en nuestro sistema.
             </p>
-            <a href="portal.html" 
-               class="modal-btn-primary" 
-               style="text-decoration:none;display:block;text-align:center;">
-                🌐 Portal Web (Empleados / Admin)
-            </a>
-            <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
-                <span style="color:rgba(255,255,255,0.4);font-size:12px;">o también</span>
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+            <div class="modal-badge">
+                <span>✓</span>
+                Descarga gratuita para Android (~100 MB)
             </div>
             <a href="app-release.apk" 
-               class="modal-btn-secondary" 
-               style="text-decoration:none;display:block;text-align:center;border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:14px;"
+               class="modal-btn-primary" 
                download="RobertDarin.apk"
                onclick="iniciarDescarga(event)">
-                📱 Descargar App Android (~100 MB)
+                📱 Descargar Aplicación
             </a>
             <p id="downloadProgress" style="display:none; font-size: 12px; color: var(--success); margin-top: 12px;">
                 ⏳ Descarga iniciada... Por favor espera, el archivo es grande (~100 MB)
             </p>
-            <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)" style="margin-top:12px;">
+            <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)">
                 Cancelar
             </button>
             <p class="modal-note">
-                El portal web requiere credenciales de empleado o administrador.
+                ¿No eres cliente? Contáctanos por WhatsApp para registrarte.
             </p>
         </div>
     </div>
@@ -2703,8 +2372,7 @@
                             <div class="card-front-center">
                                 <div class="card-front-title" id="cardFrontTitle">Mi Negocio</div>
                                 <div class="card-front-subtitle" id="cardFrontSubtitle"></div>
-                                <div class="card-front-extra" id="cardFrontExtra" style="display:none;"></div>
-                                <div class="card-front-line" id="cardFrontLine"></div>
+                                <div class="card-front-line"></div>
                             </div>
                             <div class="card-tap-hint">
                                 <span>👆</span>
@@ -2716,11 +2384,6 @@
                             <div class="card-back-left">
                                 <div class="card-back-nombre" id="backNombre">Mi Negocio</div>
                                 <div class="card-back-servicios" id="backServicios"></div>
-                                <div class="card-back-textos" id="backTextos" style="display:none;">
-                                    <div class="card-back-textos-titulo" id="backTextoTitulo"></div>
-                                    <div class="card-back-textos-detalle" id="backTextoDetalle"></div>
-                                    <div class="card-back-textos-extra" id="backTextoExtra"></div>
-                                </div>
                                 <div class="card-back-contact" id="backContact">
                                     <!-- Se llena dinámicamente -->
                                 </div>
@@ -2899,31 +2562,6 @@
             </div>
         </section>
 
-        <!-- ═══ POLLOS ORDERING SYSTEM ═══ -->
-        <section class="pollos-section" id="pollosSection">
-            <div class="pollos-header">
-                <div class="pollos-header-emoji">🍗</div>
-                <div class="pollos-header-title" id="pollosTitle">Menú</div>
-                <div class="pollos-status-badge open" id="pollosStatus">🟢 Abierto</div>
-            </div>
-            <div class="pollos-closed-banner" id="pollosClosedBanner">
-                🚫 Estamos cerrados por el momento. ¡Vuelve pronto!
-            </div>
-            <div class="pollos-cats" id="pollosCats">
-                <button class="pollos-cat-btn active" data-cat="todos" onclick="pollosFilterCat('todos', this)">🍽️ Todos</button>
-                <button class="pollos-cat-btn" data-cat="pollos" onclick="pollosFilterCat('pollos', this)">🍗 Pollos</button>
-                <button class="pollos-cat-btn" data-cat="complementos" onclick="pollosFilterCat('complementos', this)">🍟 Extras</button>
-                <button class="pollos-cat-btn" data-cat="bebidas" onclick="pollosFilterCat('bebidas', this)">🥤 Bebidas</button>
-                <button class="pollos-cat-btn" data-cat="combos" onclick="pollosFilterCat('combos', this)">⭐ Combos</button>
-            </div>
-            <div class="pollos-products" id="pollosProducts">
-                <div class="pollos-empty">
-                    <div class="pollos-empty-icon">🍗</div>
-                    <p>Cargando menú...</p>
-                </div>
-            </div>
-        </section>
-
         <!-- Form Section - Se renderiza dinámicamente -->
         <section class="form-section" id="formSection">
             <div class="form-header" id="formHeader">
@@ -2974,7 +2612,9 @@
             <div class="chat-header-avatar" id="chatAvatar">💼</div>
             <div class="chat-header-info">
                 <div class="chat-header-name" id="chatName">Chat</div>
-                <div class="chat-header-status">En línea</div>
+                <div class="chat-header-status" id="chatStatus">
+                    <span class="status-dot"></span> En línea
+                </div>
             </div>
             <button class="chat-close-btn" onclick="toggleChat()">✕</button>
         </div>
@@ -2984,6 +2624,10 @@
                 <h3>¡Bienvenido!</h3>
                 <p>Escríbenos y te responderemos lo antes posible.</p>
             </div>
+        </div>
+        <div class="chat-typing" id="chatTyping" style="display:none;">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <span>Escribiendo...</span>
         </div>
         <div class="chat-input-area">
             <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje..." autocomplete="off">
@@ -3000,69 +2644,6 @@
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
         </svg>
     </a>
-
-    <!-- ═══ POLLOS: Cart Float ═══ -->
-    <div class="pollos-cart-float" id="pollosCartFloat" onclick="pollosOpenCart()">
-        <div class="pollos-cart-left">
-            <div class="pollos-cart-badge" id="pollosCartCount">0</div>
-            <div class="pollos-cart-text">🛒 Ver carrito</div>
-        </div>
-        <div class="pollos-cart-total">$<span id="pollosCartTotal">0</span></div>
-    </div>
-
-    <!-- ═══ POLLOS: Cart Modal ═══ -->
-    <div class="pollos-cart-modal" id="pollosCartModal" onclick="if(event.target===this)pollosCloseCart()">
-        <div class="pollos-cart-box">
-            <div class="pollos-cart-header">
-                <span class="pollos-cart-title">🛒 Tu Pedido</span>
-                <button class="pollos-cart-close" onclick="pollosCloseCart()">✕</button>
-            </div>
-            <div id="pollosCartItems"></div>
-
-            <div class="pollos-cart-summary">
-                <div class="pollos-cart-row"><span>Subtotal</span><span>$<span id="pollosSubtotal">0</span></span></div>
-                <div class="pollos-cart-row" id="pollosDeliveryRow" style="display:none;"><span>Envío</span><span>$<span id="pollosDeliveryAmt">30</span></span></div>
-                <div class="pollos-cart-row total"><span>Total</span><span>$<span id="pollosFinalTotal">0</span></span></div>
-            </div>
-
-            <div class="pollos-delivery-toggle">
-                <button class="pollos-delivery-opt active" data-type="pickup" onclick="pollosSetDelivery('pickup', this)">🏠 Recoger</button>
-                <button class="pollos-delivery-opt" data-type="delivery" onclick="pollosSetDelivery('delivery', this)">🚗 A domicilio</button>
-            </div>
-
-            <div class="pollos-form-group">
-                <label class="pollos-form-label">Tu nombre *</label>
-                <input type="text" class="pollos-form-input" id="pollosClientName" placeholder="Nombre completo">
-            </div>
-            <div class="pollos-form-group">
-                <label class="pollos-form-label">Teléfono *</label>
-                <input type="tel" class="pollos-form-input" id="pollosClientPhone" placeholder="10 dígitos">
-            </div>
-            <div class="pollos-form-group" id="pollosAddressGroup" style="display:none;">
-                <label class="pollos-form-label">Dirección de entrega *</label>
-                <input type="text" class="pollos-form-input" id="pollosClientAddress" placeholder="Calle, número, colonia">
-            </div>
-            <div class="pollos-form-group">
-                <label class="pollos-form-label">Notas (opcional)</label>
-                <input type="text" class="pollos-form-input" id="pollosNotes" placeholder="Ej: sin cebolla, extra salsa...">
-            </div>
-
-            <button class="pollos-submit-btn" id="pollosSubmitBtn" onclick="pollosSubmitOrder()">
-                ✅ Confirmar Pedido
-            </button>
-        </div>
-    </div>
-
-    <!-- ═══ POLLOS: Success Modal ═══ -->
-    <div class="pollos-success-modal" id="pollosSuccessModal">
-        <div class="pollos-success-box">
-            <div class="pollos-success-icon">🎉</div>
-            <div class="pollos-success-title">¡Pedido Recibido!</div>
-            <div class="pollos-success-num" id="pollosOrderNum">#001</div>
-            <div class="pollos-success-text">Tu pedido está siendo procesado. Te notificaremos cuando esté listo.</div>
-            <button class="pollos-success-btn" onclick="pollosNewOrder()">Nuevo Pedido</button>
-        </div>
-    </div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
@@ -3081,6 +2662,12 @@
             SUPABASE_KEY: _p.join('')
         };
 
+        // Supabase client for Realtime
+        let supabaseClient = null;
+        try {
+            supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+        } catch(e) { console.warn('Supabase client init failed, falling back to polling:', e); }
+
         // Iconos por módulo
         const MODULO_ICONS = {
             climas: '❄️',
@@ -3093,6 +2680,7 @@
             nice: '✨',
             ventas: '🛒',
             pollos: '🍗',
+            purificadora: '💧',
             joyeria: '💎',
             general: '💼'
         };
@@ -3394,6 +2982,26 @@ END:VCARD`;
                 });
             }
             
+            // Pollos - tabla específica
+            if (data.modulo === 'pollos') {
+                const pollosData = {
+                    negocio_id: data.negocio_id,
+                    nombre_completo: data.nombre,
+                    telefono: data.telefono,
+                    email: data.email,
+                    tipo_pedido: data.servicio_interes || 'general',
+                    notas: data.mensaje,
+                    cantidad: 1,
+                    estado: 'nueva',
+                    fuente: 'qr_web'
+                };
+                console.log('📤 Enviando a pollos_solicitudes_qr:', pollosData);
+                return supabaseRequest('pollos_solicitudes_qr', {
+                    method: 'POST',
+                    body: JSON.stringify(pollosData)
+                });
+            }
+
             // Para otros módulos (finanzas, etc) usar tabla general
             console.log('📤 Enviando a tarjetas_servicio_solicitudes:', data);
             return supabaseRequest('tarjetas_servicio_solicitudes', {
@@ -3698,96 +3306,7 @@ END:VCARD`;
             cardFront.style.setProperty('--card-color1', color1);
             cardFront.style.setProperty('--card-color2', color2);
             cardFront.style.setProperty('--card-text', textColor);
-            
-            // V11.7: Aplicar gradient_type desde la app
-            const gradientType = (tarjeta.gradient_type || 'linear').toLowerCase();
-            if (gradientType === 'radial') {
-                cardFront.style.background = `radial-gradient(circle at center, ${color1} 0%, ${color2} 100%)`;
-            } else if (gradientType === 'angular' || gradientType === 'sweep') {
-                cardFront.style.background = `conic-gradient(from 0deg, ${color1}, ${color2}, ${color1})`;
-            } else if (gradientType === 'none' || gradientType === 'solid') {
-                cardFront.style.background = color1;
-            } else {
-                cardFront.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
-            }
-            
-            // V11.7: Aplicar background_texture desde la app
-            const texture = (tarjeta.background_texture || 'lines').toLowerCase();
-            const frontBefore = cardFront.querySelector('::before') || cardFront;
-            let textureCSS = 'none';
-            switch(texture) {
-                case 'dots':
-                    textureCSS = `radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)`;
-                    cardFront.style.backgroundSize = cardFront.style.backgroundSize || '';
-                    break;
-                case 'grid':
-                    textureCSS = `linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)`;
-                    break;
-                case 'waves':
-                    textureCSS = `repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(255,255,255,0.015) 15px, rgba(255,255,255,0.015) 30px)`;
-                    break;
-                case 'circles':
-                    textureCSS = `radial-gradient(circle at 20% 50%, rgba(255,255,255,0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.02) 0%, transparent 40%)`;
-                    break;
-                case 'none':
-                    textureCSS = 'none';
-                    break;
-                default: // lines (default)
-                    textureCSS = `repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px)`;
-            }
-            // Apply texture via a CSS custom property trick (update the ::before)
-            cardFront.dataset.texture = texture;
-            const textureStyle = document.getElementById('dynamicTextureStyle') || (() => {
-                const s = document.createElement('style');
-                s.id = 'dynamicTextureStyle';
-                document.head.appendChild(s);
-                return s;
-            })();
-            textureStyle.textContent = `.card-front::before { background: ${textureCSS} !important; }`;
-            
-            // V11.7: Aplicar font desde la app
-            const fontSetting = (tarjeta.font || 'poppins').toLowerCase();
-            let fontFamily = "'Inter', 'Segoe UI', sans-serif";
-            switch(fontSetting) {
-                case 'serif': fontFamily = "'Playfair Display', Georgia, serif"; break;
-                case 'mono': fontFamily = "'Courier New', 'Consolas', monospace"; break;
-                case 'cursive': fontFamily = "'Dancing Script', cursive, serif"; break;
-                case 'bold': fontFamily = "'Inter', 'Arial Black', sans-serif"; break;
-                default: fontFamily = "'Inter', 'Segoe UI', sans-serif";
-            }
-            cardFront.style.fontFamily = fontFamily;
-            
-            // V11.7: Aplicar layout desde la app
-            const layout = (tarjeta.layout || 'classic').toLowerCase();
-            const titleEl = document.getElementById('cardFrontTitle');
-            const subtitleEl2 = document.getElementById('cardFrontSubtitle');
-            const frontCenter = document.querySelector('.card-front-center');
-            const frontLine = document.getElementById('cardFrontLine');
-            
-            // Reset layout
-            if (frontCenter) { frontCenter.style.alignItems = 'center'; frontCenter.style.textAlign = 'center'; }
-            if (titleEl) { titleEl.style.textAlign = 'center'; titleEl.style.letterSpacing = '0.5px'; titleEl.style.fontWeight = '800'; titleEl.style.fontSize = ''; }
-            if (frontLine) { frontLine.style.display = ''; }
-            
-            switch(layout) {
-                case 'modern':
-                    if (titleEl) { titleEl.style.fontWeight = '700'; titleEl.style.fontSize = '24px'; titleEl.style.letterSpacing = '0.5px'; }
-                    break;
-                case 'minimal':
-                    if (titleEl) { titleEl.style.fontWeight = '400'; titleEl.style.letterSpacing = '1.5px'; }
-                    if (frontLine) frontLine.style.display = 'none';
-                    break;
-                case 'bold':
-                    if (titleEl) { titleEl.style.fontWeight = '900'; titleEl.style.letterSpacing = '2px'; titleEl.style.textTransform = 'uppercase'; }
-                    if (frontLine) { frontLine.style.width = '40%'; frontLine.style.height = '3px'; }
-                    break;
-                case 'elegant':
-                    if (titleEl) { titleEl.style.fontWeight = '600'; titleEl.style.letterSpacing = '3px'; titleEl.style.fontFamily = "'Playfair Display', Georgia, serif"; }
-                    break;
-                case 'tech':
-                    if (titleEl) { titleEl.style.fontWeight = '700'; titleEl.style.letterSpacing = '2px'; titleEl.style.fontFamily = "'Courier New', monospace"; }
-                    break;
-            }
+            cardFront.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
             
             // Aplicar color de texto a los elementos del frente
             document.getElementById('cardFrontTitle').style.color = textColor;
@@ -3831,16 +3350,6 @@ END:VCARD`;
                 subtitleEl.style.display = 'none';
             }
             
-            // V11.7: Texto frontal extra (como la app: italic, 50% opacidad)
-            const extraEl = document.getElementById('cardFrontExtra');
-            if (textoFrontalExtra) {
-                extraEl.textContent = textoFrontalExtra;
-                extraEl.style.color = textColor;
-                extraEl.style.display = 'block';
-            } else {
-                extraEl.style.display = 'none';
-            }
-            
             // Tap hint color
             const tapHint = document.querySelector('.card-tap-hint');
             if (tapHint) {
@@ -3860,8 +3369,8 @@ END:VCARD`;
             const backServicios = document.getElementById('backServicios');
             const backContact = document.getElementById('backContact');
             
-            // Nombre del negocio en reverso (como la app: usa nombre_negocio, NO texto_frontal_titulo)
-            backNombre.textContent = nombreNegocio;
+            // Nombre del negocio en reverso
+            backNombre.textContent = textoFrontalTitulo;
             backNombre.style.color = color1;
             
             // Servicios como chips
@@ -3874,37 +3383,6 @@ END:VCARD`;
             } else {
                 backServicios.style.display = 'none';
             }
-            
-            // V11.7: Textos traseros en la tarjeta (como la app: título, detalle, extra en el dorso)
-            const backTextos = document.getElementById('backTextos');
-            const backTextoTitulo = document.getElementById('backTextoTitulo');
-            const backTextoDetalle = document.getElementById('backTextoDetalle');
-            const backTextoExtra = document.getElementById('backTextoExtra');
-            
-            if (textoTraseroTitulo || textoTraseroDetalle || textoTraseroExtra) {
-                backTextos.style.display = 'block';
-                if (textoTraseroTitulo) {
-                    backTextoTitulo.textContent = textoTraseroTitulo;
-                    backTextoTitulo.style.color = color1;
-                    backTextoTitulo.style.display = 'block';
-                } else { backTextoTitulo.style.display = 'none'; }
-                
-                if (textoTraseroDetalle) {
-                    backTextoDetalle.textContent = textoTraseroDetalle;
-                    backTextoDetalle.style.display = 'block';
-                } else { backTextoDetalle.style.display = 'none'; }
-                
-                if (textoTraseroExtra) {
-                    backTextoExtra.textContent = textoTraseroExtra;
-                    backTextoExtra.style.display = 'block';
-                } else { backTextoExtra.style.display = 'none'; }
-            } else {
-                backTextos.style.display = 'none';
-            }
-            
-            // Aplicar font al dorso también
-            const cardBack = document.querySelector('.card-back');
-            if (cardBack) cardBack.style.fontFamily = fontFamily;
             
             // Contacto en reverso (igual que la app: teléfono, whatsapp, email, horario, ciudad)
             let contactHTML = '';
@@ -4010,9 +3488,6 @@ END:VCARD`;
             renderReviews(tarjeta);
             renderBooking(tarjeta);
             
-            // ═══ POLLOS ORDERING ═══
-            pollosInit(tarjeta);
-            
             // Inicializar Chat
             setTimeout(initChat, 500);
         };
@@ -4101,65 +3576,12 @@ END:VCARD`;
                 
                 renderTarjeta(tarjeta);
                 registrarEscaneo(tarjeta);
-                showWelcome(tarjeta);
+                showContent();
                 
             } catch (error) {
                 console.error('❌ Error:', error);
                 showError(error.message || 'Error de conexión');
             }
-        };
-
-        const showWelcome = (tarjeta) => {
-            // Ocultar loading
-            document.getElementById('loadingScreen').classList.add('hidden');
-            
-            // Preparar welcome screen con datos del negocio
-            const welcomeScreen = document.getElementById('welcomeScreen');
-            const modulo = (tarjeta.modulo || 'general').toLowerCase();
-            const icon = MODULO_ICONS[modulo] || '💼';
-            
-            document.getElementById('welcomeIcon').textContent = icon;
-            document.getElementById('welcomeName').textContent = tarjeta.nombre_negocio || 'Mi Negocio';
-            
-            // Tagline dinámico según módulo
-            const taglines = {
-                climas: '❄️ Climatización profesional a tu alcance',
-                prestamos: '💰 Soluciones financieras para ti',
-                tandas: '👥 Ahorro inteligente en comunidad',
-                cobranza: '📋 Gestión eficiente de pagos',
-                servicios: '🔧 Servicio de calidad garantizada',
-                agua: '💧 Agua pura, vida sana',
-                ventas: '🛒 Los mejores productos para ti',
-                general: '✨ Tu tarjeta digital profesional'
-            };
-            const tagline = tarjeta.slogan || taglines[modulo] || taglines.general;
-            document.getElementById('welcomeTagline').textContent = tagline;
-            
-            // Aplicar colores del negocio al welcome
-            const color1 = tarjeta.color_primario || '#D4AF37';
-            document.getElementById('welcomeName').style.background = `linear-gradient(135deg, ${color1}, ${color1}88)`;
-            document.getElementById('welcomeName').style.webkitBackgroundClip = 'text';
-            document.getElementById('welcomeName').style.webkitTextFillColor = 'transparent';
-            document.getElementById('welcomeName').style.backgroundClip = 'text';
-            
-            // Colorear dots con color del negocio
-            document.querySelectorAll('.welcome-dot').forEach(dot => {
-                dot.style.background = color1;
-            });
-            
-            // Mostrar welcome
-            welcomeScreen.style.display = 'flex';
-            
-            // Después de 2.8 segundos, transición al contenido
-            setTimeout(() => {
-                welcomeScreen.classList.add('hidden');
-                document.getElementById('mainContent').style.display = 'flex';
-                
-                // Remover welcome del DOM después de la animación
-                setTimeout(() => {
-                    welcomeScreen.style.display = 'none';
-                }, 800);
-            }, 2800);
         };
 
         const showContent = () => {
@@ -4284,6 +3706,7 @@ END:VCARD`;
         let visitanteId = null;
         let chatMessages = [];
         let pollingInterval = null;
+        let realtimeChannel = null;
 
         // Generar o recuperar ID único del visitante
         const getVisitanteId = () => {
@@ -4295,6 +3718,48 @@ END:VCARD`;
             return id;
         };
 
+        // Suscribirse a Realtime para recibir mensajes instantáneamente
+        const suscribirseRealtime = () => {
+            if (!supabaseClient || !currentTarjeta || !visitanteId) return;
+            try {
+                // Cancelar suscripción anterior
+                if (realtimeChannel) {
+                    supabaseClient.removeChannel(realtimeChannel);
+                }
+                realtimeChannel = supabaseClient
+                    .channel('chat_' + visitanteId)
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'tarjetas_chat',
+                        filter: 'visitante_id=eq.' + visitanteId
+                    }, (payload) => {
+                        console.log('📨 Realtime mensaje:', payload.new);
+                        const msg = payload.new;
+                        // Solo agregar si no existe ya
+                        if (!chatMessages.find(m => m.id === msg.id)) {
+                            chatMessages.push(msg);
+                            renderMensajesChat();
+                            if (msg.es_respuesta) {
+                                playNotificationSound();
+                                // Vibrar si disponible
+                                if (navigator.vibrate) navigator.vibrate(200);
+                            }
+                        }
+                    })
+                    .subscribe((status) => {
+                        console.log('📡 Realtime status:', status);
+                    });
+                console.log('✅ Realtime suscrito para visitante:', visitanteId);
+            } catch(e) {
+                console.warn('⚠️ Realtime no disponible, usando polling:', e);
+                // Fallback a polling
+                if (!pollingInterval) {
+                    pollingInterval = setInterval(cargarMensajesChat, 5000);
+                }
+            }
+        };
+
         // Toggle del chat
         const toggleChat = () => {
             chatOpen = !chatOpen;
@@ -4304,12 +3769,14 @@ END:VCARD`;
             if (chatOpen) {
                 cargarMensajesChat();
                 document.getElementById('chatInput').focus();
-                // Iniciar polling para mensajes nuevos
-                if (!pollingInterval) {
+                // Usar Realtime si disponible, sino polling
+                if (supabaseClient) {
+                    suscribirseRealtime();
+                } else if (!pollingInterval) {
                     pollingInterval = setInterval(cargarMensajesChat, 5000);
                 }
             } else {
-                // Detener polling cuando se cierra
+                // Mantener Realtime activo incluso con chat cerrado para notificaciones
                 if (pollingInterval) {
                     clearInterval(pollingInterval);
                     pollingInterval = null;
@@ -4400,42 +3867,59 @@ END:VCARD`;
                 input.value = '';
                 
                 // Enviar a Supabase
-                await supabaseRequest('tarjetas_chat', {
-                    method: 'POST',
-                    prefer: 'return=minimal',
-                    body: JSON.stringify({
-                        tarjeta_id: currentTarjeta.id,
-                        negocio_id: currentTarjeta.negocio_id,
-                        visitante_id: visitanteId,
-                        visitante_nombre: localStorage.getItem('rd_chat_nombre') || null,
-                        mensaje: mensaje,
-                        es_respuesta: false
-                    })
-                });
+                const body = {
+                    tarjeta_id: currentTarjeta.id,
+                    negocio_id: currentTarjeta.negocio_id,
+                    visitante_id: visitanteId,
+                    visitante_nombre: localStorage.getItem('rd_chat_nombre') || null,
+                    visitante_email: localStorage.getItem('rd_chat_email') || null,
+                    visitante_telefono: localStorage.getItem('rd_chat_telefono') || null,
+                    mensaje: mensaje,
+                    es_respuesta: false
+                };
+
+                if (supabaseClient) {
+                    // Usar Supabase client directamente
+                    const { error } = await supabaseClient
+                        .from('tarjetas_chat')
+                        .insert(body);
+                    if (error) throw error;
+                } else {
+                    // Fallback a REST API
+                    await supabaseRequest('tarjetas_chat', {
+                        method: 'POST',
+                        prefer: 'return=minimal',
+                        body: JSON.stringify(body)
+                    });
+                }
                 
                 // Registrar acción
                 registrarAccion('chat_mensaje');
                 
-                // Recargar mensajes para obtener el ID real
-                setTimeout(cargarMensajesChat, 1000);
+                // Si no hay Realtime, recargar
+                if (!supabaseClient) {
+                    setTimeout(cargarMensajesChat, 1000);
+                }
                 
             } catch (e) {
                 console.error('Error enviando mensaje:', e);
                 showToast('Error al enviar mensaje', '❌', false);
-                // Revertir mensaje temporal
                 chatMessages = chatMessages.filter(m => !m.id.startsWith('temp_'));
                 renderMensajesChat();
             } finally {
                 sendBtn.disabled = false;
+                input.focus();
             }
         };
 
-        // Guardar nombre del visitante si lo proporciona en el formulario
+        // Guardar datos del visitante si los proporciona en el formulario
         const guardarNombreVisitante = () => {
             const nombre = document.getElementById('inputNombre')?.value?.trim();
-            if (nombre) {
-                localStorage.setItem('rd_chat_nombre', nombre);
-            }
+            const email = document.getElementById('inputEmail')?.value?.trim();
+            const telefono = document.getElementById('inputTelefono')?.value?.trim();
+            if (nombre) localStorage.setItem('rd_chat_nombre', nombre);
+            if (email) localStorage.setItem('rd_chat_email', email);
+            if (telefono) localStorage.setItem('rd_chat_telefono', telefono);
         };
 
         // Event listener para Enter en el chat
@@ -4457,6 +3941,12 @@ END:VCARD`;
                 const icon = MODULO_ICONS[currentTarjeta.modulo?.toLowerCase()] || '💼';
                 document.getElementById('chatAvatar').textContent = icon;
                 document.getElementById('chatName').textContent = currentTarjeta.nombre_negocio || 'Chat';
+
+                // Suscribirse a Realtime inmediatamente para recibir notificaciones
+                // incluso sin abrir el chat
+                if (supabaseClient) {
+                    suscribirseRealtime();
+                }
             }
         };
 
@@ -4732,276 +4222,6 @@ END:VCARD`;
 
         // ═══ MODIFICAR RENDER TARJETA PARA INCLUIR NUEVAS SECCIONES ═══
         const originalRenderTarjeta = renderTarjeta;
-
-        // ═══════════════════════════════════════════════════════════════════
-        // POLLOS ORDERING SYSTEM (integrated into index.html)
-        // ═══════════════════════════════════════════════════════════════════
-        let pollosProductos = [];
-        let pollosCart = [];
-        let pollosConfig = null;
-        let pollosDeliveryType = 'pickup';
-        let pollosCostoDelivery = 30;
-        let pollosNegocioId = null;
-
-        const POLLOS_EMOJIS = {
-            'pollos': '🍗', 'complementos': '🍟', 'bebidas': '🥤',
-            'salsas': '🌶️', 'combos': '⭐', 'postres': '🍰'
-        };
-
-        const pollosInit = async (tarjeta) => {
-            const modulo = (tarjeta.modulo || '').toLowerCase();
-            if (modulo !== 'pollos') return;
-
-            document.getElementById('pollosSection').style.display = 'block';
-            pollosNegocioId = tarjeta.negocio_id;
-
-            // Load pollos config
-            try {
-                const cfgData = await supabaseRequest(`pollos_config?negocio_id=eq.${tarjeta.negocio_id}&select=*`);
-                if (cfgData && cfgData.length > 0) {
-                    pollosConfig = cfgData[0];
-                    document.getElementById('pollosTitle').textContent = pollosConfig.nombre_negocio || 'Menú';
-                    pollosCostoDelivery = pollosConfig.costo_delivery || 30;
-                    document.getElementById('pollosDeliveryAmt').textContent = pollosCostoDelivery;
-
-                    if (!pollosConfig.abierto) {
-                        document.getElementById('pollosClosedBanner').style.display = 'block';
-                        document.getElementById('pollosStatus').textContent = '🔴 Cerrado';
-                        document.getElementById('pollosStatus').className = 'pollos-status-badge closed';
-                        document.getElementById('pollosSubmitBtn').disabled = true;
-                        document.getElementById('pollosSubmitBtn').textContent = '🚫 Cerrado ahora';
-                    }
-                }
-            } catch (e) { console.warn('Pollos config error:', e); }
-
-            // Load products
-            try {
-                const prods = await supabaseRequest('pollos_productos?activo=eq.true&order=orden_display');
-                pollosProductos = prods || [];
-                pollosRenderProducts(pollosProductos);
-            } catch (e) {
-                console.error('Pollos products error:', e);
-                document.getElementById('pollosProducts').innerHTML = '<div class="pollos-empty"><div class="pollos-empty-icon">⚠️</div><p>Error cargando menú</p></div>';
-            }
-        };
-
-        const pollosRenderProducts = (items) => {
-            const container = document.getElementById('pollosProducts');
-            if (!items || items.length === 0) {
-                container.innerHTML = '<div class="pollos-empty"><div class="pollos-empty-icon">🍽️</div><p>No hay productos disponibles</p></div>';
-                return;
-            }
-            container.innerHTML = items.map(p => {
-                const inCart = pollosCart.find(c => c.id === p.id);
-                const emoji = p.emoji || POLLOS_EMOJIS[p.categoria] || '🍽️';
-                const priceDisplay = p.precio_promocion && p.precio_promocion < p.precio
-                    ? `<span style="text-decoration:line-through;font-size:12px;color:rgba(255,255,255,0.3);margin-right:6px;">$${p.precio}</span>$${p.precio_promocion}`
-                    : `$${p.precio}`;
-                const precio = p.precio_promocion && p.precio_promocion < p.precio ? p.precio_promocion : p.precio;
-                return `
-                    <div class="pollos-product">
-                        <div class="pollos-product-emoji">${emoji}</div>
-                        <div class="pollos-product-info">
-                            <div class="pollos-product-name">${p.nombre}</div>
-                            ${p.descripcion ? `<div class="pollos-product-desc">${p.descripcion}</div>` : ''}
-                            <div class="pollos-product-footer">
-                                <div class="pollos-product-price">${priceDisplay}</div>
-                                ${inCart ? `
-                                    <div class="pollos-qty-ctrl">
-                                        <button class="pollos-qty-btn danger" onclick="pollosRemove(${p.id})">−</button>
-                                        <span class="pollos-qty-num">${inCart.qty}</span>
-                                        <button class="pollos-qty-btn" onclick="pollosAdd(${p.id})">+</button>
-                                    </div>
-                                ` : `
-                                    <button class="pollos-add-btn" onclick="pollosAdd(${p.id})">+</button>
-                                `}
-                            </div>
-                        </div>
-                    </div>`;
-            }).join('');
-        };
-
-        const pollosFilterCat = (cat, btn) => {
-            document.querySelectorAll('.pollos-cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const filtered = cat === 'todos' ? pollosProductos : pollosProductos.filter(p => p.categoria === cat);
-            pollosRenderProducts(filtered);
-        };
-
-        const pollosAdd = (id) => {
-            const product = pollosProductos.find(p => p.id === id);
-            if (!product) return;
-            const existing = pollosCart.find(c => c.id === id);
-            if (existing) { existing.qty++; } else {
-                const precio = product.precio_promocion && product.precio_promocion < product.precio ? product.precio_promocion : product.precio;
-                pollosCart.push({ ...product, precio: precio, qty: 1 });
-            }
-            pollosUpdateCartUI();
-            pollosRefreshProducts();
-        };
-
-        const pollosRemove = (id) => {
-            const existing = pollosCart.find(c => c.id === id);
-            if (existing) {
-                existing.qty--;
-                if (existing.qty <= 0) pollosCart = pollosCart.filter(c => c.id !== id);
-            }
-            pollosUpdateCartUI();
-            pollosRefreshProducts();
-        };
-
-        const pollosRefreshProducts = () => {
-            const activeCat = document.querySelector('.pollos-cat-btn.active');
-            const cat = activeCat ? activeCat.dataset.cat : 'todos';
-            const filtered = cat === 'todos' ? pollosProductos : pollosProductos.filter(p => p.categoria === cat);
-            pollosRenderProducts(filtered);
-        };
-
-        const pollosUpdateCartUI = () => {
-            const totalQty = pollosCart.reduce((s, i) => s + i.qty, 0);
-            const subtotal = pollosCart.reduce((s, i) => s + (i.precio * i.qty), 0);
-            const delivery = pollosDeliveryType === 'delivery' ? pollosCostoDelivery : 0;
-            const total = subtotal + delivery;
-
-            document.getElementById('pollosCartCount').textContent = totalQty;
-            document.getElementById('pollosCartTotal').textContent = total;
-            document.getElementById('pollosSubtotal').textContent = subtotal;
-            document.getElementById('pollosFinalTotal').textContent = total;
-
-            const cartFloat = document.getElementById('pollosCartFloat');
-            if (totalQty > 0) { cartFloat.classList.add('show'); } else { cartFloat.classList.remove('show'); }
-        };
-
-        const pollosOpenCart = () => {
-            document.getElementById('pollosCartModal').classList.add('show');
-            pollosRenderCartItems();
-        };
-
-        const pollosCloseCart = () => {
-            document.getElementById('pollosCartModal').classList.remove('show');
-        };
-
-        const pollosRenderCartItems = () => {
-            const container = document.getElementById('pollosCartItems');
-            if (pollosCart.length === 0) {
-                container.innerHTML = '<div class="pollos-empty" style="padding:20px;"><div class="pollos-empty-icon">🛒</div><p>Tu carrito está vacío</p></div>';
-                return;
-            }
-            container.innerHTML = pollosCart.map(item => {
-                const emoji = item.emoji || POLLOS_EMOJIS[item.categoria] || '🍽️';
-                return `
-                    <div class="pollos-cart-item">
-                        <span class="pollos-cart-item-emoji">${emoji}</span>
-                        <div class="pollos-cart-item-info">
-                            <div class="pollos-cart-item-name">${item.qty}x ${item.nombre}</div>
-                            <div class="pollos-cart-item-price">$${item.precio * item.qty}</div>
-                        </div>
-                        <button class="pollos-cart-item-remove" onclick="pollosRemoveAll(${item.id})">🗑️</button>
-                    </div>`;
-            }).join('');
-        };
-
-        const pollosRemoveAll = (id) => {
-            pollosCart = pollosCart.filter(c => c.id !== id);
-            pollosUpdateCartUI();
-            pollosRenderCartItems();
-            pollosRefreshProducts();
-        };
-
-        const pollosSetDelivery = (type, btn) => {
-            pollosDeliveryType = type;
-            document.querySelectorAll('.pollos-delivery-opt').forEach(o => o.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('pollosAddressGroup').style.display = type === 'delivery' ? 'block' : 'none';
-            document.getElementById('pollosDeliveryRow').style.display = type === 'delivery' ? 'flex' : 'none';
-            pollosUpdateCartUI();
-        };
-
-        const pollosSubmitOrder = async () => {
-            const name = document.getElementById('pollosClientName').value.trim();
-            const phone = document.getElementById('pollosClientPhone').value.trim();
-            const address = document.getElementById('pollosClientAddress').value.trim();
-            const notes = document.getElementById('pollosNotes').value.trim();
-
-            if (!name || !phone) { showToast('Completa nombre y teléfono', '⚠️', false); return; }
-            if (pollosDeliveryType === 'delivery' && !address) { showToast('Ingresa tu dirección', '⚠️', false); return; }
-            if (pollosCart.length === 0) { showToast('Tu carrito está vacío', '⚠️', false); return; }
-
-            const btn = document.getElementById('pollosSubmitBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ Enviando...';
-
-            try {
-                const subtotal = pollosCart.reduce((s, i) => s + (i.precio * i.qty), 0);
-                const delivery = pollosDeliveryType === 'delivery' ? pollosCostoDelivery : 0;
-
-                // Create order
-                const pedidoRes = await supabaseRequest('pollos_pedidos?select=*', {
-                    method: 'POST',
-                    headers: { 'Prefer': 'return=representation' },
-                    body: JSON.stringify({
-                        cliente_nombre: name,
-                        cliente_telefono: phone,
-                        tipo_entrega: pollosDeliveryType,
-                        direccion_entrega: pollosDeliveryType === 'delivery' ? address : null,
-                        notas: notes || null,
-                        subtotal: subtotal,
-                        costo_envio: delivery,
-                        total: subtotal + delivery,
-                        estado: 'pendiente',
-                        origen: 'web',
-                        negocio_id: pollosNegocioId
-                    })
-                });
-
-                const pedido = Array.isArray(pedidoRes) ? pedidoRes[0] : pedidoRes;
-
-                // Create detail items
-                const detalles = pollosCart.map(item => ({
-                    pedido_id: pedido.id,
-                    producto_id: item.id,
-                    producto_nombre: item.nombre,
-                    cantidad: item.qty,
-                    precio_unitario: item.precio,
-                    subtotal: item.precio * item.qty
-                }));
-
-                await supabaseRequest('pollos_pedido_detalle', {
-                    method: 'POST',
-                    headers: { 'Prefer': 'return=minimal' },
-                    body: JSON.stringify(detalles)
-                });
-
-                // Show success
-                const orderNum = String(pedido.numero_pedido || '').padStart(3, '0');
-                document.getElementById('pollosOrderNum').textContent = '#' + orderNum;
-                document.getElementById('pollosSuccessModal').classList.add('show');
-                pollosCloseCart();
-
-            } catch (e) {
-                console.error('Pollos order error:', e);
-                showToast('Error al enviar pedido', '❌', false);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '✅ Confirmar Pedido';
-                if (pollosConfig && !pollosConfig.abierto) {
-                    btn.disabled = true;
-                    btn.textContent = '🚫 Cerrado ahora';
-                }
-            }
-        };
-
-        const pollosNewOrder = () => {
-            pollosCart = [];
-            document.getElementById('pollosClientName').value = '';
-            document.getElementById('pollosClientPhone').value = '';
-            document.getElementById('pollosClientAddress').value = '';
-            document.getElementById('pollosNotes').value = '';
-            pollosSetDelivery('pickup', document.querySelector('.pollos-delivery-opt[data-type="pickup"]'));
-            pollosUpdateCartUI();
-            pollosRefreshProducts();
-            document.getElementById('pollosSuccessModal').classList.remove('show');
-        };
 
         // Iniciar
         document.addEventListener('DOMContentLoaded', () => {
