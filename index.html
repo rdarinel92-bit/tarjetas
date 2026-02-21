@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,11 +6,26 @@
     <meta name="theme-color" content="#0D0D14">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Uniko - Mejorando tu experiencia</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+    <meta name="format-detection" content="telephone=yes">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Contacto Digital</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ29udGFjdG8gRGlnaXRhbCIsInNob3J0X25hbWUiOiJDb250YWN0byIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjMEQwRDE0IiwidGhlbWVfY29sb3IiOiIjRDRBRjM3In0=">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+    
+    <!-- Supabase Realtime JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #D4AF37;
@@ -18,467 +33,4205 @@
             --primary-light: #F4E4BC;
             --bg-dark: #0D0D14;
             --bg-card: #1A1A2E;
+            --bg-input: #12121A;
             --text-white: #FFFFFF;
             --text-muted: rgba(255,255,255,0.6);
-            --accent-cyan: #00D9FF;
-            --accent-purple: #8B5CF6;
+            --text-subtle: rgba(255,255,255,0.4);
             --success: #10B981;
+            --error: #EF4444;
             --whatsapp: #25D366;
+            --phone: #00D9FF;
+            --shadow: rgba(0,0,0,0.4);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg-dark);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
             color: var(--text-white);
-            min-height: 100vh;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Animated background */
-        .bg-animation {
+        /* ═══════════════════════════════════════════════════════════════════
+           LOADING SCREEN
+           ═══════════════════════════════════════════════════════════════════ */
+        .loading-screen {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            overflow: hidden;
-        }
-        .bg-animation::before {
-            content: '';
-            position: absolute;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
-            top: -200px; right: -200px;
-            animation: floatBg 15s ease-in-out infinite;
-        }
-        .bg-animation::after {
-            content: '';
-            position: absolute;
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
-            bottom: -150px; left: -150px;
-            animation: floatBg 20s ease-in-out infinite reverse;
-        }
-        @keyframes floatBg {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, -30px) scale(1.1); }
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 24px 20px;
-            min-height: 100vh;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
 
-        /* Logo area */
-        .logo-area {
-            text-align: center;
-            margin-bottom: 32px;
-            animation: fadeInDown 0.8s ease-out;
-        }
-        .logo-icon {
-            width: 80px; height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 24px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px;
-            font-size: 40px;
-            box-shadow: 0 8px 32px rgba(212,175,55,0.3);
-            animation: pulse 3s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 8px 32px rgba(212,175,55,0.3); }
-            50% { box-shadow: 0 8px 48px rgba(212,175,55,0.5); }
-        }
-        .logo-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
         }
 
-        /* Main card */
-        .main-card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 32px 24px;
+        .loader {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+
+        .loader::before {
+            content: '';
+            position: absolute;
             width: 100%;
-            border: 1px solid rgba(212,175,55,0.15);
-            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-            animation: fadeInUp 0.8s ease-out 0.2s both;
-            text-align: center;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(212,175,55,0.12);
-            color: var(--primary);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-        }
-        .badge-dot {
-            width: 6px; height: 6px;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: blink 1.5s ease-in-out infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .main-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
-        .main-subtitle {
-            color: var(--text-muted);
-            font-size: 15px;
-            line-height: 1.6;
-            margin-bottom: 28px;
-        }
-
-        /* Progress animation */
-        .progress-section {
-            margin-bottom: 28px;
-        }
-        .progress-bar-bg {
-            width: 100%;
-            height: 6px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
-            border-radius: 3px;
-            width: 75%;
-            animation: progressGrow 2s ease-out 1s both, shimmer 2s linear infinite;
-            background-size: 200% 100%;
-        }
-        @keyframes progressGrow {
-            from { width: 0%; }
-            to { width: 75%; }
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-        .progress-text {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .progress-text span {
-            color: var(--primary);
-            font-weight: 600;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        /* Feature pills */
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            margin-bottom: 28px;
+        .loader::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 3px solid transparent;
+            border-top-color: var(--primary-light);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite reverse;
         }
-        .feature-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(255,255,255,0.05);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: var(--text-muted);
-            border: 1px solid rgba(255,255,255,0.06);
-        }
-        .feature-pill .check {
-            color: var(--success);
-            font-size: 14px;
-        }
-        .feature-pill .pending {
-            color: var(--primary);
-            font-size: 14px;
-            animation: spin 2s linear infinite;
-        }
+
         @keyframes spin {
-            from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* Divider */
-        .divider {
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.2), transparent);
-            margin: 24px 0;
+        .loading-text {
+            margin-top: 20px;
+            color: var(--text-muted);
+            font-size: 14px;
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
-        /* Contact section */
-        .contact-title {
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           MAIN CONTAINER
+           ═══════════════════════════════════════════════════════════════════ */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           HERO SECTION - BUSINESS CARD STYLE
+           ═══════════════════════════════════════════════════════════════════ */
+        .hero {
+            position: relative;
+            padding: 24px 16px 20px;
+            text-align: center;
+            overflow: visible;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           BUSINESS CARD 3D CONTAINER
+           ═══════════════════════════════════════════════════════════════════ */
+        .business-card-container {
+            perspective: 1200px;
+            perspective-origin: 50% 50%;
+            width: 100%;
+            max-width: 340px;
+            margin: 0 auto 20px;
+            /* fixed height so flip doesn't change layout */
+            aspect-ratio: 1.8 / 1;
+        }
+
+        .business-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform-origin: 50% 50%;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .business-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .business-card-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        /* ═══ FRENTE - DINÁMICO (colores del negocio) ═══ */
+        .card-front {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, var(--card-color1, #D4AF37) 0%, var(--card-color2, #B8860B) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-front::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
+            pointer-events: none;
+        }
+
+        .card-front-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-modulo-badge {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--card-text, #1A1A2E);
+            opacity: 0.6;
+        }
+
+        .card-promo-badge {
+            background: #EF4444;
+            color: white;
+            font-size: 7px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .card-front-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-front-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--card-text, #1A1A2E);
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+            max-height: 56px;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card-front-subtitle {
+            font-size: 11px;
+            color: var(--card-text, #1A1A2E);
+            opacity: 0.7;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .card-front-line {
+            width: 25%;
+            height: 2px;
+            margin-top: 8px;
+            background: linear-gradient(90deg, transparent, var(--card-text, #1A1A2E), transparent);
+            opacity: 0.4;
+            border-radius: 1px;
+        }
+
+        .card-tap-hint {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 8px;
+            color: var(--card-text, #1A1A2E);
+            opacity: 0.4;
+            background: rgba(0,0,0,0.05);
+            padding: 3px 8px;
+            border-radius: 10px;
+            width: fit-content;
+            position: relative;
+            z-index: 1;
+            align-self: center;
+        }
+
+        /* ═══ REVERSO - IGUAL QUE LA APP (negro mate + info + QR) ═══ */
+        .card-back {
+            background: linear-gradient(135deg, #1A1A2E 0%, #0D0D14 100%);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: row;
+            padding: 12px;
+            gap: 8px;
+        }
+
+        .card-back-left {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-width: 0;
+        }
+
+        .card-back-nombre {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary, #D4AF37);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .card-back-servicios {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            margin-bottom: 6px;
+        }
+
+        .card-back-servicio-chip {
+            background: rgba(212,175,55,0.15);
+            color: var(--primary, #D4AF37);
+            font-size: 6px;
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
+        .card-back-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: auto;
+        }
+
+        .card-back-contact-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 7px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .card-back-contact-row .cb-icon {
+            font-size: 9px;
+            color: var(--primary, #D4AF37);
+            width: 12px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .card-back-contact-row .cb-icon.whatsapp {
+            color: #25D366;
+        }
+
+        .card-back-contact-row .cb-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-back-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .qr-frame {
+            background: white;
+            padding: 6px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(212,175,55,0.2);
+        }
+
+        .qr-placeholder {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .scan-label {
+            font-size: 7px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+            letter-spacing: 1px;
+        }
+
+        /* ═══ ANIMACIONES DE TARJETA ═══ */
+        @keyframes cardFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .business-card-container {
+            position: relative;
+            animation: cardFadeIn 0.8s ease-out;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           INFO DEBAJO DE LA TARJETA
+           ═══════════════════════════════════════════════════════════════════ */
+        .business-info {
+            text-align: center;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .business-logo {
+            display: none; /* Reemplazado por la tarjeta */
+        }
+
+        .business-logo-hidden {
+            display: none !important;
+        }
+
+        .business-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { left: -100%; }
+            50% { left: 100%; }
+        }
+
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .business-initials {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--bg-dark);
+            letter-spacing: -1px;
+        }
+
+        .business-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .business-slogan {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 16px;
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+
+        .business-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(212,175,55,0.1);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+
+        .badge-icon {
+            font-size: 14px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           QUICK ACTIONS - BOTONES DE CONTACTO RÁPIDO
+           ═══════════════════════════════════════════════════════════════════ */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 0 16px 20px;
+            animation: fadeIn 0.8s ease-out 0.5s both;
+        }
+
+        .quick-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 14px 6px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-white);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .quick-btn:hover, .quick-btn:active {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(212,175,55,0.2);
+        }
+
+        .quick-btn:hover::before, .quick-btn:active::before {
+            opacity: 1;
+        }
+
+        .quick-btn.whatsapp .btn-icon { color: var(--whatsapp); }
+        .quick-btn.phone .btn-icon { color: var(--phone); }
+        .quick-btn.location .btn-icon { color: #EF4444; }
+        .quick-btn.save .btn-icon { color: #8B5CF6; }
+        .quick-btn.share .btn-icon { color: var(--primary); }
+        .quick-btn.app .btn-icon { color: #10B981; }
+        
+        .quick-btn.app {
+            background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.05) 100%);
+            border-color: rgba(16,185,129,0.3);
+        }
+        
+        .quick-btn.app:hover, .quick-btn.app:active {
+            border-color: #10B981;
+            box-shadow: 0 8px 24px rgba(16,185,129,0.3);
+        }
+
+        .btn-icon {
+            font-size: 22px;
+        }
+
+        .btn-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           SERVICES SECTION
+           ═══════════════════════════════════════════════════════════════════ */
+        .services-section {
+            padding: 0 20px 20px;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--text-white);
+            margin-bottom: 14px;
+            padding-left: 4px;
         }
 
-        .contact-buttons {
+        .section-icon {
+            font-size: 18px;
+        }
+
+        .services-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .services-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .service-chip {
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            padding: 10px 18px;
+            background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.05) 100%);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary-light);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .service-chip:hover {
+            background: rgba(212,175,55,0.2);
+            transform: scale(1.05);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           ABOUT / FEATURE CARDS SECTION
+           ═══════════════════════════════════════════════════════════════════ */
+        .about-section {
+            padding: 0 20px 20px;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        .feature-cards {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .contact-btn {
+        .feature-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            animation: featureSlideIn 0.5s ease-out both;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.25s; }
+        .feature-card:nth-child(3) { animation-delay: 0.4s; }
+
+        .feature-card:hover {
+            border-color: rgba(212,175,55,0.2);
+            background: linear-gradient(135deg, rgba(212,175,55,0.06) 0%, rgba(255,255,255,0.02) 100%);
+            transform: translateX(4px);
+        }
+
+        .feature-card-icon {
+            font-size: 28px;
+            line-height: 1;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 16px 20px;
-            border-radius: 16px;
-            text-decoration: none;
-            color: var(--text-white);
-            font-weight: 500;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
-        .contact-btn:active {
-            transform: scale(0.97);
-        }
-        .contact-btn-icon {
-            width: 44px; height: 44px;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%);
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
+            border: 1px solid rgba(212,175,55,0.15);
         }
-        .contact-btn-text {
-            text-align: left;
+
+        .feature-card-content {
+            flex: 1;
+            min-width: 0;
         }
-        .contact-btn-label {
+
+        .feature-card-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .feature-card:first-child .feature-card-text {
+            font-weight: 600;
+            color: var(--primary-light, var(--gold));
+            font-size: 15px;
+        }
+
+        .feature-card:last-child .feature-card-text {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        @keyframes featureSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           SOCIAL SECTION
+           ═══════════════════════════════════════════════════════════════════ */
+        .social-section {
+            padding: 0 20px 20px;
+            animation: fadeIn 0.8s ease-out 0.65s both;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .social-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 24px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .social-btn.facebook {
+            background: linear-gradient(135deg, #1877F2 0%, #0d65d9 100%);
+        }
+
+        .social-btn.instagram {
+            background: linear-gradient(135deg, #E4405F 0%, #C13584 50%, #833AB4 100%);
+        }
+
+        .social-btn.tiktok {
+            background: linear-gradient(135deg, #000000 0%, #25F4EE 50%, #FE2C55 100%);
+        }
+
+        .social-btn:hover {
+            transform: scale(1.1) translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           HORARIO SECTION
+           ═══════════════════════════════════════════════════════════════════ */
+        .horario-section {
+            padding: 0 20px 20px;
+            animation: fadeIn 0.8s ease-out 0.68s both;
+        }
+
+        .horario-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .horario-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .horario-item:last-child {
+            border-bottom: none;
+        }
+
+        .horario-dia {
             font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 2px;
         }
 
-        .btn-whatsapp {
-            background: rgba(37,211,102,0.08);
-            border-color: rgba(37,211,102,0.15);
+        .horario-hora {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-light);
         }
-        .btn-whatsapp .contact-btn-icon {
-            background: rgba(37,211,102,0.15);
-        }
-        .btn-whatsapp:hover { background: rgba(37,211,102,0.14); }
 
-        .btn-call {
-            background: rgba(0,217,255,0.06);
-            border-color: rgba(0,217,255,0.12);
+        .horario-hora.cerrado {
+            color: var(--error);
         }
-        .btn-call .contact-btn-icon {
-            background: rgba(0,217,255,0.12);
-        }
-        .btn-call:hover { background: rgba(0,217,255,0.12); }
 
-        .btn-email {
-            background: rgba(139,92,246,0.06);
-            border-color: rgba(139,92,246,0.12);
+        /* ═══════════════════════════════════════════════════════════════════
+           FORM SECTION
+           ═══════════════════════════════════════════════════════════════════ */
+        .form-section {
+            flex: 1;
+            padding: 24px 20px;
+            background: var(--bg-card);
+            border-radius: 28px 28px 0 0;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            animation: slideUp 0.8s ease-out 0.7s both;
         }
-        .btn-email .contact-btn-icon {
-            background: rgba(139,92,246,0.12);
-        }
-        .btn-email:hover { background: rgba(139,92,246,0.12); }
 
-        /* Notification card */
-        .notify-card {
-            background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(139,92,246,0.06));
-            border: 1px solid rgba(212,175,55,0.12);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 24px;
-            animation: fadeInUp 0.8s ease-out 0.6s both;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .form-subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
             width: 100%;
+            padding: 16px 18px;
+            background: var(--bg-input);
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 14px;
+            color: var(--text-white);
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            -webkit-appearance: none;
         }
-        .notify-card-header {
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(212,175,55,0.15);
+            background: rgba(212,175,55,0.05);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-subtle);
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: none;
+        }
+
+        select.form-input {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 18px;
+            padding-right: 48px;
+        }
+
+        select.form-input option {
+            background: #1A1A2E;
+            color: white;
+            padding: 12px;
+        }
+
+        select.form-input option:hover {
+            background: #D4AF37;
+            color: black;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 14px;
+            color: var(--bg-dark);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212,175,55,0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: var(--bg-dark);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        .submit-btn.loading .btn-text { display: none; }
+        .submit-btn.loading .spinner { display: block; }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           SUCCESS STATE
+           ═══════════════════════════════════════════════════════════════════ */
+        .success-state {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 10px 40px rgba(16,185,129,0.3);
+            animation: bounceIn 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 12px;
+        }
+
+        .success-text {
+            font-size: 15px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .success-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .success-btn {
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .success-btn.primary {
+            background: var(--whatsapp);
+            color: white;
+        }
+
+        .success-btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-white);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           ERROR STATE
+           ═══════════════════════════════════════════════════════════════════ */
+        .error-state {
+            display: none;
+            text-align: center;
+            padding: 60px 30px;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+            animation: shake 0.6s ease-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--error);
+            margin-bottom: 12px;
+        }
+
+        .error-text {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           CHAT WIDGET - BOTÓN Y VENTANA DE CHAT
+           ═══════════════════════════════════════════════════════════════════ */
+        .chat-float-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 30px rgba(212,175,55,0.4);
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: bounceInFloat 0.8s ease-out 1s both;
+            border: none;
+        }
+
+        @keyframes bounceInFloat {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            60% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        .chat-float-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 40px rgba(212,175,55,0.5);
+        }
+
+        .chat-float-btn .chat-icon {
+            font-size: 28px;
+        }
+
+        .chat-float-btn .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: pulseRing 2s ease-out infinite;
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 22px;
+            height: 22px;
+            background: var(--error);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            animation: bounce 0.5s ease;
+        }
+
+        /* Chat Window */
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 340px;
+            max-width: calc(100vw - 48px);
+            height: 450px;
+            max-height: calc(100vh - 150px);
+            background: var(--bg-card);
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1001;
+            animation: slideUpChat 0.3s ease-out;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @keyframes slideUpChat {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .chat-window.open { display: flex; }
+
+        .chat-header {
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chat-header-info { flex: 1; }
+        .chat-header-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--bg-dark);
+        }
+        .chat-header-status {
+            font-size: 11px;
+            color: rgba(0,0,0,0.6);
+        }
+
+        .chat-close-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(0,0,0,0.15);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--bg-dark);
+            transition: background 0.2s;
+        }
+        .chat-close-btn:hover { background: rgba(0,0,0,0.25); }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--bg-dark);
+        }
+
+        .chat-message {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.4;
+            animation: fadeInMsg 0.3s ease;
+        }
+
+        @keyframes fadeInMsg {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message.sent {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--bg-dark);
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.received {
+            align-self: flex-start;
+            background: var(--bg-card);
+            color: var(--text-white);
+            border-bottom-left-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .chat-message .time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .chat-input-area {
+            padding: 12px;
+            background: var(--bg-card);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            color: var(--text-white);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-subtle);
+        }
+
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(212,175,55,0.4);
+        }
+
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .chat-welcome {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+        }
+
+        .chat-welcome-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .chat-welcome h3 {
+            font-size: 16px;
+            color: var(--text-white);
+            margin-bottom: 6px;
+        }
+
+        .chat-welcome p {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Status dot */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10B981;
+            margin-right: 4px;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Typing indicator */
+        .chat-typing {
+            padding: 8px 16px;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-subtle);
+        }
+        .typing-dots { display: flex; gap: 3px; }
+        .typing-dots span {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--text-subtle);
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Chat badge */
+        .chat-badge {
+            display: none;
+        }
+        .chat-badge.active {
+            display: flex;
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 20px;
+            height: 20px;
+            background: #EF4444;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            border: 2px solid var(--bg-dark);
+        }
+
+        /* WhatsApp link fallback (se mantiene oculto, solo para success) */
+        .whatsapp-float {
+            display: none !important;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           TOAST NOTIFICATION
+           ═══════════════════════════════════════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 24px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
         }
-        .notify-card-icon {
-            font-size: 24px;
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
         }
-        .notify-card-title {
+
+        .toast.success {
+            border-color: var(--success);
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast-text {
+            font-size: 14px;
+            color: var(--text-white);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════════════════ */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: var(--text-subtle);
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           RESPONSIVE
+           ═══════════════════════════════════════════════════════════════════ */
+        @media (max-width: 380px) {
+            .hero { padding: 16px 12px 16px; }
+            .business-card-container { max-width: 280px; }
+            .card-front-title { font-size: 18px; }
+            .card-front-subtitle { font-size: 9px; }
+            .card-modulo-badge { font-size: 7px; }
+            .card-back-nombre { font-size: 11px; }
+            .card-back-contact-row { font-size: 6px; }
+            .qr-placeholder { width: 50px; height: 50px; }
+            .business-name { font-size: 22px; }
+            .business-slogan { font-size: 13px; }
+            .quick-actions { grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0 12px 16px; }
+            .quick-btn { padding: 12px 4px; }
+            .btn-icon { font-size: 20px; }
+            .btn-label { font-size: 9px; }
+            .form-section { padding: 20px 16px; }
+        }
+
+        @media (min-width: 381px) and (max-width: 480px) {
+            .business-card-container { max-width: 320px; }
+            .card-front-title { font-size: 20px; }
+        }
+
+        /* iOS Safe Area */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            .container {
+                padding-bottom: calc(80px + env(safe-area-inset-bottom));
+            }
+            .whatsapp-float {
+                bottom: calc(24px + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Ocultar elementos */
+        .hidden { display: none !important; }
+        
+        /* ═══════════════════════════════════════════════════════════════════
+           MODAL INICIAR SESIÓN
+           ═══════════════════════════════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-box {
+            background: linear-gradient(145deg, var(--bg-card) 0%, #12121A 100%);
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 24px;
+            max-width: 340px;
+            width: 100%;
+            padding: 32px 24px;
+            text-align: center;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212,175,55,0.1);
+        }
+        
+        .modal-overlay.active .modal-box {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .modal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        
+        .modal-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .modal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #10B981;
+            margin-bottom: 24px;
+        }
+        
+        .modal-btn-primary {
+            display: block;
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 14px;
             font-size: 15px;
             font-weight: 600;
+            color: var(--bg-dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-bottom: 12px;
         }
-        .notify-card-text {
-            font-size: 13px;
+        
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(212,175,55,0.4);
+        }
+        
+        .modal-btn-secondary {
+            display: block;
+            width: 100%;
+            padding: 14px 24px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 500;
             color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn-secondary:hover {
+            border-color: rgba(255,255,255,0.4);
+            color: var(--text-white);
+        }
+        
+        .modal-note {
+            font-size: 11px;
+            color: var(--text-subtle);
+            margin-top: 16px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           PROMOCIÓN BANNER
+           ═══════════════════════════════════════════════════════════════════ */
+        .promo-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: pulse-promo 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-promo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .promo-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .promo-content {
+            flex: 1;
+        }
+
+        .promo-text {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .promo-discount {
+            font-size: 18px;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           UBICACIÓN / MAPA
+           ═══════════════════════════════════════════════════════════════════ */
+        .location-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .location-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .location-address {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 12px;
             line-height: 1.5;
         }
-        .notify-card-text strong {
+
+        .location-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .location-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px;
+            background: linear-gradient(135deg, #4285F4, #34A853);
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .location-btn.secondary {
+            background: linear-gradient(135deg, #33CCFF, #00AAFF);
+        }
+
+        .location-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           GALERÍA DE TRABAJOS
+           ═══════════════════════════════════════════════════════════════════ */
+        .gallery-section {
+            padding: 0 0 24px 0;
+        }
+
+        .gallery-section .section-title {
+            padding: 0 16px;
+        }
+
+        .gallery-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 16px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .gallery-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-item {
+            flex: 0 0 200px;
+            scroll-snap-align: start;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:active img {
+            transform: scale(1.05);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           CATÁLOGO DE PRECIOS
+           ═══════════════════════════════════════════════════════════════════ */
+        .catalog-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .catalog-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .catalog-item {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .catalog-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-white);
+        }
+
+        .catalog-price {
+            font-size: 16px;
+            font-weight: 700;
             color: var(--primary);
         }
 
-        /* Footer */
-        .footer {
-            margin-top: 32px;
-            text-align: center;
-            animation: fadeInUp 0.8s ease-out 0.8s both;
+        /* ═══════════════════════════════════════════════════════════════════
+           RESEÑAS / TESTIMONIOS
+           ═══════════════════════════════════════════════════════════════════ */
+        .reviews-section {
+            padding: 0 0 24px 0;
         }
-        .footer-text {
+
+        .reviews-section .section-title {
+            padding: 0 16px;
+        }
+
+        .reviews-scroll {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 16px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .reviews-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .review-card {
+            flex: 0 0 280px;
+            scroll-snap-align: start;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .review-stars {
+            color: #FFD700;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .review-author {
             font-size: 12px;
-            color: rgba(255,255,255,0.25);
-        }
-        .footer-brand {
-            font-size: 11px;
-            color: rgba(255,255,255,0.15);
-            margin-top: 4px;
+            font-weight: 600;
+            color: var(--text-white);
         }
 
-        /* Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ═══════════════════════════════════════════════════════════════════
+           AGENDAR CITA
+           ═══════════════════════════════════════════════════════════════════ */
+        .booking-section {
+            padding: 0 16px;
+            margin-bottom: 24px;
         }
 
-        /* Responsive */
-        @media (max-width: 360px) {
-            .container { padding: 16px 14px; }
-            .main-card { padding: 24px 18px; }
-            .main-title { font-size: 20px; }
-            .logo-text { font-size: 28px; }
+        .booking-card {
+            background: linear-gradient(135deg, var(--bg-card), rgba(212,175,55,0.1));
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+
+        .booking-text {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .booking-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            padding: 14px 28px;
+            border-radius: 30px;
+            color: #000;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .booking-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           MODAL AGENDAR CITA
+           ═══════════════════════════════════════════════════════════════════ */
+        .modal-booking {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-booking.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-booking-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-booking-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-booking-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        .booking-form-group {
+            margin-bottom: 16px;
+        }
+
+        .booking-form-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .booking-form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg-input);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: var(--text-white);
+            font-size: 14px;
+        }
+
+        .booking-form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .booking-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 12px;
+            color: #000;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════════
+           TEMA CLARO / TOGGLE
+           ═══════════════════════════════════════════════════════════════════ */
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.9);
+        }
+
+        /* Light Theme - Mejorado para mejor visibilidad */
+        body.light-theme {
+            --bg-dark: #F8F9FA;
+            --bg-card: #FFFFFF;
+            --bg-input: #F0F2F5;
+            --text-white: #1A1A2E;
+            --text-muted: rgba(26,26,46,0.75);
+            --text-subtle: rgba(26,26,46,0.6);
+            --primary: #B8860B;
+            --primary-light: #8B6914;
+        }
+
+        body.light-theme .card-front,
+        body.light-theme .card-back {
+            border-color: rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+        }
+
+        /* Nombre del negocio y slogan */
+        body.light-theme .business-name {
+            color: #1A1A2E;
+            text-shadow: none;
+        }
+
+        body.light-theme .business-slogan {
+            color: #4A4A5A;
+        }
+
+        /* Títulos de sección */
+        body.light-theme .section-title {
+            color: #1A1A2E;
+        }
+
+        /* Botones rápidos */
+        body.light-theme .quick-btn {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.12);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        body.light-theme .quick-btn .btn-label {
+            color: #4A4A5A;
+        }
+
+        body.light-theme .quick-btn:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        /* Chips de servicios */
+        body.light-theme .service-chip {
+            background: linear-gradient(135deg, rgba(184,134,11,0.12) 0%, rgba(184,134,11,0.06) 100%);
+            border-color: rgba(184,134,11,0.25);
+            color: #8B6914;
+        }
+
+        /* Cards de horario, ubicación, etc */
+        body.light-theme .horario-card,
+        body.light-theme .location-card,
+        body.light-theme .catalog-item,
+        body.light-theme .review-card {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        body.light-theme .horario-dia,
+        body.light-theme .location-address {
+            color: #4A4A5A;
+        }
+
+        body.light-theme .horario-hora {
+            color: #8B6914;
+        }
+
+        /* Catálogo de precios */
+        body.light-theme .catalog-name {
+            color: #1A1A2E;
+        }
+
+        body.light-theme .catalog-price {
+            color: #B8860B;
+        }
+
+        /* Reseñas */
+        body.light-theme .review-text {
+            color: #4A4A5A;
+        }
+
+        body.light-theme .review-author {
+            color: #6A6A7A;
+        }
+
+        /* Formulario */
+        body.light-theme .form-section {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.08);
+        }
+
+        body.light-theme .form-title {
+            color: #1A1A2E;
+        }
+
+        body.light-theme .form-subtitle {
+            color: #5A5A6A;
+        }
+
+        body.light-theme .form-label {
+            color: #3A3A4A;
+        }
+
+        body.light-theme .form-input {
+            background: #F5F7FA;
+            border-color: rgba(0,0,0,0.12);
+            color: #1A1A2E;
+        }
+
+        body.light-theme .form-input::placeholder {
+            color: #8A8A9A;
+        }
+
+        body.light-theme .form-input:focus {
+            border-color: #B8860B;
+            background: #FFFFFF;
+        }
+
+        /* Banner de promoción */
+        body.light-theme .promo-banner {
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFF5DB 100%);
+            border-color: rgba(184,134,11,0.3);
+        }
+
+        body.light-theme .promo-text {
+            color: #5A4A2A;
+        }
+
+        /* Chat */
+        body.light-theme .chat-window {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.12);
+        }
+
+        body.light-theme .chat-header {
+            background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+        }
+
+        body.light-theme .chat-messages {
+            background: #F8F9FA;
+        }
+
+        body.light-theme .chat-bubble.visitor {
+            background: #E8E8EC;
+            color: #1A1A2E;
+        }
+
+        body.light-theme .chat-bubble.owner {
+            background: linear-gradient(135deg, #B8860B 0%, #8B6914 100%);
+            color: #FFFFFF;
+        }
+
+        body.light-theme .chat-input {
+            background: #F5F7FA;
+            border-color: rgba(0,0,0,0.12);
+            color: #1A1A2E;
+        }
+
+        /* Modal */
+        body.light-theme .modal-box {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        body.light-theme .modal-title {
+            color: #1A1A2E;
+        }
+
+        body.light-theme .modal-text {
+            color: #5A5A6A;
+        }
+
+        body.light-theme .modal-note {
+            color: #6A6A7A;
+        }
+
+        /* Footer */
+        body.light-theme .footer {
+            color: #6A6A7A;
+        }
+
+        body.light-theme .footer a {
+            color: #B8860B;
+        }
+
+        /* Galería */
+        body.light-theme .gallery-item {
+            border-color: rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Booking card */
+        body.light-theme .booking-card {
+            background: #FFFFFF;
+            border-color: rgba(0,0,0,0.08);
+        }
+
+        body.light-theme .booking-text {
+            color: #5A5A6A;
+        }
+
+        /* Badge del módulo */
+        body.light-theme .business-badge {
+            background: rgba(184,134,11,0.12);
+            border-color: rgba(184,134,11,0.25);
+        }
+
+        body.light-theme .badge-text {
+            color: #8B6914;
+        }
+
+        /* Loading y error */
+        body.light-theme .loading-screen,
+        body.light-theme .error-state {
+            background: #F8F9FA;
+        }
+
+        body.light-theme .error-title,
+        body.light-theme .error-text {
+            color: #4A4A5A;
         }
     </style>
 </head>
 <body>
-    <div class="bg-animation"></div>
-    
-    <div class="container">
-        <!-- Logo -->
-        <div class="logo-area">
-            <div class="logo-icon">💼</div>
-            <div class="logo-text">Uniko</div>
-        </div>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Cambiar tema">
+        🌙
+    </button>
 
-        <!-- Main Card -->
-        <div class="main-card">
-            <div class="badge">
-                <div class="badge-dot"></div>
-                En mejora continua
+    <!-- Modal Agendar Cita -->
+    <div class="modal-booking" id="modalBooking" onclick="cerrarModalBooking(event)">
+        <div class="modal-booking-content" onclick="event.stopPropagation()">
+            <div class="modal-booking-header">
+                <h2 class="modal-booking-title">📅 Agendar Cita</h2>
             </div>
-            
-            <h1 class="main-title">Estamos mejorando<br>tu experiencia</h1>
-            <p class="main-subtitle">
-                Estamos actualizando nuestra plataforma digital para ofrecerte 
-                un servicio más rápido, seguro y personalizado. 
-                ¡Pronto estará mejor que nunca!
-            </p>
-
-            <!-- Progress -->
-            <div class="progress-section">
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill"></div>
+            <form id="bookingForm" onsubmit="enviarCita(event)">
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Tu nombre</label>
+                    <input type="text" class="booking-form-input" id="bookingNombre" required placeholder="¿Cómo te llamas?">
                 </div>
-                <p class="progress-text">Progreso: <span>75%</span> completado</p>
-            </div>
-
-            <!-- Features being improved -->
-            <div class="features">
-                <div class="feature-pill"><span class="check">✓</span> Tarjetas digitales</div>
-                <div class="feature-pill"><span class="check">✓</span> Chat en vivo</div>
-                <div class="feature-pill"><span class="check">✓</span> Catálogo de servicios</div>
-                <div class="feature-pill"><span class="pending">⟳</span> Reservaciones</div>
-                <div class="feature-pill"><span class="pending">⟳</span> Pagos en línea</div>
-            </div>
-
-            <div class="divider"></div>
-
-            <!-- Contact -->
-            <p class="contact-title">¿Necesitas atención ahora?</p>
-            
-            <div class="contact-buttons">
-                <a href="https://wa.me/529341118512" target="_blank" class="contact-btn btn-whatsapp">
-                    <div class="contact-btn-icon">💬</div>
-                    <div class="contact-btn-text">
-                        <div class="contact-btn-label">Escríbenos por WhatsApp</div>
-                        <div>934 111 8512</div>
-                    </div>
-                </a>
-                
-                <a href="tel:+529341118512" class="contact-btn btn-call">
-                    <div class="contact-btn-icon">📞</div>
-                    <div class="contact-btn-text">
-                        <div class="contact-btn-label">Llamar directamente</div>
-                        <div>934 111 8512</div>
-                    </div>
-                </a>
-
-                <a href="mailto:rdarinel992@gmail.com" class="contact-btn btn-email">
-                    <div class="contact-btn-icon">✉️</div>
-                    <div class="contact-btn-text">
-                        <div class="contact-btn-label">Enviar correo</div>
-                        <div>rdarinel992@gmail.com</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- Notification promise -->
-        <div class="notify-card">
-            <div class="notify-card-header">
-                <span class="notify-card-icon">🔔</span>
-                <span class="notify-card-title">Te avisaremos</span>
-            </div>
-            <p class="notify-card-text">
-                Cuando la plataforma esté lista, enviaremos una <strong>notificación</strong> 
-                a todos nuestros clientes. Mientras tanto, todas las llamadas, mensajes y 
-                solicitudes se atienden directamente por <strong>WhatsApp o teléfono</strong>.
-            </p>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p class="footer-text">© 2026 Uniko · Todos los derechos reservados</p>
-            <p class="footer-brand">Mejorando para ti ✨</p>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Tu teléfono</label>
+                    <input type="tel" class="booking-form-input" id="bookingTelefono" required placeholder="Ej: 5512345678">
+                </div>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Fecha deseada</label>
+                    <input type="date" class="booking-form-input" id="bookingFecha" required>
+                </div>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Hora preferida</label>
+                    <input type="time" class="booking-form-input" id="bookingHora" required>
+                </div>
+                <div class="booking-form-group">
+                    <label class="booking-form-label">Servicio o comentario</label>
+                    <input type="text" class="booking-form-input" id="bookingServicio" placeholder="¿Qué necesitas?">
+                </div>
+                <button type="submit" class="booking-submit-btn">
+                    ✅ Confirmar Cita
+                </button>
+            </form>
         </div>
     </div>
 
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <p class="loading-text">Cargando información...</p>
+    </div>
+
+    <!-- Modal Iniciar Sesión -->
+    <div class="modal-overlay" id="modalLogin" onclick="cerrarModalLogin(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <span class="modal-icon">🔐</span>
+            <h2 class="modal-title">Acceso a Clientes</h2>
+            <p class="modal-text">
+                Para iniciar sesión necesitas ser un <strong>cliente registrado</strong> en nuestro sistema.
+            </p>
+            <div class="modal-badge">
+                <span>✓</span>
+                Descarga gratuita para Android (~100 MB)
+            </div>
+            <a href="app-release.apk" 
+               class="modal-btn-primary" 
+               download="RobertDarin.apk"
+               onclick="iniciarDescarga(event)">
+                📱 Descargar Aplicación
+            </a>
+            <p id="downloadProgress" style="display:none; font-size: 12px; color: var(--success); margin-top: 12px;">
+                ⏳ Descarga iniciada... Por favor espera, el archivo es grande (~100 MB)
+            </p>
+            <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)">
+                Cancelar
+            </button>
+            <p class="modal-note">
+                ¿No eres cliente? Contáctanos por WhatsApp para registrarte.
+            </p>
+        </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="error-state" id="errorState">
+        <div class="error-icon">⚠️</div>
+        <h1 class="error-title">Enlace no válido</h1>
+        <p class="error-text">Este código de tarjeta no existe o ha expirado.</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" id="mainContent" style="display: none;">
+        <!-- Hero Section - Business Card Style -->
+        <header class="hero">
+            <div class="hero-content">
+                <!-- ═══ TARJETA DE PRESENTACIÓN 3D ═══ -->
+                <div class="business-card-container">
+                    <div class="business-card" id="businessCard" onclick="this.classList.toggle('flipped')">
+                        <!-- FRENTE DINÁMICO (colores del negocio) -->
+                        <div class="business-card-face card-front" id="cardFront">
+                            <div class="card-front-top">
+                                <div class="card-modulo-badge">
+                                    <span id="cardModuloIcon">💼</span>
+                                    <span id="cardModuloText">GENERAL</span>
+                                </div>
+                                <div class="card-promo-badge" id="cardPromoBadge" style="display:none;">PROMO</div>
+                            </div>
+                            <div class="card-front-center">
+                                <div class="card-front-title" id="cardFrontTitle">Mi Negocio</div>
+                                <div class="card-front-subtitle" id="cardFrontSubtitle"></div>
+                                <div class="card-front-line"></div>
+                            </div>
+                            <div class="card-tap-hint">
+                                <span>👆</span>
+                                <span>Toca para ver QR</span>
+                            </div>
+                        </div>
+                        <!-- REVERSO - IGUAL QUE LA APP -->
+                        <div class="business-card-face card-back">
+                            <div class="card-back-left">
+                                <div class="card-back-nombre" id="backNombre">Mi Negocio</div>
+                                <div class="card-back-servicios" id="backServicios"></div>
+                                <div class="card-back-contact" id="backContact">
+                                    <!-- Se llena dinámicamente -->
+                                </div>
+                            </div>
+                            <div class="card-back-right">
+                                <div class="qr-frame">
+                                    <div class="qr-placeholder" id="qrPlaceholder">
+                                        <img id="qrImage" src="" alt="QR Code" style="display:none;">
+                                        <span id="qrFallback" style="font-size:40px;">📱</span>
+                                    </div>
+                                </div>
+                                <div class="scan-label">Escanea el QR</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- INFO DEBAJO DE LA TARJETA -->
+                <div class="business-info">
+                    <h1 class="business-name" id="businessName">Mi Negocio</h1>
+                    <p class="business-slogan" id="businessSlogan">Tu socio de confianza</p>
+                    <span class="business-badge">
+                        <span class="badge-icon" id="badgeIcon">💼</span>
+                        <span id="badgeText">SERVICIOS</span>
+                    </span>
+                </div>
+                <!-- Hidden for compatibility -->
+                <div class="business-logo-hidden">
+                    <span class="business-initials" id="initials">RD</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions" id="quickActions">
+            <a href="#" class="quick-btn whatsapp" id="btnWhatsapp">
+                <span class="btn-icon">💬</span>
+                <span class="btn-label">WhatsApp</span>
+            </a>
+            <a href="#" class="quick-btn phone" id="btnPhone">
+                <span class="btn-icon">📞</span>
+                <span class="btn-label">Llamar</span>
+            </a>
+            <a href="javascript:void(0)" class="quick-btn save" id="btnSave" onclick="guardarContacto()">
+                <span class="btn-icon">👤</span>
+                <span class="btn-label">Guardar</span>
+            </a>
+            <a href="javascript:void(0)" class="quick-btn share" id="btnShare" onclick="compartirTarjeta()">
+                <span class="btn-icon">📤</span>
+                <span class="btn-label">Compartir</span>
+            </a>
+            <a href="javascript:void(0)" class="quick-btn app" id="btnApp" onclick="mostrarModalLogin()">
+                <span class="btn-icon">🔐</span>
+                <span class="btn-label">Acceder</span>
+            </a>
+        </div>
+
+        <!-- Services -->
+        <section class="services-section" id="servicesSection">
+            <h2 class="section-title">
+                <span class="section-icon">✨</span>
+                Nuestros Servicios
+            </h2>
+            <div class="services-scroll" id="servicesList">
+                <!-- Se llenan dinámicamente -->
+            </div>
+        </section>
+
+        <!-- About / Feature Cards -->
+        <section class="about-section" id="aboutSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">💡</span>
+                Sobre Nosotros
+            </h2>
+            <div class="feature-cards" id="featureCards">
+                <!-- Se llenan dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Social Links -->
+        <section class="social-section" id="socialSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">🌐</span>
+                Síguenos
+            </h2>
+            <div class="social-links" id="socialLinks">
+                <!-- Se llenan dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Horario -->
+        <section class="horario-section" id="horarioSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">🕐</span>
+                Horario de Atención
+            </h2>
+            <div class="horario-card" id="horarioCard">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Promoción Activa -->
+        <section class="promo-section" id="promoSection" style="display: none;">
+            <div class="promo-banner" id="promoBanner">
+                <div class="promo-badge">🔥 OFERTA</div>
+                <div class="promo-content">
+                    <p class="promo-text" id="promoText">¡Promoción especial!</p>
+                    <span class="promo-discount" id="promoDiscount">20% OFF</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ubicación / Mapa -->
+        <section class="location-section" id="locationSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">📍</span>
+                Ubicación
+            </h2>
+            <div class="location-card" id="locationCard">
+                <p class="location-address" id="locationAddress"></p>
+                <div class="location-actions">
+                    <a href="#" class="location-btn" id="btnMaps" target="_blank">
+                        <span>🗺️</span> Abrir en Maps
+                    </a>
+                    <a href="#" class="location-btn secondary" id="btnWaze" target="_blank">
+                        <span>🚗</span> Abrir en Waze
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galería de Trabajos -->
+        <section class="gallery-section" id="gallerySection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">📸</span>
+                Nuestros Trabajos
+            </h2>
+            <div class="gallery-scroll" id="galleryList">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Catálogo de Precios -->
+        <section class="catalog-section" id="catalogSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">💰</span>
+                Precios
+            </h2>
+            <div class="catalog-list" id="catalogList">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Reseñas / Testimonios -->
+        <section class="reviews-section" id="reviewsSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">⭐</span>
+                Opiniones de Clientes
+            </h2>
+            <div class="reviews-scroll" id="reviewsList">
+                <!-- Se llena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Agendar Cita -->
+        <section class="booking-section" id="bookingSection" style="display: none;">
+            <h2 class="section-title">
+                <span class="section-icon">📅</span>
+                Agendar Cita
+            </h2>
+            <div class="booking-card">
+                <p class="booking-text">Reserva tu cita de forma rápida y sencilla</p>
+                <button class="booking-btn" id="btnBooking" onclick="abrirModalBooking()">
+                    📅 Agendar Ahora
+                </button>
+            </div>
+        </section>
+
+        <!-- Form Section - Se renderiza dinámicamente -->
+        <section class="form-section" id="formSection">
+            <div class="form-header" id="formHeader">
+                <h2 class="form-title" id="formTitle">📩 Solicita Información</h2>
+                <p class="form-subtitle" id="formSubtitle">Te contactaremos a la brevedad</p>
+            </div>
+
+            <form id="contactForm">
+                <!-- Campos se generan dinámicamente -->
+                <div id="formFieldsContainer"></div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Enviar Solicitud</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+
+            <!-- Success State -->
+            <div class="success-state" id="successState">
+                <div class="success-icon">✓</div>
+                <h2 class="success-title" id="successTitle">¡Mensaje Enviado!</h2>
+                <p class="success-text" id="successText">
+                    Gracias por tu interés.<br>
+                    Nos pondremos en contacto contigo muy pronto.
+                </p>
+                <div class="success-actions">
+                    <a href="#" class="success-btn primary" id="successWhatsapp">💬 WhatsApp</a>
+                    <a href="#" class="success-btn secondary" onclick="location.reload()">Nuevo mensaje</a>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            Powered by <a href="#">Robert Darin Fintech</a>
+        </footer>
+    </div>
+
+    <!-- Chat Floating Button -->
+    <button class="chat-float-btn" id="chatFloatBtn" onclick="toggleChat()" style="display: none;">
+        <div class="pulse-ring"></div>
+        <span class="chat-icon">💬</span>
+        <span class="chat-badge" id="chatBadge">0</span>
+    </button>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-header-avatar" id="chatAvatar">💼</div>
+            <div class="chat-header-info">
+                <div class="chat-header-name" id="chatName">Chat</div>
+                <div class="chat-header-status" id="chatStatus">
+                    <span class="status-dot"></span> En línea
+                </div>
+            </div>
+            <button class="chat-close-btn" onclick="toggleChat()">✕</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-welcome">
+                <div class="chat-welcome-icon">👋</div>
+                <h3>¡Bienvenido!</h3>
+                <p>Escríbenos y te responderemos lo antes posible.</p>
+            </div>
+        </div>
+        <div class="chat-typing" id="chatTyping" style="display:none;">
+            <div class="typing-dots"><span></span><span></span><span></span></div>
+            <span>Escribiendo...</span>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje..." autocomplete="off">
+            <button class="chat-send-btn" id="chatSendBtn" onclick="enviarMensajeChat()">
+                ➤
+            </button>
+        </div>
+    </div>
+
+    <!-- WhatsApp Floating Button (legacy - hidden) -->
+    <a href="#" class="whatsapp-float" id="whatsappFloat" style="display: none;">
+        <div class="pulse-ring"></div>
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon">✓</span>
+        <span class="toast-text" id="toastText">Contacto guardado</span>
+    </div>
+
     <script>
-        // If someone arrives with ?codigo=XXX, preserve it for when the system comes back
-        const params = new URLSearchParams(window.location.search);
-        const codigo = params.get('codigo');
-        if (codigo) {
-            localStorage.setItem('uniko_last_codigo', codigo);
-        }
+        // ═══════════════════════════════════════════════════════════════════════
+        // CONFIGURACIÓN
+        // ═══════════════════════════════════════════════════════════════════════
+        // Nota: Esta es la Anon Key pública de Supabase, segura para frontend con RLS
+        const _p = ['eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp', 'XVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn', 'JlZiI6InF0ZnN4ZnZ4cWlpaG5vZnJwbW', '11Iiwicm9sZSI6ImFub24iLCJpYXQiOj', 'E3NjczMjU5MDIsImV4cCI6MjA4MjkwMT', 'kwMn0.D4LrG8FlnqfK0Zhi2Ex0z2UGeo', 'VSr6u1XR2jnxis9Bg'];
+        const CONFIG = {
+            SUPABASE_URL: 'https://qtfsxfvxqiihnofrpmmu.supabase.co',
+            SUPABASE_KEY: _p.join('')
+        };
+
+        // Supabase client for Realtime
+        let supabaseClient = null;
+        try {
+            supabaseClient = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+        } catch(e) { console.warn('Supabase client init failed, falling back to polling:', e); }
+
+        // Iconos por módulo
+        const MODULO_ICONS = {
+            climas: '❄️',
+            finanzas: '💰',
+            prestamos: '🏦',
+            tandas: '👥',
+            cobranza: '📋',
+            servicios: '🔧',
+            agua: '💧',
+            nice: '✨',
+            ventas: '🛒',
+            pollos: '🍗',
+            purificadora: '💧',
+            joyeria: '💎',
+            general: '💼'
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // UTILIDADES
+        // ═══════════════════════════════════════════════════════════════════════
+        const getParams = () => {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                codigo: params.get('codigo') || params.get('c'),
+                negocio: params.get('negocio') || params.get('n'),
+                modulo: params.get('modulo') || params.get('m')
+            };
+        };
+
+        const detectDevice = () => {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            return {
+                isIOS: /iPad|iPhone|iPod/.test(ua),
+                isAndroid: /android/i.test(ua),
+                isMobile: /Mobi|Android/i.test(ua)
+            };
+        };
+
+        const getInitials = (name) => {
+            if (!name) return 'RD';
+            const words = name.trim().split(/\s+/);
+            if (words.length >= 2) {
+                return (words[0][0] + words[1][0]).toUpperCase();
+            }
+            return name.substring(0, 2).toUpperCase();
+        };
+
+        const formatPhone = (phone) => {
+            if (!phone) return '';
+            const cleaned = phone.replace(/\D/g, '');
+            // Soportar números internacionales
+            // Si empieza con 1 (USA/Canadá) o 52 (México), dejarlo así
+            // Si es número de 10 dígitos sin código, asumir México (52)
+            if (cleaned.startsWith('1') && cleaned.length === 11) {
+                return cleaned; // USA/Canadá: 1 + 10 dígitos
+            }
+            if (cleaned.startsWith('52')) {
+                return cleaned; // México con código
+            }
+            if (cleaned.length === 10) {
+                return '52' + cleaned; // México sin código
+            }
+            // Para otros países, devolver tal cual
+            return cleaned;
+        };
+
+        const showToast = (message, icon = '✓', isSuccess = true) => {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toastText');
+            const toastIcon = document.getElementById('toastIcon');
+            
+            toastText.textContent = message;
+            toastIcon.textContent = icon;
+            toast.classList.toggle('success', isSuccess);
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MODAL INICIAR SESIÓN - DESCARGA APP
+        // ═══════════════════════════════════════════════════════════════════════
+        const mostrarModalLogin = () => {
+            document.getElementById('modalLogin').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const cerrarModalLogin = (event) => {
+            if (event) event.stopPropagation();
+            document.getElementById('modalLogin').classList.remove('active');
+            document.body.style.overflow = '';
+            // Ocultar mensaje de progreso
+            const prog = document.getElementById('downloadProgress');
+            if (prog) prog.style.display = 'none';
+        };
+
+        // Iniciar descarga con feedback visual
+        const iniciarDescarga = (event) => {
+            // Mostrar mensaje de espera
+            const prog = document.getElementById('downloadProgress');
+            if (prog) {
+                prog.style.display = 'block';
+            }
+            
+            // Cambiar texto del botón temporalmente
+            const btn = event.target.closest('a');
+            if (btn) {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '⏳ Iniciando descarga...';
+                btn.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.pointerEvents = 'auto';
+                }, 3000);
+            }
+            
+            // No prevenir default - dejar que el link funcione normalmente
+            return true;
+        };
+
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                cerrarModalLogin();
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // vCard - GUARDAR CONTACTO
+        // ═══════════════════════════════════════════════════════════════════════
+        const guardarContacto = () => {
+            if (!currentTarjeta) return;
+            
+            const t = currentTarjeta;
+            const vCard = `BEGIN:VCARD
+VERSION:3.0
+FN:${t.nombre_negocio || 'Contacto'}
+ORG:${t.nombre_negocio || ''}
+TEL;TYPE=CELL:${t.telefono_principal || t.whatsapp || ''}
+${t.email ? `EMAIL:${t.email}` : ''}
+${t.direccion ? `ADR;TYPE=WORK:;;${t.direccion};${t.ciudad || ''};` : ''}
+URL:${window.location.href}
+NOTE:Contacto de tarjeta digital - ${t.modulo}
+END:VCARD`;
+
+            const blob = new Blob([vCard], { type: 'text/vcard;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${(t.nombre_negocio || 'contacto').replace(/\s+/g, '_')}.vcf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showToast('Contacto guardado en tu teléfono', '👤');
+            
+            // Registrar acción
+            registrarAccion('guardar_contacto');
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // COMPARTIR TARJETA
+        // ═══════════════════════════════════════════════════════════════════════
+        const compartirTarjeta = async () => {
+            if (!currentTarjeta) return;
+            
+            const shareData = {
+                title: currentTarjeta.nombre_negocio || 'Tarjeta de Contacto',
+                text: `Mira la tarjeta de ${currentTarjeta.nombre_negocio}. ${currentTarjeta.slogan || ''}`,
+                url: window.location.href
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                    showToast('¡Gracias por compartir!', '📤');
+                    registrarAccion('compartir');
+                } else {
+                    // Fallback: copiar al portapapeles
+                    await navigator.clipboard.writeText(window.location.href);
+                    showToast('Link copiado al portapapeles', '📋');
+                }
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    // Fallback si falla
+                    try {
+                        await navigator.clipboard.writeText(window.location.href);
+                        showToast('Link copiado al portapapeles', '📋');
+                    } catch {
+                        showToast('No se pudo compartir', '❌', false);
+                    }
+                }
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // API CALLS
+        // ═══════════════════════════════════════════════════════════════════════
+        const supabaseRequest = async (endpoint, options = {}) => {
+            console.log('🔄 Supabase request:', endpoint);
+            
+            const headers = {
+                'apikey': CONFIG.SUPABASE_KEY,
+                'Authorization': `Bearer ${CONFIG.SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': options.prefer || 'return=representation'
+            };
+            
+            const fetchOptions = {
+                headers,
+                method: options.method || 'GET',
+            };
+            
+            if (options.body) {
+                fetchOptions.body = options.body;
+            }
+            
+            try {
+                console.log('📡 Fetching:', `${CONFIG.SUPABASE_URL}/rest/v1/${endpoint}`);
+                const response = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${endpoint}`, fetchOptions);
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ Supabase error:', response.status, errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                // Para return=minimal, no hay body
+                if (options.prefer === 'return=minimal') {
+                    console.log('✅ return=minimal success');
+                    return { success: true };
+                }
+                
+                const text = await response.text();
+                console.log('📦 Response text length:', text.length);
+                const result = text ? JSON.parse(text) : [];
+                console.log('✅ Parsed result:', result);
+                return result;
+            } catch (error) {
+                console.error('🔥 Fetch error:', error);
+                throw error;
+            }
+        };
+
+        const cargarTarjeta = async (codigo) => {
+            console.log('🎴 Cargando tarjeta con código:', codigo);
+            const data = await supabaseRequest(`tarjetas_servicio?codigo=eq.${codigo}&activa=eq.true&select=*`);
+            console.log('📋 Data recibida:', data);
+            return data && data.length > 0 ? data[0] : null;
+        };
+
+        const registrarEscaneo = async (tarjeta) => {
+            try {
+                const device = detectDevice();
+                await supabaseRequest('tarjetas_servicio_escaneos', {
+                    method: 'POST',
+                    prefer: 'return=minimal',
+                    body: JSON.stringify({
+                        tarjeta_id: tarjeta.id,
+                        plataforma: device.isIOS ? 'ios' : device.isAndroid ? 'android' : 'web',
+                        user_agent: navigator.userAgent,
+                        accion: 'ver'
+                    })
+                });
+            } catch (e) {
+                console.warn('No se pudo registrar escaneo:', e);
+            }
+        };
+
+        const registrarAccion = async (accion) => {
+            if (!currentTarjeta) return;
+            try {
+                await supabaseRequest('tarjetas_servicio_escaneos', {
+                    method: 'POST',
+                    prefer: 'return=minimal',
+                    body: JSON.stringify({
+                        tarjeta_id: currentTarjeta.id,
+                        plataforma: detectDevice().isMobile ? 'mobile' : 'web',
+                        user_agent: navigator.userAgent,
+                        accion: accion
+                    })
+                });
+            } catch (e) {
+                console.warn('No se pudo registrar acción:', e);
+            }
+        };
+
+        const enviarSolicitud = async (data) => {
+            // Enviar a tabla específica según módulo
+            if (data.modulo === 'climas') {
+                // Mapear campos para tabla de climas
+                const climasData = {
+                    negocio_id: data.negocio_id,
+                    nombre_completo: data.nombre,
+                    telefono: data.telefono,
+                    email: data.email,
+                    direccion: data.mensaje || 'Sin dirección',
+                    tipo_servicio: data.servicio_interes || 'cotizacion',
+                    notas_cliente: data.mensaje,
+                    estado: 'nueva',
+                    fuente: 'qr_web'
+                };
+                console.log('📤 Enviando a climas_solicitudes_qr:', climasData);
+                return supabaseRequest('climas_solicitudes_qr', {
+                    method: 'POST',
+                    body: JSON.stringify(climasData)
+                });
+            }
+            
+            // Pollos - tabla específica
+            if (data.modulo === 'pollos') {
+                const pollosData = {
+                    negocio_id: data.negocio_id,
+                    nombre_completo: data.nombre,
+                    telefono: data.telefono,
+                    email: data.email,
+                    tipo_pedido: data.servicio_interes || 'general',
+                    notas: data.mensaje,
+                    cantidad: 1,
+                    estado: 'nueva',
+                    fuente: 'qr_web'
+                };
+                console.log('📤 Enviando a pollos_solicitudes_qr:', pollosData);
+                return supabaseRequest('pollos_solicitudes_qr', {
+                    method: 'POST',
+                    body: JSON.stringify(pollosData)
+                });
+            }
+
+            // Para otros módulos (finanzas, etc) usar tabla general
+            console.log('📤 Enviando a tarjetas_servicio_solicitudes:', data);
+            return supabaseRequest('tarjetas_servicio_solicitudes', {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // CONFIGURACIÓN DINÁMICA DE FORMULARIO (sincronizado con la app)
+        // ═══════════════════════════════════════════════════════════════════════
+        let formConfig = null;
+        let formFields = [];
+
+        const cargarConfigFormulario = async (negocioId, tarjetaId, modulo) => {
+            try {
+                console.log('📋 Cargando config formulario para negocio:', negocioId);
+                let config = null;
+                
+                // Primero buscar config específica de la tarjeta
+                if (tarjetaId) {
+                    const res = await supabaseRequest(
+                        `formularios_qr_config?tarjeta_servicio_id=eq.${tarjetaId}&select=*`
+                    );
+                    if (res && res.length > 0) {
+                        config = res[0];
+                        console.log('✅ Config encontrada para tarjeta específica');
+                    }
+                }
+                
+                // Si no hay, buscar config del módulo para el negocio
+                if (!config && negocioId) {
+                    const res = await supabaseRequest(
+                        `formularios_qr_config?negocio_id=eq.${negocioId}&modulo=eq.${modulo || 'general'}&tarjeta_servicio_id=is.null&select=*`
+                    );
+                    if (res && res.length > 0) {
+                        config = res[0];
+                        console.log('✅ Config encontrada para módulo:', modulo);
+                    }
+                }
+                
+                // Si no hay config específica, buscar config general del negocio
+                if (!config && negocioId) {
+                    const res = await supabaseRequest(
+                        `formularios_qr_config?negocio_id=eq.${negocioId}&modulo=eq.general&tarjeta_servicio_id=is.null&select=*`
+                    );
+                    if (res && res.length > 0) {
+                        config = res[0];
+                        console.log('✅ Config general encontrada');
+                    }
+                }
+                
+                if (config) {
+                    formConfig = config;
+                    formFields = config.campos || [];
+                    console.log('📝 Campos configurados:', formFields.length);
+                } else {
+                    console.log('⚠️ No hay config, usando campos por defecto');
+                    formConfig = null;
+                    formFields = [];
+                }
+                
+                return config;
+            } catch (e) {
+                console.error('Error cargando config formulario:', e);
+                return null;
+            }
+        };
+
+        const renderFormulario = (tarjeta) => {
+            const container = document.getElementById('formFieldsContainer');
+            const formHeader = document.getElementById('formHeader');
+            
+            // Aplicar colores y textos de la config
+            if (formConfig) {
+                const titulo = formConfig.titulo_header || '📩 Solicita Información';
+                const subtitulo = formConfig.subtitulo_header || 'Te contactaremos a la brevedad';
+                const colorHeader = formConfig.color_header || '#00D9FF';
+                
+                document.getElementById('formTitle').innerHTML = `📩 ${titulo}`;
+                document.getElementById('formSubtitle').textContent = subtitulo;
+                
+                // Aplicar color al header del formulario
+                formHeader.style.borderLeft = `4px solid ${colorHeader}`;
+                
+                // Mensaje de éxito personalizado
+                const mensajeExito = formConfig.mensaje_exito || '¡Gracias! Tu solicitud ha sido enviada.';
+                document.getElementById('successTitle').textContent = '¡Mensaje Enviado!';
+                document.getElementById('successText').innerHTML = mensajeExito;
+            }
+            
+            // Ordenar campos por orden
+            const camposOrdenados = [...formFields].filter(c => c.activo !== false).sort((a, b) => (a.orden || 99) - (b.orden || 99));
+            
+            // Si no hay campos configurados, usar campos por defecto
+            if (camposOrdenados.length === 0) {
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Nombre completo *</label>
+                        <input type="text" class="form-input" id="field_nombre" name="nombre" placeholder="¿Cómo te llamas?" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teléfono *</label>
+                        <input type="tel" class="form-input" id="field_telefono" name="telefono" placeholder="Tu número a 10 dígitos" required autocomplete="tel" inputmode="tel" pattern="[0-9]{10}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="field_email" name="email" placeholder="correo@ejemplo.com" autocomplete="email" inputmode="email">
+                    </div>
+                    <div class="form-group" id="servicioGroup">
+                        <label class="form-label">¿Qué servicio te interesa?</label>
+                        <select class="form-input" id="field_servicio" name="servicio_interes">
+                            <option value="">Selecciona una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Cuéntanos más</label>
+                        <textarea class="form-input" id="field_mensaje" name="mensaje" placeholder="¿En qué podemos ayudarte?"></textarea>
+                    </div>
+                `;
+                
+                // Llenar select de servicios si hay
+                const servicios = tarjeta.servicios || [];
+                if (servicios.length > 0) {
+                    const selectServicio = document.getElementById('field_servicio');
+                    servicios.forEach(s => {
+                        const option = document.createElement('option');
+                        option.value = s;
+                        option.textContent = s;
+                        selectServicio.appendChild(option);
+                    });
+                } else {
+                    document.getElementById('servicioGroup').style.display = 'none';
+                }
+                return;
+            }
+            
+            // Generar campos dinámicos
+            let html = '';
+            camposOrdenados.forEach(campo => {
+                const id = campo.id || campo.codigo || 'field_' + Math.random().toString(36).substr(2, 9);
+                const tipo = campo.tipo || 'text';
+                const label = campo.label || 'Campo';
+                const placeholder = campo.placeholder || '';
+                const requerido = campo.requerido === true;
+                const opciones = campo.opciones || [];
+                
+                html += `<div class="form-group">`;
+                html += `<label class="form-label">${label}${requerido ? ' *' : ''}</label>`;
+                
+                if (tipo === 'textarea') {
+                    html += `<textarea class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''}></textarea>`;
+                } else if (tipo === 'select' && opciones.length > 0) {
+                    html += `<select class="form-input" id="field_${id}" name="${id}" ${requerido ? 'required' : ''}>`;
+                    html += `<option value="">Selecciona una opción</option>`;
+                    opciones.forEach(opt => {
+                        html += `<option value="${opt}">${opt}</option>`;
+                    });
+                    html += `</select>`;
+                } else if (tipo === 'tel') {
+                    html += `<input type="tel" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} autocomplete="tel" inputmode="tel" pattern="[0-9]{10}">`;
+                } else if (tipo === 'email') {
+                    html += `<input type="email" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} autocomplete="email" inputmode="email">`;
+                } else if (tipo === 'number') {
+                    html += `<input type="number" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} inputmode="numeric">`;
+                } else if (tipo === 'date') {
+                    html += `<input type="date" class="form-input" id="field_${id}" name="${id}" ${requerido ? 'required' : ''}>`;
+                } else {
+                    html += `<input type="text" class="form-input" id="field_${id}" name="${id}" placeholder="${placeholder}" ${requerido ? 'required' : ''} autocomplete="${id === 'nombre' ? 'name' : 'off'}">`;
+                }
+                
+                html += `</div>`;
+            });
+            
+            // Agregar campo de servicio si hay servicios en la tarjeta y no está ya en los campos
+            const servicios = tarjeta.servicios || [];
+            const tieneServicioCampo = camposOrdenados.some(c => c.id === 'servicio' || c.id === 'servicio_interes');
+            if (servicios.length > 0 && !tieneServicioCampo) {
+                html += `
+                    <div class="form-group">
+                        <label class="form-label">¿Qué servicio te interesa?</label>
+                        <select class="form-input" id="field_servicio_interes" name="servicio_interes">
+                            <option value="">Selecciona una opción</option>
+                            ${servicios.map(s => `<option value="${s}">${s}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        };
+
+        const recopilarDatosFormulario = () => {
+            const container = document.getElementById('formFieldsContainer');
+            const inputs = container.querySelectorAll('input, textarea, select');
+            const datos = {};
+            
+            inputs.forEach(input => {
+                const name = input.name || input.id.replace('field_', '');
+                const value = input.value?.trim() || null;
+                if (name && value) {
+                    datos[name] = value;
+                }
+            });
+            
+            return datos;
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // V11.7.3: FEATURE CARDS - TEXTOS PERSONALIZADOS CON ÍCONOS INTELIGENTES
+        // ═══════════════════════════════════════════════════════════════════════
+        const detectIcon = (text) => {
+            if (!text) return '📌';
+            const t = text.toLowerCase();
+            // Climatización / HVAC
+            if (/clima|aire|refrig|hvac|inverter|minisplit|ventilaci|calefacci|enfri/.test(t)) return '❄️';
+            // Instalación / Construcción
+            if (/instalaci|montaje|configur|puesta en marcha|construcci/.test(t)) return '🔧';
+            // Mantenimiento
+            if (/mantenim|reparaci|servicio t|diagn[oó]stic|revisión|limpieza/.test(t)) return '🛠️';
+            // Garantía / Calidad
+            if (/garant[ií]a|calidad|premium|certificad|profesional/.test(t)) return '✅';
+            // Tecnología
+            if (/tech|tecnolog|digital|software|app|sistema|equipo/.test(t)) return '💻';
+            // Finanzas
+            if (/pr[eé]stamo|finanz|cr[eé]dito|ahorro|tanda|cobr|pago/.test(t)) return '💰';
+            // Comida
+            if (/comida|restaur|cocina|pollo|aliment|menu|platillo/.test(t)) return '🍽️';
+            // Salud
+            if (/salud|m[eé]dic|doctor|dental|cl[ií]nic|hospital|terap/.test(t)) return '🏥';
+            // Belleza
+            if (/belleza|est[eé]tic|spa|salon|u[ñn]as|cabello|maquilla/.test(t)) return '💅';
+            // Educación
+            if (/educa|escuela|curso|capacitaci|clase|taller|aprend/.test(t)) return '📚';
+            // Legal
+            if (/legal|abogad|jur[ií]dic|asesor[ií]a|contrat/.test(t)) return '⚖️';
+            // Transporte
+            if (/transport|log[ií]stic|envío|mudanza|fletes/.test(t)) return '🚛';
+            // Hogar
+            if (/hogar|residencial|casa|inmueble|propiedad|departamento/.test(t)) return '🏠';
+            // Comercial
+            if (/comercial|negocio|empresa|corporativ/.test(t)) return '🏢';
+            // Soluciones integrales
+            if (/soluci[oó]n|integral|completo|todo en uno/.test(t)) return '🎯';
+            return '📌';
+        };
+
+        const renderTextosPersonalizados = (titulo, detalle, extra) => {
+            const section = document.getElementById('aboutSection');
+            const container = document.getElementById('featureCards');
+            
+            if (!titulo && !detalle && !extra) {
+                if (section) section.style.display = 'none';
+                return;
+            }
+            
+            let html = '';
+            const textos = [titulo, detalle, extra].filter(Boolean);
+            
+            textos.forEach(texto => {
+                const icon = detectIcon(texto);
+                html += `
+                    <div class="feature-card">
+                        <div class="feature-card-icon">${icon}</div>
+                        <div class="feature-card-content">
+                            <p class="feature-card-text">${texto}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            section.style.display = 'block';
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // UI RENDERING
+        // ═══════════════════════════════════════════════════════════════════════
+        const renderTarjeta = (tarjeta) => {
+            const initials = getInitials(tarjeta.nombre_negocio);
+            const nombreNegocio = tarjeta.nombre_negocio || 'Mi Negocio';
+            const slogan = tarjeta.slogan || '';
+            const modulo = (tarjeta.modulo || 'general').toLowerCase();
+            
+            // V11.6: Colores dinámicos del negocio
+            const color1 = tarjeta.color_primario || '#D4AF37';
+            const color2 = tarjeta.color_secundario || '#B8860B';
+            
+            // Determinar color de texto según luminosidad del fondo
+            const hexToRgb = (hex) => {
+                const r = parseInt(hex.slice(1,3), 16);
+                const g = parseInt(hex.slice(3,5), 16);
+                const b = parseInt(hex.slice(5,7), 16);
+                return {r, g, b};
+            };
+            const rgb1 = hexToRgb(color1);
+            const luminance = (0.299 * rgb1.r + 0.587 * rgb1.g + 0.114 * rgb1.b) / 255;
+            const textColor = luminance > 0.5 ? '#1A1A2E' : '#FFFFFF';
+            
+            // Aplicar colores dinámicos a la tarjeta
+            const cardFront = document.getElementById('cardFront');
+            cardFront.style.setProperty('--card-color1', color1);
+            cardFront.style.setProperty('--card-color2', color2);
+            cardFront.style.setProperty('--card-text', textColor);
+            cardFront.style.background = `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`;
+            
+            // Aplicar color de texto a los elementos del frente
+            document.getElementById('cardFrontTitle').style.color = textColor;
+            document.getElementById('cardFrontSubtitle').style.color = textColor;
+            
+            // V11.2: Textos personalizados (prioridad sobre valores por defecto)
+            const textoFrontalTitulo = tarjeta.texto_frontal_titulo || nombreNegocio;
+            const textoFrontalSubtitulo = tarjeta.texto_frontal_subtitulo || slogan;
+            const textoFrontalExtra = tarjeta.texto_frontal_extra || '';
+            const textoTraseroTitulo = tarjeta.texto_trasero_titulo || '';
+            const textoTraseroDetalle = tarjeta.texto_trasero_detalle || '';
+            const textoTraseroExtra = tarjeta.texto_trasero_extra || '';
+            
+            // ═══ FRENTE DE LA TARJETA (igual que la app) ═══
+            // Módulo badge
+            document.getElementById('cardModuloIcon').textContent = MODULO_ICONS[modulo] || '💼';
+            document.getElementById('cardModuloText').textContent = modulo.toUpperCase();
+            const moduloBadge = document.querySelector('.card-modulo-badge');
+            if (moduloBadge) {
+                moduloBadge.style.color = textColor;
+                moduloBadge.style.opacity = '0.6';
+            }
+            
+            // Promo badge
+            const promoBadge = document.getElementById('cardPromoBadge');
+            if (tarjeta.promocion_activa) {
+                promoBadge.style.display = 'block';
+            } else {
+                promoBadge.style.display = 'none';
+            }
+            
+            // Título principal (nombre del negocio)
+            document.getElementById('cardFrontTitle').textContent = textoFrontalTitulo;
+            
+            // Subtítulo (slogan)
+            const subtitleEl = document.getElementById('cardFrontSubtitle');
+            if (textoFrontalSubtitulo) {
+                subtitleEl.textContent = textoFrontalSubtitulo;
+                subtitleEl.style.display = 'block';
+            } else {
+                subtitleEl.style.display = 'none';
+            }
+            
+            // Tap hint color
+            const tapHint = document.querySelector('.card-tap-hint');
+            if (tapHint) {
+                tapHint.style.color = textColor;
+            }
+            
+            // Logo/Iniciales (compatibilidad)
+            document.getElementById('initials').textContent = initials;
+            
+            // Variables de contacto 
+            const phone = tarjeta.telefono_principal || tarjeta.whatsapp || '';
+            const email = tarjeta.email || '';
+            const ciudad = tarjeta.ciudad || '';
+            
+            // ═══ REVERSO DE LA TARJETA (igual que la app) ═══
+            const backNombre = document.getElementById('backNombre');
+            const backServicios = document.getElementById('backServicios');
+            const backContact = document.getElementById('backContact');
+            
+            // Nombre del negocio en reverso
+            backNombre.textContent = textoFrontalTitulo;
+            backNombre.style.color = color1;
+            
+            // Servicios como chips
+            const serviciosArr = tarjeta.servicios || [];
+            if (serviciosArr.length > 0) {
+                backServicios.innerHTML = serviciosArr.slice(0, 3).map(s => 
+                    `<span class="card-back-servicio-chip">${s}</span>`
+                ).join('');
+                backServicios.style.display = 'flex';
+            } else {
+                backServicios.style.display = 'none';
+            }
+            
+            // Contacto en reverso (igual que la app: teléfono, whatsapp, email, horario, ciudad)
+            let contactHTML = '';
+            if (phone) {
+                contactHTML += `<div class="card-back-contact-row"><span class="cb-icon">📞</span><span class="cb-text">${phone}</span></div>`;
+            }
+            const wa = tarjeta.whatsapp || '';
+            if (wa && wa !== phone) {
+                contactHTML += `<div class="card-back-contact-row"><span class="cb-icon whatsapp">💬</span><span class="cb-text">${wa}</span></div>`;
+            }
+            if (email) {
+                contactHTML += `<div class="card-back-contact-row"><span class="cb-icon">📧</span><span class="cb-text">${email}</span></div>`;
+            }
+            const horario = tarjeta.horario_atencion || '';
+            if (horario) {
+                contactHTML += `<div class="card-back-contact-row"><span class="cb-icon">🕐</span><span class="cb-text">${horario}</span></div>`;
+            }
+            if (ciudad) {
+                contactHTML += `<div class="card-back-contact-row"><span class="cb-icon">📍</span><span class="cb-text">${ciudad}</span></div>`;
+            }
+            backContact.innerHTML = contactHTML;
+            
+            // Actualizar colores del reverso para que coincidan
+            document.documentElement.style.setProperty('--primary', color1);
+            document.documentElement.style.setProperty('--primary-dark', color2);
+            
+            // Generar QR
+            const qrUrl = window.location.href;
+            const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}&bgcolor=ffffff&color=1A1A1A`;
+            const qrImg = document.getElementById('qrImage');
+            const qrFallback = document.getElementById('qrFallback');
+            
+            qrImg.src = qrApiUrl;
+            qrImg.onload = () => {
+                qrImg.style.display = 'block';
+                qrFallback.style.display = 'none';
+            };
+            qrImg.onerror = () => {
+                qrImg.style.display = 'none';
+                qrFallback.style.display = 'block';
+            };
+            
+            // Info del negocio (debajo de tarjeta)
+            document.getElementById('businessName').textContent = textoFrontalTitulo;
+            document.getElementById('businessSlogan').textContent = textoFrontalSubtitulo;
+            
+            // V11.2: Textos traseros personalizados
+            renderTextosPersonalizados(textoTraseroTitulo, textoTraseroDetalle, textoTraseroExtra);
+            
+            // Badge del módulo
+            document.getElementById('badgeIcon').textContent = MODULO_ICONS[modulo] || '💼';
+            document.getElementById('badgeText').textContent = modulo.toUpperCase();
+            
+            // Quick Actions (reusar 'phone' ya declarado arriba)
+            const whatsapp = tarjeta.whatsapp || tarjeta.telefono_principal;
+            
+            if (whatsapp) {
+                const waNumber = formatPhone(whatsapp);
+                const waMsg = encodeURIComponent(`Hola, vi su tarjeta de ${tarjeta.nombre_negocio} y me gustaría más información.`);
+                const waUrl = `https://wa.me/${waNumber}?text=${waMsg}`;
+                document.getElementById('btnWhatsapp').href = waUrl;
+                document.getElementById('successWhatsapp').href = waUrl;
+                
+                // WhatsApp flotante
+                document.getElementById('whatsappFloat').href = waUrl;
+                document.getElementById('whatsappFloat').style.display = 'flex';
+            } else {
+                document.getElementById('btnWhatsapp').style.display = 'none';
+            }
+            
+            if (phone) {
+                document.getElementById('btnPhone').href = `tel:${phone}`;
+            } else {
+                document.getElementById('btnPhone').style.display = 'none';
+            }
+            
+            // Servicios
+            const servicios = tarjeta.servicios || [];
+            const servicesList = document.getElementById('servicesList');
+            
+            if (servicios.length > 0) {
+                servicesList.innerHTML = servicios.map(s => 
+                    `<span class="service-chip">${s}</span>`
+                ).join('');
+            } else {
+                document.getElementById('servicesSection').style.display = 'none';
+            }
+            
+            // Renderizar formulario con config de la app
+            renderFormulario(tarjeta);
+            
+            // Redes Sociales (extendidas con YouTube y sitio web)
+            renderSocialLinksExtended(tarjeta);
+            
+            // Horario
+            renderHorario(tarjeta);
+            
+            // ═══ NUEVAS SECCIONES V2 ═══
+            renderPromo(tarjeta);
+            renderLocation(tarjeta);
+            renderGallery(tarjeta);
+            renderCatalog(tarjeta);
+            renderReviews(tarjeta);
+            renderBooking(tarjeta);
+            
+            // Inicializar Chat
+            setTimeout(initChat, 500);
+        };
+
+        const renderSocialLinks = (tarjeta) => {
+            const socialLinks = document.getElementById('socialLinks');
+            const socialSection = document.getElementById('socialSection');
+            let hasLinks = false;
+            let html = '';
+            
+            if (tarjeta.facebook) {
+                html += `<a href="${tarjeta.facebook}" target="_blank" class="social-btn facebook">📘</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.instagram) {
+                html += `<a href="${tarjeta.instagram}" target="_blank" class="social-btn instagram">📸</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.tiktok) {
+                html += `<a href="${tarjeta.tiktok}" target="_blank" class="social-btn tiktok">🎵</a>`;
+                hasLinks = true;
+            }
+            
+            if (hasLinks) {
+                socialLinks.innerHTML = html;
+                socialSection.style.display = 'block';
+            }
+        };
+
+        const renderHorario = (tarjeta) => {
+            if (!tarjeta.horario_atencion) return;
+            
+            const horarioSection = document.getElementById('horarioSection');
+            const horarioCard = document.getElementById('horarioCard');
+            
+            // Si es texto simple
+            if (typeof tarjeta.horario_atencion === 'string') {
+                horarioCard.innerHTML = `
+                    <div class="horario-item">
+                        <span class="horario-dia">Horario</span>
+                        <span class="horario-hora">${tarjeta.horario_atencion}</span>
+                    </div>
+                `;
+                horarioSection.style.display = 'block';
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // MAIN FLOW
+        // ═══════════════════════════════════════════════════════════════════════
+        let currentTarjeta = null;
+
+        const init = async () => {
+            console.log('🚀 Iniciando...');
+            const params = getParams();
+            console.log('📋 Params:', params);
+            
+            if (!params.codigo) {
+                console.log('❌ No hay código de tarjeta');
+                showError('No se especificó código de tarjeta');
+                return;
+            }
+            
+            // Timeout de 10 segundos para evitar cargando infinito
+            const timeout = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Tiempo de espera agotado')), 10000)
+            );
+            
+            try {
+                const tarjeta = await Promise.race([
+                    cargarTarjeta(params.codigo),
+                    timeout
+                ]);
+                
+                if (!tarjeta) {
+                    console.log('❌ Tarjeta no encontrada');
+                    showError('Tarjeta no encontrada o inactiva');
+                    return;
+                }
+                
+                console.log('✅ Tarjeta cargada:', tarjeta.nombre_negocio);
+                currentTarjeta = tarjeta;
+                
+                // Cargar configuración del formulario desde la app
+                await cargarConfigFormulario(tarjeta.negocio_id, tarjeta.id, tarjeta.modulo);
+                
+                renderTarjeta(tarjeta);
+                registrarEscaneo(tarjeta);
+                showContent();
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                showError(error.message || 'Error de conexión');
+            }
+        };
+
+        const showContent = () => {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('mainContent').style.display = 'flex';
+        };
+
+        const showError = (mensaje = 'Tarjeta no encontrada') => {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('errorState').style.display = 'flex';
+            // Mostrar mensaje específico
+            const errorMsg = document.querySelector('#errorState p');
+            if (errorMsg) {
+                errorMsg.textContent = mensaje;
+            }
+            console.log('🔴 Error mostrado:', mensaje);
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // FORM HANDLING
+        // ═══════════════════════════════════════════════════════════════════════
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+            
+            try {
+                // Recopilar datos dinámicos del formulario
+                const camposDinamicos = recopilarDatosFormulario();
+                
+                // Preparar datos base
+                const data = {
+                    tarjeta_id: currentTarjeta.id,
+                    negocio_id: currentTarjeta.negocio_id,
+                    modulo: currentTarjeta.modulo,
+                    origen: detectDevice().isMobile ? 'mobile' : 'web',
+                    estado: 'pendiente',
+                    // Campos estándar (compatibilidad)
+                    nombre: camposDinamicos.nombre || null,
+                    telefono: camposDinamicos.telefono || null,
+                    email: camposDinamicos.email || null,
+                    servicio_interes: camposDinamicos.servicio_interes || camposDinamicos.servicio || null,
+                    mensaje: camposDinamicos.mensaje || null
+                };
+                
+                // También guardar en formularios_qr_envios si hay config
+                if (formConfig && formConfig.id) {
+                    try {
+                        await supabaseRequest('formularios_qr_envios', {
+                            method: 'POST',
+                            prefer: 'return=minimal',
+                            body: JSON.stringify({
+                                formulario_id: formConfig.id,
+                                negocio_id: currentTarjeta.negocio_id,
+                                tarjeta_id: currentTarjeta.id,
+                                datos: camposDinamicos,
+                                origen: data.origen,
+                                estado: 'nuevo'
+                            })
+                        });
+                        console.log('✅ Guardado en formularios_qr_envios');
+                    } catch (err) {
+                        console.warn('No se pudo guardar en formularios_qr_envios:', err);
+                    }
+                }
+                
+                await enviarSolicitud(data);
+                
+                // Guardar nombre para el chat
+                if (camposDinamicos.nombre) {
+                    localStorage.setItem('rd_chat_nombre', camposDinamicos.nombre);
+                }
+                // Registrar que generó solicitud
+                registrarAccion('formulario');
+                
+                // Mostrar éxito
+                document.getElementById('contactForm').style.display = 'none';
+                document.getElementById('successState').style.display = 'block';
+                
+                // Vibrar en móviles
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100]);
+                }
+                
+            } catch (error) {
+                console.error('Error enviando:', error);
+                showToast('Error al enviar. Intenta de nuevo.', '❌', false);
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+
+        // Click en botones para registrar acciones
+        document.getElementById('btnWhatsapp')?.addEventListener('click', () => registrarAccion('whatsapp'));
+        document.getElementById('btnPhone')?.addEventListener('click', () => registrarAccion('llamar'));
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // CHAT NATIVO - SISTEMA DE MENSAJERÍA
+        // ═══════════════════════════════════════════════════════════════════════
+        let chatOpen = false;
+        let lastMessageCount = 0;
+
+        // Sistema de sonidos de notificacion
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const playNotificationSound = () => {
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1108, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start(audioCtx.currentTime);
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) { console.warn('Sonido no disponible'); }
+        };
+
+        let visitanteId = null;
+        let chatMessages = [];
+        let pollingInterval = null;
+        let realtimeChannel = null;
+
+        // Generar o recuperar ID único del visitante
+        const getVisitanteId = () => {
+            let id = localStorage.getItem('rd_chat_visitante_id');
+            if (!id) {
+                id = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('rd_chat_visitante_id', id);
+            }
+            return id;
+        };
+
+        // Suscribirse a Realtime para recibir mensajes instantáneamente
+        const suscribirseRealtime = () => {
+            if (!supabaseClient || !currentTarjeta || !visitanteId) return;
+            try {
+                // Cancelar suscripción anterior
+                if (realtimeChannel) {
+                    supabaseClient.removeChannel(realtimeChannel);
+                }
+                realtimeChannel = supabaseClient
+                    .channel('chat_' + visitanteId)
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'tarjetas_chat',
+                        filter: 'visitante_id=eq.' + visitanteId
+                    }, (payload) => {
+                        console.log('📨 Realtime mensaje:', payload.new);
+                        const msg = payload.new;
+                        // Solo agregar si no existe ya
+                        if (!chatMessages.find(m => m.id === msg.id)) {
+                            chatMessages.push(msg);
+                            renderMensajesChat();
+                            if (msg.es_respuesta) {
+                                playNotificationSound();
+                                // Vibrar si disponible
+                                if (navigator.vibrate) navigator.vibrate(200);
+                            }
+                        }
+                    })
+                    .subscribe((status) => {
+                        console.log('📡 Realtime status:', status);
+                    });
+                console.log('✅ Realtime suscrito para visitante:', visitanteId);
+            } catch(e) {
+                console.warn('⚠️ Realtime no disponible, usando polling:', e);
+                // Fallback a polling
+                if (!pollingInterval) {
+                    pollingInterval = setInterval(cargarMensajesChat, 5000);
+                }
+            }
+        };
+
+        // Toggle del chat
+        const toggleChat = () => {
+            chatOpen = !chatOpen;
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('open', chatOpen);
+            
+            if (chatOpen) {
+                cargarMensajesChat();
+                document.getElementById('chatInput').focus();
+                // Usar Realtime si disponible, sino polling
+                if (supabaseClient) {
+                    suscribirseRealtime();
+                } else if (!pollingInterval) {
+                    pollingInterval = setInterval(cargarMensajesChat, 5000);
+                }
+            } else {
+                // Mantener Realtime activo incluso con chat cerrado para notificaciones
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+            }
+        };
+
+        // Cargar mensajes existentes
+        const cargarMensajesChat = async () => {
+            if (!currentTarjeta || !visitanteId) return;
+            
+            try {
+                const data = await supabaseRequest(
+                    `tarjetas_chat?tarjeta_id=eq.${currentTarjeta.id}&visitante_id=eq.${visitanteId}&select=*&order=created_at.asc`
+                );
+                
+                if (data && data.length > 0) {
+                    // Solo actualizar si hay cambios
+                    if (JSON.stringify(data) !== JSON.stringify(chatMessages)) {
+                        // Detectar mensajes nuevos de respuesta (del negocio)
+                        const newResponses = data.filter(m => m.es_respuesta && !chatMessages.find(c => c.id === m.id));
+                        if (newResponses.length > 0 && chatMessages.length > 0) {
+                            playNotificationSound();
+                            console.log('🔔 Nuevo mensaje recibido!');
+                        }
+                        chatMessages = data;
+                        renderMensajesChat();
+                    }
+                }
+            } catch (e) {
+                console.warn('Error cargando mensajes:', e);
+            }
+        };
+
+        // Renderizar mensajes en el chat
+        const renderMensajesChat = () => {
+            const container = document.getElementById('chatMessages');
+            
+            if (chatMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="chat-welcome">
+                        <div class="chat-welcome-icon">👋</div>
+                        <h3>¡Hola!</h3>
+                        <p>Somos <strong>${currentTarjeta?.nombre_negocio || 'el equipo'}</strong>. ¿En qué podemos ayudarte?</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = chatMessages.map(msg => {
+                const time = new Date(msg.created_at).toLocaleTimeString('es-MX', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                const isResponse = msg.es_respuesta;
+                return `
+                    <div class="chat-message ${isResponse ? 'received' : 'sent'}">
+                        ${msg.mensaje}
+                        <span class="time">${time}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            // Scroll al final
+            container.scrollTop = container.scrollHeight;
+        };
+
+        // Enviar mensaje de chat
+        const enviarMensajeChat = async () => {
+            const input = document.getElementById('chatInput');
+            const mensaje = input.value.trim();
+            
+            if (!mensaje || !currentTarjeta) return;
+            
+            const sendBtn = document.getElementById('chatSendBtn');
+            sendBtn.disabled = true;
+            
+            try {
+                // Agregar mensaje optimísticamente a la UI
+                const tempMsg = {
+                    id: 'temp_' + Date.now(),
+                    mensaje: mensaje,
+                    es_respuesta: false,
+                    created_at: new Date().toISOString()
+                };
+                chatMessages.push(tempMsg);
+                renderMensajesChat();
+                input.value = '';
+                
+                // Enviar a Supabase
+                const body = {
+                    tarjeta_id: currentTarjeta.id,
+                    negocio_id: currentTarjeta.negocio_id,
+                    visitante_id: visitanteId,
+                    visitante_nombre: localStorage.getItem('rd_chat_nombre') || null,
+                    visitante_email: localStorage.getItem('rd_chat_email') || null,
+                    visitante_telefono: localStorage.getItem('rd_chat_telefono') || null,
+                    mensaje: mensaje,
+                    es_respuesta: false
+                };
+
+                if (supabaseClient) {
+                    // Usar Supabase client directamente
+                    const { error } = await supabaseClient
+                        .from('tarjetas_chat')
+                        .insert(body);
+                    if (error) throw error;
+                } else {
+                    // Fallback a REST API
+                    await supabaseRequest('tarjetas_chat', {
+                        method: 'POST',
+                        prefer: 'return=minimal',
+                        body: JSON.stringify(body)
+                    });
+                }
+                
+                // Registrar acción
+                registrarAccion('chat_mensaje');
+                
+                // Si no hay Realtime, recargar
+                if (!supabaseClient) {
+                    setTimeout(cargarMensajesChat, 1000);
+                }
+                
+            } catch (e) {
+                console.error('Error enviando mensaje:', e);
+                showToast('Error al enviar mensaje', '❌', false);
+                chatMessages = chatMessages.filter(m => !m.id.startsWith('temp_'));
+                renderMensajesChat();
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        };
+
+        // Guardar datos del visitante si los proporciona en el formulario
+        const guardarNombreVisitante = () => {
+            const nombre = document.getElementById('inputNombre')?.value?.trim();
+            const email = document.getElementById('inputEmail')?.value?.trim();
+            const telefono = document.getElementById('inputTelefono')?.value?.trim();
+            if (nombre) localStorage.setItem('rd_chat_nombre', nombre);
+            if (email) localStorage.setItem('rd_chat_email', email);
+            if (telefono) localStorage.setItem('rd_chat_telefono', telefono);
+        };
+
+        // Event listener para Enter en el chat
+        document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                enviarMensajeChat();
+            }
+        });
+
+        // Inicializar chat cuando se carga la tarjeta
+        const initChat = () => {
+            visitanteId = getVisitanteId();
+            
+            if (currentTarjeta) {
+                // Mostrar botón de chat
+                document.getElementById('chatFloatBtn').style.display = 'flex';
+                
+                // Configurar header del chat
+                const icon = MODULO_ICONS[currentTarjeta.modulo?.toLowerCase()] || '💼';
+                document.getElementById('chatAvatar').textContent = icon;
+                document.getElementById('chatName').textContent = currentTarjeta.nombre_negocio || 'Chat';
+
+                // Suscribirse a Realtime inmediatamente para recibir notificaciones
+                // incluso sin abrir el chat
+                if (supabaseClient) {
+                    suscribirseRealtime();
+                }
+            }
+        };
+
+        // ═══════════════════════════════════════════════════════════════════════
+        // NUEVAS FUNCIONES - MEJORAS V2
+        // ═══════════════════════════════════════════════════════════════════════
+
+        // ═══ TOGGLE TEMA CLARO/OSCURO ═══
+        const toggleTheme = () => {
+            const body = document.body;
+            const btn = document.getElementById('themeToggle');
+            
+            body.classList.toggle('light-theme');
+            
+            const isLight = body.classList.contains('light-theme');
+            btn.textContent = isLight ? '☀️' : '🌙';
+            
+            // Guardar preferencia
+            localStorage.setItem('rd_theme', isLight ? 'light' : 'dark');
+        };
+
+        // Cargar tema guardado
+        const loadSavedTheme = () => {
+            const savedTheme = localStorage.getItem('rd_theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('themeToggle').textContent = '☀️';
+            }
+        };
+
+        // ═══ RENDERIZAR PROMOCIÓN ═══
+        const renderPromo = (tarjeta) => {
+            const section = document.getElementById('promoSection');
+            if (!tarjeta.promocion_activa || !tarjeta.promocion_texto) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            const text = document.getElementById('promoText');
+            const discount = document.getElementById('promoDiscount');
+            
+            text.textContent = tarjeta.promocion_texto;
+            
+            if (tarjeta.promocion_descuento) {
+                discount.textContent = `-${tarjeta.promocion_descuento}% OFF`;
+            } else {
+                discount.style.display = 'none';
+            }
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR UBICACIÓN/MAPA ═══
+        const renderLocation = (tarjeta) => {
+            const section = document.getElementById('locationSection');
+            
+            // Necesitamos lat/long o al menos dirección
+            if (!tarjeta.latitud && !tarjeta.longitud && !tarjeta.direccion) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            const address = document.getElementById('locationAddress');
+            const btnMaps = document.getElementById('btnMaps');
+            const btnWaze = document.getElementById('btnWaze');
+            
+            // Mostrar dirección
+            let direccionTexto = '';
+            if (tarjeta.direccion) direccionTexto = tarjeta.direccion;
+            if (tarjeta.ciudad) direccionTexto += (direccionTexto ? ', ' : '') + tarjeta.ciudad;
+            address.textContent = direccionTexto || 'Ver ubicación';
+            
+            // Generar enlaces de mapas
+            if (tarjeta.latitud && tarjeta.longitud) {
+                const lat = tarjeta.latitud;
+                const lng = tarjeta.longitud;
+                btnMaps.href = `https://www.google.com/maps?q=${lat},${lng}`;
+                btnWaze.href = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+            } else if (tarjeta.direccion) {
+                const query = encodeURIComponent(tarjeta.direccion + (tarjeta.ciudad ? ', ' + tarjeta.ciudad : ''));
+                btnMaps.href = `https://www.google.com/maps/search/${query}`;
+                btnWaze.href = `https://waze.com/ul?q=${query}`;
+            }
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR GALERÍA ═══
+        const renderGallery = (tarjeta) => {
+            const section = document.getElementById('gallerySection');
+            const scroll = section.querySelector('.gallery-scroll');
+            
+            // galeria_fotos debe ser un array de URLs
+            const fotos = tarjeta.galeria_fotos || [];
+            
+            if (!Array.isArray(fotos) || fotos.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            scroll.innerHTML = fotos.map((url, i) => `
+                <div class="gallery-item" onclick="abrirImagen('${url}')">
+                    <img src="${url}" alt="Trabajo ${i + 1}" loading="lazy">
+                </div>
+            `).join('');
+            
+            section.style.display = 'block';
+        };
+
+        // Abrir imagen en pantalla completa
+        const abrirImagen = (url) => {
+            window.open(url, '_blank');
+        };
+
+        // ═══ RENDERIZAR CATÁLOGO ═══
+        const renderCatalog = (tarjeta) => {
+            const section = document.getElementById('catalogSection');
+            const list = section.querySelector('.catalog-list');
+            
+            // catalogo_precios debe ser un array: [{nombre: 'Corte', precio: 100}, ...]
+            const precios = tarjeta.catalogo_precios || [];
+            
+            if (!Array.isArray(precios) || precios.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            list.innerHTML = precios.map(item => `
+                <div class="catalog-item">
+                    <span class="catalog-name">${item.nombre || item.servicio || 'Servicio'}</span>
+                    <span class="catalog-price">$${item.precio || 0}</span>
+                </div>
+            `).join('');
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR RESEÑAS ═══
+        const renderReviews = (tarjeta) => {
+            const section = document.getElementById('reviewsSection');
+            const scroll = section.querySelector('.reviews-scroll');
+            
+            // resenas debe ser un array: [{nombre: 'Juan', texto: '...', estrellas: 5}, ...]
+            const resenas = tarjeta.resenas || [];
+            
+            if (!Array.isArray(resenas) || resenas.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            scroll.innerHTML = resenas.map(r => {
+                const estrellas = '⭐'.repeat(r.estrellas || 5);
+                return `
+                    <div class="review-card">
+                        <div class="review-stars">${estrellas}</div>
+                        <p class="review-text">"${r.texto || r.comentario || '...'}"</p>
+                        <span class="review-author">— ${r.nombre || 'Cliente'}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ RENDERIZAR SECCIÓN AGENDAR ═══
+        const renderBooking = (tarjeta) => {
+            const section = document.getElementById('bookingSection');
+            
+            if (!tarjeta.permite_agendar) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            // Establecer fecha mínima (mañana)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('bookingFecha').min = tomorrow.toISOString().split('T')[0];
+            
+            section.style.display = 'block';
+        };
+
+        // ═══ MODAL DE AGENDAR CITA ═══
+        const abrirModalBooking = () => {
+            document.getElementById('modalBooking').classList.add('active');
+        };
+
+        const cerrarModalBooking = (e) => {
+            if (e.target === e.currentTarget || e.target.classList.contains('modal-booking')) {
+                document.getElementById('modalBooking').classList.remove('active');
+            }
+        };
+
+        const enviarCita = async (e) => {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('bookingNombre').value.trim();
+            const telefono = document.getElementById('bookingTelefono').value.trim();
+            const fecha = document.getElementById('bookingFecha').value;
+            const hora = document.getElementById('bookingHora').value;
+            const servicio = document.getElementById('bookingServicio').value.trim();
+            
+            if (!currentTarjeta) return;
+            
+            // Enviar por WhatsApp
+            const whatsapp = currentTarjeta.whatsapp || currentTarjeta.telefono_principal;
+            if (whatsapp) {
+                const waNumber = formatPhone(whatsapp);
+                const mensaje = `📅 *SOLICITUD DE CITA*\n\n👤 Nombre: ${nombre}\n📞 Teléfono: ${telefono}\n📆 Fecha: ${fecha}\n🕐 Hora: ${hora}${servicio ? '\n💼 Servicio: ' + servicio : ''}\n\n_Enviado desde tarjeta digital_`;
+                const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(mensaje)}`;
+                window.open(waUrl, '_blank');
+            }
+            
+            // También registrar en solicitudes
+            try {
+                await supabaseRequest('tarjetas_servicio_solicitudes', {
+                    method: 'POST',
+                    prefer: 'return=minimal',
+                    body: JSON.stringify({
+                        tarjeta_id: currentTarjeta.id,
+                        negocio_id: currentTarjeta.negocio_id,
+                        nombre: nombre,
+                        telefono: telefono,
+                        mensaje: `CITA: ${fecha} ${hora} - ${servicio}`,
+                        estado: 'pendiente',
+                        origen: 'web'
+                    })
+                });
+            } catch (err) {
+                console.warn('No se pudo registrar cita:', err);
+            }
+            
+            // Cerrar modal y mostrar confirmación
+            document.getElementById('modalBooking').classList.remove('active');
+            showToast('¡Cita solicitada! Te contactaremos pronto.', '✅', true);
+            
+            // Limpiar formulario
+            document.getElementById('bookingForm').reset();
+        };
+
+        // ═══ RENDERIZAR REDES SOCIALES EXTENDIDAS ═══
+        const renderSocialLinksExtended = (tarjeta) => {
+            const socialLinks = document.getElementById('socialLinks');
+            const socialSection = document.getElementById('socialSection');
+            let html = '';
+            let hasLinks = false;
+            
+            if (tarjeta.facebook) {
+                html += `<a href="${tarjeta.facebook}" target="_blank" class="social-btn facebook">📘</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.instagram) {
+                html += `<a href="${tarjeta.instagram}" target="_blank" class="social-btn instagram">📸</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.tiktok) {
+                html += `<a href="${tarjeta.tiktok}" target="_blank" class="social-btn tiktok">🎵</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.youtube) {
+                html += `<a href="${tarjeta.youtube}" target="_blank" class="social-btn youtube" style="background: linear-gradient(135deg, #FF0000, #CC0000);">▶️</a>`;
+                hasLinks = true;
+            }
+            if (tarjeta.sitio_web) {
+                html += `<a href="${tarjeta.sitio_web}" target="_blank" class="social-btn website" style="background: linear-gradient(135deg, #667eea, #764ba2);">🌐</a>`;
+                hasLinks = true;
+            }
+            
+            if (hasLinks) {
+                socialLinks.innerHTML = html;
+                socialSection.style.display = 'block';
+            }
+        };
+
+        // ═══ MODIFICAR RENDER TARJETA PARA INCLUIR NUEVAS SECCIONES ═══
+        const originalRenderTarjeta = renderTarjeta;
+
+        // Iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedTheme();
+            init();
+        });
     </script>
 </body>
 </html>
+
+<!-- Updated: 2026-02-10 19:25:31 -->
+
+

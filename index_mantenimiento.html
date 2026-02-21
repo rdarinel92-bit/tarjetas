@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0D0D14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Uniko - Mejorando tu experiencia</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #D4AF37;
+            --primary-dark: #B8860B;
+            --primary-light: #F4E4BC;
+            --bg-dark: #0D0D14;
+            --bg-card: #1A1A2E;
+            --text-white: #FFFFFF;
+            --text-muted: rgba(255,255,255,0.6);
+            --accent-cyan: #00D9FF;
+            --accent-purple: #8B5CF6;
+            --success: #10B981;
+            --whatsapp: #25D366;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%);
+            top: -200px; right: -200px;
+            animation: floatBg 15s ease-in-out infinite;
+        }
+        .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(139,92,246,0.06) 0%, transparent 70%);
+            bottom: -150px; left: -150px;
+            animation: floatBg 20s ease-in-out infinite reverse;
+        }
+        @keyframes floatBg {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(1.1); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Logo area */
+        .logo-area {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        .logo-icon {
+            width: 80px; height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 24px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 40px;
+            box-shadow: 0 8px 32px rgba(212,175,55,0.3);
+            animation: pulse 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(212,175,55,0.3); }
+            50% { box-shadow: 0 8px 48px rgba(212,175,55,0.5); }
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Main card */
+        .main-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 100%;
+            border: 1px solid rgba(212,175,55,0.15);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(212,175,55,0.12);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        .badge-dot {
+            width: 6px; height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .main-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        .main-subtitle {
+            color: var(--text-muted);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        /* Progress animation */
+        .progress-section {
+            margin-bottom: 28px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
+            border-radius: 3px;
+            width: 75%;
+            animation: progressGrow 2s ease-out 1s both, shimmer 2s linear infinite;
+            background-size: 200% 100%;
+        }
+        @keyframes progressGrow {
+            from { width: 0%; }
+            to { width: 75%; }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .progress-text {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .progress-text span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Feature pills */
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 28px;
+        }
+        .feature-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(255,255,255,0.05);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .feature-pill .check {
+            color: var(--success);
+            font-size: 14px;
+        }
+        .feature-pill .pending {
+            color: var(--primary);
+            font-size: 14px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Divider */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212,175,55,0.2), transparent);
+            margin: 24px 0;
+        }
+
+        /* Contact section */
+        .contact-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text-white);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .contact-btn:active {
+            transform: scale(0.97);
+        }
+        .contact-btn-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .contact-btn-text {
+            text-align: left;
+        }
+        .contact-btn-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .btn-whatsapp {
+            background: rgba(37,211,102,0.08);
+            border-color: rgba(37,211,102,0.15);
+        }
+        .btn-whatsapp .contact-btn-icon {
+            background: rgba(37,211,102,0.15);
+        }
+        .btn-whatsapp:hover { background: rgba(37,211,102,0.14); }
+
+        .btn-call {
+            background: rgba(0,217,255,0.06);
+            border-color: rgba(0,217,255,0.12);
+        }
+        .btn-call .contact-btn-icon {
+            background: rgba(0,217,255,0.12);
+        }
+        .btn-call:hover { background: rgba(0,217,255,0.12); }
+
+        .btn-email {
+            background: rgba(139,92,246,0.06);
+            border-color: rgba(139,92,246,0.12);
+        }
+        .btn-email .contact-btn-icon {
+            background: rgba(139,92,246,0.12);
+        }
+        .btn-email:hover { background: rgba(139,92,246,0.12); }
+
+        /* Notification card */
+        .notify-card {
+            background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(139,92,246,0.06));
+            border: 1px solid rgba(212,175,55,0.12);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 24px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+            width: 100%;
+        }
+        .notify-card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .notify-card-icon {
+            font-size: 24px;
+        }
+        .notify-card-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .notify-card-text {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        .notify-card-text strong {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 32px;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+        .footer-text {
+            font-size: 12px;
+            color: rgba(255,255,255,0.25);
+        }
+        .footer-brand {
+            font-size: 11px;
+            color: rgba(255,255,255,0.15);
+            margin-top: 4px;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 360px) {
+            .container { padding: 16px 14px; }
+            .main-card { padding: 24px 18px; }
+            .main-title { font-size: 20px; }
+            .logo-text { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo-area">
+            <div class="logo-icon">💼</div>
+            <div class="logo-text">Uniko</div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <div class="badge">
+                <div class="badge-dot"></div>
+                En mejora continua
+            </div>
+            
+            <h1 class="main-title">Estamos mejorando<br>tu experiencia</h1>
+            <p class="main-subtitle">
+                Estamos actualizando nuestra plataforma digital para ofrecerte 
+                un servicio más rápido, seguro y personalizado. 
+                ¡Pronto estará mejor que nunca!
+            </p>
+
+            <!-- Progress -->
+            <div class="progress-section">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill"></div>
+                </div>
+                <p class="progress-text">Progreso: <span>75%</span> completado</p>
+            </div>
+
+            <!-- Features being improved -->
+            <div class="features">
+                <div class="feature-pill"><span class="check">✓</span> Tarjetas digitales</div>
+                <div class="feature-pill"><span class="check">✓</span> Chat en vivo</div>
+                <div class="feature-pill"><span class="check">✓</span> Catálogo de servicios</div>
+                <div class="feature-pill"><span class="pending">⟳</span> Reservaciones</div>
+                <div class="feature-pill"><span class="pending">⟳</span> Pagos en línea</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Contact -->
+            <p class="contact-title">¿Necesitas atención ahora?</p>
+            
+            <div class="contact-buttons">
+                <a href="https://wa.me/529341118512" target="_blank" class="contact-btn btn-whatsapp">
+                    <div class="contact-btn-icon">💬</div>
+                    <div class="contact-btn-text">
+                        <div class="contact-btn-label">Escríbenos por WhatsApp</div>
+                        <div>934 111 8512</div>
+                    </div>
+                </a>
+                
+                <a href="tel:+529341118512" class="contact-btn btn-call">
+                    <div class="contact-btn-icon">📞</div>
+                    <div class="contact-btn-text">
+                        <div class="contact-btn-label">Llamar directamente</div>
+                        <div>934 111 8512</div>
+                    </div>
+                </a>
+
+                <a href="mailto:rdarinel992@gmail.com" class="contact-btn btn-email">
+                    <div class="contact-btn-icon">✉️</div>
+                    <div class="contact-btn-text">
+                        <div class="contact-btn-label">Enviar correo</div>
+                        <div>rdarinel992@gmail.com</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Notification promise -->
+        <div class="notify-card">
+            <div class="notify-card-header">
+                <span class="notify-card-icon">🔔</span>
+                <span class="notify-card-title">Te avisaremos</span>
+            </div>
+            <p class="notify-card-text">
+                Cuando la plataforma esté lista, enviaremos una <strong>notificación</strong> 
+                a todos nuestros clientes. Mientras tanto, todas las llamadas, mensajes y 
+                solicitudes se atienden directamente por <strong>WhatsApp o teléfono</strong>.
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">© 2026 Uniko · Todos los derechos reservados</p>
+            <p class="footer-brand">Mejorando para ti ✨</p>
+        </div>
+    </div>
+
+    <script>
+        // If someone arrives with ?codigo=XXX, preserve it for when the system comes back
+        const params = new URLSearchParams(window.location.search);
+        const codigo = params.get('codigo');
+        if (codigo) {
+            localStorage.setItem('uniko_last_codigo', codigo);
+        }
+    </script>
+</body>
+</html>
