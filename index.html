@@ -2328,9 +2328,10 @@
                 <span>✓</span>
                 Descarga gratuita para Android (~100 MB)
             </div>
-            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/latest/download/app-release.apk" 
+            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v11.12b/app-release.apk" 
                class="modal-btn-primary" 
-               download="RobertDarin.apk"
+               target="_blank"
+               rel="noopener noreferrer"
                onclick="iniciarDescarga(event)">
                 📱 Descargar Aplicación
             </a>
@@ -2769,6 +2770,8 @@
 
         // Iniciar descarga con feedback visual
         const iniciarDescarga = (event) => {
+            event.preventDefault();
+            
             // Mostrar mensaje de espera
             const prog = document.getElementById('downloadProgress');
             if (prog) {
@@ -2777,6 +2780,8 @@
             
             // Cambiar texto del botón temporalmente
             const btn = event.target.closest('a');
+            const url = btn ? btn.href : 'https://github.com/rdarinel92-bit/tarjetas/releases/download/v11.12b/app-release.apk';
+            
             if (btn) {
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '⏳ Iniciando descarga...';
@@ -2785,11 +2790,11 @@
                 setTimeout(() => {
                     btn.innerHTML = originalText;
                     btn.style.pointerEvents = 'auto';
-                }, 3000);
+                }, 5000);
             }
             
-            // No prevenir default - dejar que el link funcione normalmente
-            return true;
+            // Abrir descarga en nueva pestaña para evitar conflictos con redirects
+            window.open(url, '_blank');
         };
 
         // Cerrar modal con ESC
