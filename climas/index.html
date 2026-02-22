@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>❄️ Servicios de Climatización - Cotización Gratis</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+    <meta name="theme-color" content="#0D0D14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Servicios profesionales de aires acondicionados, minisplits, climatización. Cotización gratis.">
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        :root {
+            --bg:#0A0A0F; --bg2:#12121A; --card:#1A1A2E; --glass:rgba(26,26,46,0.85);
+            --cyan:#00D9FF; --cyan-d:#0099B3; --cyan-g:rgba(0,217,255,0.15);
+            --purple:#8B5CF6; --purple-g:rgba(139,92,246,0.15);
+            --green:#10B981; --green-g:rgba(16,185,129,0.15);
+            --yellow:#FBBF24; --red:#EF4444; --whatsapp:#25D366;
+            --text:#FFF; --text2:rgba(255,255,255,0.7); --text3:rgba(255,255,255,0.4);
+            --border:rgba(255,255,255,0.08); --border-c:rgba(0,217,255,0.2);
+            --radius:16px; --radius-s:10px;
+        }
+        html { scroll-behavior:smooth; }
+        body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+
+        /* ═══ LOADING ═══ */
+        .loading { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; transition:opacity .5s,visibility .5s; }
+        .loading.hide { opacity:0; visibility:hidden; }
+        .loader { width:64px; height:64px; position:relative; }
+        .loader::before,.loader::after { content:''; position:absolute; border-radius:50%; }
+        .loader::before { inset:0; border:3px solid transparent; border-top-color:var(--cyan); animation:spin .8s linear infinite; }
+        .loader::after { inset:8px; border:3px solid transparent; border-top-color:var(--purple); animation:spin 1.2s linear infinite reverse; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .loading p { margin-top:20px; color:var(--text2); font-size:14px; }
+
+        /* ═══ HERO ═══ */
+        .hero { position:relative; padding:0 0 20px; overflow:hidden; }
+        .hero-bg { position:absolute; top:0; left:0; right:0; height:300px; background:linear-gradient(180deg,rgba(0,217,255,0.12) 0%,rgba(139,92,246,0.06) 50%,transparent 100%); pointer-events:none; }
+        .hero-particles { position:absolute; top:0; left:0; right:0; height:300px; overflow:hidden; pointer-events:none; }
+        .snowflake { position:absolute; color:var(--cyan); font-size:16px; opacity:0.15; animation:fall linear infinite; }
+        @keyframes fall { 0% { transform:translateY(-20px) rotate(0deg); opacity:0; } 10% { opacity:0.15; } 90% { opacity:0.15; } 100% { transform:translateY(300px) rotate(360deg); opacity:0; } }
+        .hero-content { position:relative; z-index:1; padding:32px 20px 16px; text-align:center; }
+        .hero-badge { display:inline-flex; align-items:center; gap:6px; background:var(--cyan-g); border:1px solid var(--border-c); border-radius:20px; padding:6px 14px; font-size:12px; font-weight:600; color:var(--cyan); margin-bottom:16px; }
+        .hero-icon { font-size:56px; display:block; margin-bottom:12px; animation:float 3s ease-in-out infinite; filter:drop-shadow(0 8px 24px rgba(0,217,255,0.3)); }
+        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+        .hero-title { font-size:1.8rem; font-weight:800; margin-bottom:6px; background:linear-gradient(135deg,var(--cyan),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.2; }
+        .hero-sub { font-size:14px; color:var(--text2); max-width:320px; margin:0 auto 16px; line-height:1.5; }
+        .hero-stats { display:flex; justify-content:center; gap:24px; margin-top:12px; }
+        .stat { text-align:center; }
+        .stat-num { font-size:1.3rem; font-weight:800; color:var(--cyan); }
+        .stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
+
+        /* ═══ SECTION ═══ */
+        .section { padding:0 16px; margin-bottom:24px; }
+        .section-title { font-size:16px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+        .section-title span { font-size:20px; }
+
+        /* ═══ QUICK ACTIONS ═══ */
+        .actions { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0 16px; margin-bottom:24px; }
+        .action-btn { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-s); padding:14px 8px; text-align:center; cursor:pointer; transition:all .2s; text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:6px; }
+        .action-btn:active { transform:scale(0.96); }
+        .action-btn .icon { font-size:24px; }
+        .action-btn .label { font-size:11px; font-weight:600; color:var(--text2); }
+        .action-whatsapp { border-color:rgba(37,211,102,0.3); background:rgba(37,211,102,0.08); }
+        .action-whatsapp:active { background:rgba(37,211,102,0.15); }
+        .action-call { border-color:var(--border-c); background:var(--cyan-g); }
+        .action-emergency { border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08); }
+        .action-emergency .label { color:var(--red); }
+
+        /* ═══ SERVICES ═══ */
+        .services-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+        .service-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; cursor:pointer; transition:all .25s; position:relative; overflow:hidden; }
+        .service-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--cyan),var(--purple)); opacity:0; transition:opacity .3s; }
+        .service-card:hover::before,.service-card.selected::before { opacity:1; }
+        .service-card.selected { border-color:var(--cyan); background:var(--cyan-g); }
+        .service-icon { font-size:28px; margin-bottom:8px; }
+        .service-name { font-size:13px; font-weight:600; margin-bottom:4px; line-height:1.3; }
+        .service-price { font-size:11px; color:var(--cyan); font-weight:500; }
+        .service-desc { font-size:11px; color:var(--text3); margin-top:4px; line-height:1.3; }
+        .service-promo { position:absolute; top:8px; right:8px; background:var(--red); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+
+        /* ═══ FORM ═══ */
+        .form-container { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; position:relative; overflow:hidden; }
+        .form-container::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--cyan),var(--purple)); }
+        .form-step { display:none; animation:fadeIn .3s ease; }
+        .form-step.active { display:block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        .step-indicator { display:flex; justify-content:center; gap:8px; margin-bottom:20px; }
+        .step-dot { width:32px; height:4px; border-radius:2px; background:var(--border); transition:all .3s; }
+        .step-dot.active { background:var(--cyan); width:48px; }
+        .step-dot.done { background:var(--green); }
+        .form-title { font-size:16px; font-weight:700; margin-bottom:4px; }
+        .form-subtitle { font-size:12px; color:var(--text3); margin-bottom:16px; }
+        .form-group { margin-bottom:14px; }
+        .form-label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; }
+        .form-input { width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-s); padding:12px 14px; color:var(--text); font-size:14px; font-family:inherit; transition:border-color .2s; outline:none; }
+        .form-input:focus { border-color:var(--cyan); }
+        .form-input::placeholder { color:var(--text3); }
+        textarea.form-input { min-height:80px; resize:vertical; }
+        select.form-input { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.4)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .form-chips { display:flex; flex-wrap:wrap; gap:8px; }
+        .chip { padding:8px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--border); background:var(--bg2); color:var(--text2); transition:all .2s; }
+        .chip.active { background:var(--cyan-g); border-color:var(--cyan); color:var(--cyan); }
+        .chip:active { transform:scale(0.96); }
+        .btn-next,.btn-back,.btn-submit { width:100%; padding:14px; border:none; border-radius:var(--radius-s); font-size:14px; font-weight:700; cursor:pointer; transition:all .2s; font-family:inherit; }
+        .btn-next { background:linear-gradient(135deg,var(--cyan),var(--purple)); color:#fff; margin-top:8px; }
+        .btn-next:active { transform:scale(0.98); filter:brightness(0.9); }
+        .btn-next:disabled { opacity:0.5; cursor:not-allowed; }
+        .btn-back { background:transparent; color:var(--text3); border:1px solid var(--border); margin-top:8px; }
+        .btn-submit { background:linear-gradient(135deg,var(--green),#059669); color:#fff; margin-top:8px; font-size:15px; }
+        .btn-submit:active { transform:scale(0.98); }
+        .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+        .urgency-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .urgency-card { padding:12px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--bg2); cursor:pointer; text-align:center; transition:all .2s; }
+        .urgency-card.active { border-color:var(--cyan); background:var(--cyan-g); }
+        .urgency-card .u-icon { font-size:24px; margin-bottom:4px; }
+        .urgency-card .u-text { font-size:12px; font-weight:600; }
+        .urgency-card .u-desc { font-size:10px; color:var(--text3); margin-top:2px; }
+
+        /* ═══ PHOTO UPLOAD ═══ */
+        .photo-zone { border:2px dashed var(--border); border-radius:var(--radius); padding:24px; text-align:center; cursor:pointer; transition:all .2s; }
+        .photo-zone:hover { border-color:var(--cyan); background:var(--cyan-g); }
+        .photo-zone .pz-icon { font-size:32px; margin-bottom:8px; }
+        .photo-zone .pz-text { font-size:13px; color:var(--text2); }
+        .photo-zone .pz-hint { font-size:11px; color:var(--text3); margin-top:4px; }
+        .photo-previews { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+        .photo-preview { width:64px; height:64px; border-radius:8px; object-fit:cover; border:2px solid var(--border); }
+        .photo-preview-wrap { position:relative; }
+        .photo-remove { position:absolute; top:-6px; right:-6px; width:20px; height:20px; background:var(--red); color:#fff; border:none; border-radius:50%; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+        /* ═══ BTU CALCULATOR ═══ */
+        .calc-card { background:linear-gradient(135deg,var(--cyan-g),var(--purple-g)); border:1px solid var(--border-c); border-radius:var(--radius); padding:16px; margin-bottom:14px; }
+        .calc-title { font-size:13px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+        .calc-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+        .calc-result { background:var(--bg); border-radius:var(--radius-s); padding:12px; text-align:center; margin-top:10px; }
+        .calc-result .btu { font-size:1.6rem; font-weight:800; color:var(--cyan); }
+        .calc-result .btu-label { font-size:11px; color:var(--text3); margin-top:2px; }
+        .calc-result .btu-rec { font-size:12px; color:var(--green); margin-top:6px; font-weight:600; }
+
+        /* ═══ SUCCESS ═══ */
+        .success-screen { display:none; text-align:center; padding:40px 20px; }
+        .success-screen.show { display:block; }
+        .success-icon { font-size:64px; margin-bottom:16px; animation:float 3s ease-in-out infinite; }
+        .success-title { font-size:1.5rem; font-weight:800; margin-bottom:8px; background:linear-gradient(135deg,var(--cyan),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .success-text { font-size:14px; color:var(--text2); margin-bottom:8px; line-height:1.6; }
+        .success-token { background:var(--card); border:1px solid var(--border-c); border-radius:var(--radius-s); padding:12px 20px; display:inline-block; margin:12px 0; }
+        .success-token code { font-size:18px; font-weight:700; color:var(--cyan); letter-spacing:2px; }
+        .success-actions { display:flex; flex-direction:column; gap:10px; margin-top:20px; max-width:300px; margin-left:auto; margin-right:auto; }
+        .success-btn { padding:12px 24px; border-radius:var(--radius-s); font-size:14px; font-weight:600; cursor:pointer; border:none; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; transition:all .2s; font-family:inherit; }
+        .success-btn.wa { background:var(--whatsapp); color:#fff; }
+        .success-btn.track { background:var(--card); color:var(--cyan); border:1px solid var(--border-c); }
+
+        /* ═══ TESTIMONIALS ═══ */
+        .testimonials { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:8px; }
+        .testimonials::-webkit-scrollbar { display:none; }
+        .testimonial { flex:0 0 85%; scroll-snap-align:start; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; }
+        .test-stars { color:var(--yellow); margin-bottom:8px; font-size:14px; }
+        .test-text { font-size:13px; color:var(--text2); line-height:1.5; margin-bottom:8px; font-style:italic; }
+        .test-author { font-size:12px; font-weight:600; }
+
+        /* ═══ GUARANTEE BADGES ═══ */
+        .badges { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+        .badge { text-align:center; padding:12px 8px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-s); }
+        .badge-icon { font-size:24px; margin-bottom:4px; }
+        .badge-text { font-size:10px; font-weight:600; color:var(--text2); line-height:1.3; }
+
+        /* ═══ PROMO BANNER ═══ */
+        .promo-banner { background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(0,217,255,0.1)); border:1px solid var(--border-c); border-radius:var(--radius); padding:16px; text-align:center; position:relative; overflow:hidden; display:none; }
+        .promo-banner.show { display:block; }
+        .promo-badge { display:inline-block; background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:10px; margin-bottom:8px; }
+        .promo-text { font-size:14px; font-weight:600; }
+        .promo-discount { font-size:24px; font-weight:800; color:var(--cyan); }
+
+        /* ═══ CHAT FLOATING ═══ */
+        .chat-fab { position:fixed; bottom:20px; right:20px; width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); border:none; cursor:pointer; z-index:100; display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; box-shadow:0 4px 20px rgba(0,217,255,0.3); transition:all .3s; }
+        .chat-fab:hover { transform:scale(1.05); }
+        .chat-fab .badge-count { position:absolute; top:-4px; right:-4px; width:20px; height:20px; background:var(--red); border-radius:50%; font-size:11px; font-weight:700; display:none; align-items:center; justify-content:center; }
+        .chat-panel { position:fixed; bottom:0; left:0; right:0; top:0; background:var(--bg); z-index:200; display:none; flex-direction:column; }
+        .chat-panel.open { display:flex; }
+        .chat-header { padding:14px 16px; background:var(--card); display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--border); }
+        .chat-close { background:none; border:none; color:var(--text2); font-size:20px; cursor:pointer; padding:4px; }
+        .chat-header-info { flex:1; }
+        .chat-header-info h3 { font-size:14px; font-weight:600; }
+        .chat-header-info p { font-size:11px; color:var(--text3); }
+        .chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
+        .chat-msg { max-width:80%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.4; animation:fadeIn .3s; }
+        .chat-msg.them { background:var(--card); align-self:flex-start; border-bottom-left-radius:4px; }
+        .chat-msg.me { background:linear-gradient(135deg,var(--cyan-g),var(--purple-g)); border:1px solid var(--border-c); align-self:flex-end; border-bottom-right-radius:4px; }
+        .chat-msg .time { font-size:10px; color:var(--text3); margin-top:4px; }
+        .chat-input-bar { padding:12px 16px; background:var(--card); display:flex; gap:8px; border-top:1px solid var(--border); }
+        .chat-input { flex:1; background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:10px 16px; color:var(--text); font-size:13px; outline:none; font-family:inherit; }
+        .chat-input:focus { border-color:var(--cyan); }
+        .chat-send { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); border:none; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+        /* ═══ FOOTER ═══ */
+        .footer { text-align:center; padding:24px 16px 40px; color:var(--text3); font-size:11px; }
+        .footer a { color:var(--cyan); text-decoration:none; }
+
+        /* ═══ ERROR ═══ */
+        .error-screen { display:none; text-align:center; padding:60px 20px; }
+        .error-screen.show { display:block; }
+        .error-icon { font-size:64px; margin-bottom:16px; }
+        .error-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; color:var(--red); }
+
+        /* Honeypot - hidden from users, visible to bots */
+        .hp-field { position:absolute; left:-9999px; opacity:0; height:0; width:0; overflow:hidden; }
+
+        @media(min-width:480px) {
+            .services-grid { grid-template-columns:repeat(3,1fr); }
+            .actions { grid-template-columns:repeat(4,1fr); }
+        }
+        @media(min-width:768px) {
+            body { max-width:480px; margin:0 auto; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading" id="loadingScreen">
+    <div class="loader"></div>
+    <p>Cargando servicios...</p>
+</div>
+
+<!-- ERROR -->
+<div class="error-screen" id="errorScreen">
+    <div class="error-icon">😓</div>
+    <h2 class="error-title">Servicio no disponible</h2>
+    <p style="color:var(--text2);">No pudimos cargar la información. Intenta de nuevo.</p>
+    <button onclick="location.reload()" style="margin-top:20px;padding:12px 32px;background:var(--cyan);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;">Reintentar</button>
+</div>
+
+<!-- MAIN CONTENT (hidden until loaded) -->
+<div id="mainContent" style="display:none;">
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-particles" id="particles"></div>
+        <div class="hero-content">
+            <div class="hero-badge">❄️ Servicio Profesional Certificado</div>
+            <span class="hero-icon">🌡️</span>
+            <h1 class="hero-title" id="heroTitle">Climatización Profesional</h1>
+            <p class="hero-sub" id="heroSub">Instalación, mantenimiento y reparación de aires acondicionados y minisplits</p>
+            <div class="hero-stats" id="heroStats" style="display:none;">
+                <div class="stat"><div class="stat-num" id="statYears">5+</div><div class="stat-label">Años exp.</div></div>
+                <div class="stat"><div class="stat-num" id="statClients">500+</div><div class="stat-label">Clientes</div></div>
+                <div class="stat"><div class="stat-num" id="statServices">1000+</div><div class="stat-label">Servicios</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="actions" id="quickActions">
+        <a class="action-btn action-whatsapp" id="btnWhatsapp" href="#" target="_blank">
+            <span class="icon">💬</span><span class="label">WhatsApp</span>
+        </a>
+        <a class="action-btn action-call" id="btnCall" href="#">
+            <span class="icon">📞</span><span class="label">Llamar</span>
+        </a>
+        <a class="action-btn" id="btnCotizar" href="#formSection">
+            <span class="icon">📋</span><span class="label">Cotizar</span>
+        </a>
+        <a class="action-btn action-emergency" id="btnEmergency" href="#formSection">
+            <span class="icon">🚨</span><span class="label">Emergencia</span>
+        </a>
+    </div>
+
+    <!-- PROMO BANNER -->
+    <div class="section">
+        <div class="promo-banner" id="promoBanner">
+            <div class="promo-badge">🔥 PROMOCIÓN</div>
+            <div class="promo-discount" id="promoDiscount"></div>
+            <div class="promo-text" id="promoText"></div>
+        </div>
+    </div>
+
+    <!-- SERVICES CATALOG -->
+    <div class="section" id="servicesSection">
+        <div class="section-title"><span>🔧</span> Nuestros Servicios</div>
+        <div class="services-grid" id="servicesGrid">
+            <!-- Dynamic or fallback services -->
+        </div>
+    </div>
+
+    <!-- TRUST BADGES -->
+    <div class="section">
+        <div class="badges">
+            <div class="badge"><div class="badge-icon">🛡️</div><div class="badge-text">Garantía en todo servicio</div></div>
+            <div class="badge"><div class="badge-icon">⚡</div><div class="badge-text">Respuesta en menos de 1 hora</div></div>
+            <div class="badge"><div class="badge-icon">👨‍🔧</div><div class="badge-text">Técnicos certificados</div></div>
+        </div>
+    </div>
+
+    <!-- FORM SECTION -->
+    <div class="section" id="formSection">
+        <div class="section-title"><span>📝</span> Solicita tu Cotización Gratis</div>
+        <div class="form-container" id="formContainer">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step-dot active" data-step="1"></div>
+                <div class="step-dot" data-step="2"></div>
+                <div class="step-dot" data-step="3"></div>
+            </div>
+
+            <!-- STEP 1: Contact Info -->
+            <div class="form-step active" id="step1">
+                <div class="form-title">¿Cómo te contactamos?</div>
+                <div class="form-subtitle">Tu información está segura y protegida</div>
+                <div class="form-group">
+                    <label class="form-label">Nombre completo *</label>
+                    <input class="form-input" id="fNombre" type="text" placeholder="Tu nombre" required maxlength="100" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Teléfono / WhatsApp *</label>
+                    <input class="form-input" id="fTelefono" type="tel" placeholder="10 dígitos" required maxlength="15" autocomplete="tel">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Correo electrónico</label>
+                    <input class="form-input" id="fEmail" type="email" placeholder="tu@email.com" maxlength="100" autocomplete="email">
+                </div>
+                <!-- Honeypot -->
+                <div class="hp-field" aria-hidden="true">
+                    <label>No llenar este campo</label>
+                    <input type="text" id="fWebsite" name="website" tabindex="-1" autocomplete="off">
+                </div>
+                <button class="btn-next" onclick="nextStep(2)">Continuar →</button>
+            </div>
+
+            <!-- STEP 2: Service Details -->
+            <div class="form-step" id="step2">
+                <div class="form-title">¿Qué servicio necesitas?</div>
+                <div class="form-subtitle">Selecciona el tipo de servicio</div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de servicio *</label>
+                    <div class="form-chips" id="serviceChips">
+                        <div class="chip" data-val="instalacion" onclick="selectChip(this,'serviceChips')">🔧 Instalación</div>
+                        <div class="chip" data-val="mantenimiento" onclick="selectChip(this,'serviceChips')">🧹 Mantenimiento</div>
+                        <div class="chip" data-val="reparacion" onclick="selectChip(this,'serviceChips')">🔩 Reparación</div>
+                        <div class="chip" data-val="cotizacion" onclick="selectChip(this,'serviceChips')">💰 Cotización</div>
+                        <div class="chip" data-val="emergencia" onclick="selectChip(this,'serviceChips')">🚨 Emergencia</div>
+                        <div class="chip" data-val="contrato" onclick="selectChip(this,'serviceChips')">📄 Contrato</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">¿Tienes equipo actualmente?</label>
+                    <div class="form-chips" id="tieneEquipo">
+                        <div class="chip" data-val="si" onclick="selectChip(this,'tieneEquipo');toggleEquipoFields(true)">Sí tengo equipo</div>
+                        <div class="chip" data-val="no" onclick="selectChip(this,'tieneEquipo');toggleEquipoFields(false)">No, equipo nuevo</div>
+                    </div>
+                </div>
+
+                <div id="equipoFields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Marca</label>
+                            <input class="form-input" id="fMarca" placeholder="Ej: Mirage, LG...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Antigüedad</label>
+                            <select class="form-input" id="fAntiguedad">
+                                <option value="">Selecciona...</option>
+                                <option value="0-2">Menos de 2 años</option>
+                                <option value="2-5">2 a 5 años</option>
+                                <option value="5-10">5 a 10 años</option>
+                                <option value="10+">Más de 10 años</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Problema que presenta</label>
+                        <textarea class="form-input" id="fProblema" placeholder="Describe el problema: no enfría, hace ruido, gotea..."></textarea>
+                    </div>
+                </div>
+
+                <!-- BTU Calculator -->
+                <div class="calc-card" id="btuCalc" style="display:none;">
+                    <div class="calc-title">🧮 Calculadora de BTU</div>
+                    <div class="calc-row">
+                        <div class="form-group">
+                            <label class="form-label">Tipo de espacio</label>
+                            <select class="form-input" id="fTipoEspacio" onchange="calcBTU()">
+                                <option value="">Selecciona...</option>
+                                <option value="recamara">Recámara</option>
+                                <option value="sala">Sala / Comedor</option>
+                                <option value="oficina">Oficina</option>
+                                <option value="local">Local comercial</option>
+                                <option value="bodega">Bodega</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Metros² (aprox)</label>
+                            <input class="form-input" id="fMetros" type="number" placeholder="Ej: 20" min="1" max="500" onchange="calcBTU()">
+                        </div>
+                    </div>
+                    <div class="calc-result" id="btuResult" style="display:none;">
+                        <div class="btu" id="btuValue">12,000</div>
+                        <div class="btu-label">BTU recomendados</div>
+                        <div class="btu-rec" id="btuRec">Minisplit 1 tonelada</div>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn-back" onclick="nextStep(1)">← Atrás</button>
+                    <button class="btn-next" onclick="nextStep(3)">Continuar →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Location & Submit -->
+            <div class="form-step" id="step3">
+                <div class="form-title">¿Dónde es el servicio?</div>
+                <div class="form-subtitle">Necesitamos tu ubicación para atenderte</div>
+                <div class="form-group">
+                    <label class="form-label">Dirección completa *</label>
+                    <textarea class="form-input" id="fDireccion" placeholder="Calle, número, colonia, municipio..." required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Colonia</label>
+                        <input class="form-input" id="fColonia" placeholder="Tu colonia">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">C.P.</label>
+                        <input class="form-input" id="fCP" type="text" placeholder="Ej: 86600" maxlength="5">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">¿Cuándo prefieres que te contactemos?</label>
+                    <div class="form-chips" id="horarioChips">
+                        <div class="chip" data-val="manana" onclick="selectChip(this,'horarioChips')">🌅 Mañana</div>
+                        <div class="chip" data-val="tarde" onclick="selectChip(this,'horarioChips')">🌇 Tarde</div>
+                        <div class="chip" data-val="cualquier" onclick="selectChip(this,'horarioChips')">🕐 Cualquier hora</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notas adicionales</label>
+                    <textarea class="form-input" id="fNotas" placeholder="Cualquier detalle extra que quieras darnos..."></textarea>
+                </div>
+
+                <!-- Photo upload -->
+                <div class="form-group">
+                    <label class="form-label">📸 Fotos del equipo o espacio (opcional)</label>
+                    <div class="photo-zone" id="photoZone" onclick="document.getElementById('photoInput').click()">
+                        <div class="pz-icon">📷</div>
+                        <div class="pz-text">Toca para agregar fotos</div>
+                        <div class="pz-hint">Máximo 3 fotos</div>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotos(this)">
+                    <div class="photo-previews" id="photoPreviews"></div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn-back" onclick="nextStep(2)">← Atrás</button>
+                    <button class="btn-submit" id="btnSubmit" onclick="submitForm()">📤 Enviar Solicitud</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="section" id="testimonialsSection" style="display:none;">
+        <div class="section-title"><span>⭐</span> Lo que dicen nuestros clientes</div>
+        <div class="testimonials" id="testimonialsList"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p id="footerName">Servicios de Climatización</p>
+        <p style="margin-top:4px;">Cotización sin compromiso · Garantía en servicio</p>
+        <p style="margin-top:8px;">
+            <a href="https://rdarinel92-bit.github.io/tarjetas/" id="footerPowered">Powered by Robert Darin</a>
+        </p>
+    </div>
+
+</div>
+
+<!-- CHAT -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" style="display:none;">
+    💬
+    <span class="badge-count" id="chatBadge">0</span>
+</button>
+<div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+        <button class="chat-close" onclick="toggleChat()">✕</button>
+        <div class="chat-header-info">
+            <h3>Chat en vivo</h3>
+            <p>Te respondemos lo antes posible</p>
+        </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg them">
+            <div>¡Hola! 👋 ¿En qué podemos ayudarte? Escríbenos tu pregunta sobre aires acondicionados o climatización.</div>
+            <div class="time">Ahora</div>
+        </div>
+    </div>
+    <div class="chat-input-bar">
+        <input class="chat-input" id="chatInput" placeholder="Escribe tu mensaje..." maxlength="500" onkeypress="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+</div>
+
+<!-- SUCCESS SCREEN (replaces form) -->
+<div class="success-screen" id="successScreen">
+    <div class="success-icon">✅</div>
+    <h2 class="success-title">¡Solicitud Enviada!</h2>
+    <p class="success-text">Un especialista revisará tu solicitud y te contactará pronto.</p>
+    <p class="success-text">Tu código de seguimiento:</p>
+    <div class="success-token"><code id="trackingToken">---</code></div>
+    <p class="success-text" style="font-size:12px;">Guarda este código para dar seguimiento a tu solicitud.</p>
+    <div class="success-actions">
+        <a class="success-btn wa" id="successWa" href="#" target="_blank">💬 Escribirnos por WhatsApp</a>
+        <button class="success-btn track" onclick="location.reload()">🔄 Enviar otra solicitud</button>
+    </div>
+</div>
+
+<script>
+    // ═══════════════════════════════════════════════════════════════════
+    // CONFIGURATION
+    // ═══════════════════════════════════════════════════════════════════
+    const _k = ['eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp','XVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn','JlZiI6InF0ZnN4ZnZ4cWlpaG5vZnJwbW','11Iiwicm9sZSI6ImFub24iLCJpYXQiOj','E3NjczMjU5MDIsImV4cCI6MjA4MjkwMT','kwMn0.D4LrG8FlnqfK0Zhi2Ex0z2UGeo','VSr6u1XR2jnxis9Bg'];
+    const SB_URL = 'https://qtfsxfvxqiihnofrpmmu.supabase.co';
+    const SB_KEY = _k.join('');
+
+    let sb = null;
+    try { sb = supabase.createClient(SB_URL, SB_KEY); } catch(e) { console.warn('Supabase init failed:', e); }
+
+    let negocioId = null;
+    let tarjetaId = null;
+    let configForm = null;
+    let selectedPhotos = [];
+    let formStartTime = Date.now();
+    let chatSolicitudId = null;
+    let chatVisitanteId = null;
+    let realtimeChannel = null;
+
+    // ═══════════════════════════════════════════════════════════════════
+    // ANTI-SPAM / SECURITY
+    // ═══════════════════════════════════════════════════════════════════
+    const RATE_LIMIT_MS = 30000; // 30 seconds between submissions
+    let lastSubmitTime = 0;
+    const MIN_FORM_TIME_MS = 5000; // Form must be open at least 5 seconds (anti-bot)
+
+    function isSpam() {
+        // 1. Honeypot check
+        const hp = document.getElementById('fWebsite');
+        if (hp && hp.value) return true;
+        // 2. Time check (bots fill forms instantly)
+        if (Date.now() - formStartTime < MIN_FORM_TIME_MS) return true;
+        // 3. Rate limit
+        if (Date.now() - lastSubmitTime < RATE_LIMIT_MS) return true;
+        return false;
+    }
+
+    function sanitize(str) {
+        if (!str) return '';
+        return String(str).replace(/[<>]/g, '').trim().substring(0, 500);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // URL PARAMS
+    // ═══════════════════════════════════════════════════════════════════
+    function getParams() {
+        const p = new URLSearchParams(window.location.search);
+        return {
+            codigo: p.get('codigo') || p.get('c') || null,
+            negocio: p.get('negocio') || p.get('n') || null,
+            modulo: p.get('modulo') || p.get('m') || 'climas'
+        };
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════════
+    async function init() {
+        try {
+            const params = getParams();
+
+            // Try loading from tarjeta code first
+            if (params.codigo) {
+                const { data: tarjeta } = await sb.from('tarjetas_servicio')
+                    .select('*')
+                    .eq('codigo', params.codigo)
+                    .eq('activa', true)
+                    .single();
+
+                if (tarjeta) {
+                    tarjetaId = tarjeta.id;
+                    negocioId = tarjeta.negocio_id;
+                    applyTarjetaData(tarjeta);
+                    registerScan(tarjeta.id);
+                }
+            }
+
+            // If we have negocio_id, load climas-specific data
+            if (negocioId || params.negocio) {
+                negocioId = negocioId || params.negocio;
+                await loadClimasConfig();
+                await loadServicesCatalog();
+            } else {
+                // Fallback: show default services
+                renderDefaultServices();
+            }
+
+            // Show content
+            document.getElementById('loadingScreen').classList.add('hide');
+            document.getElementById('mainContent').style.display = 'block';
+            createParticles();
+            formStartTime = Date.now();
+
+        } catch(e) {
+            console.error('Init error:', e);
+            document.getElementById('loadingScreen').classList.add('hide');
+            // Still show the page with defaults instead of error
+            document.getElementById('mainContent').style.display = 'block';
+            renderDefaultServices();
+            createParticles();
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // APPLY TARJETA DATA
+    // ═══════════════════════════════════════════════════════════════════
+    function applyTarjetaData(t) {
+        if (t.nombre_negocio || t.titulo) {
+            document.getElementById('heroTitle').textContent = t.nombre_negocio || t.titulo;
+            document.title = `❄️ ${t.nombre_negocio || t.titulo}`;
+        }
+        if (t.slogan) document.getElementById('heroSub').textContent = t.slogan;
+        if (t.nombre_negocio) document.getElementById('footerName').textContent = t.nombre_negocio;
+
+        // Contact buttons
+        if (t.whatsapp || t.telefono_principal) {
+            const wa = t.whatsapp || t.telefono_principal;
+            const waNum = wa.replace(/\D/g, '');
+            document.getElementById('btnWhatsapp').href = `https://wa.me/52${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
+            document.getElementById('successWa').href = `https://wa.me/52${waNum}?text=${encodeURIComponent('Hola, acabo de enviar una solicitud de servicio de climatización.')}`;
+        }
+        if (t.telefono_principal) {
+            const tel = t.telefono_principal.replace(/\D/g, '');
+            document.getElementById('btnCall').href = `tel:+52${tel}`;
+        }
+
+        // Promo
+        if (t.promocion_activa && t.promocion_texto) {
+            document.getElementById('promoBanner').classList.add('show');
+            document.getElementById('promoText').textContent = t.promocion_texto;
+            if (t.promocion_descuento) document.getElementById('promoDiscount').textContent = `${t.promocion_descuento}% OFF`;
+        }
+
+        // Colors
+        if (t.color_primario) {
+            document.documentElement.style.setProperty('--cyan', t.color_primario);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // LOAD CLIMAS CONFIG
+    // ═══════════════════════════════════════════════════════════════════
+    async function loadClimasConfig() {
+        try {
+            const { data } = await sb.from('climas_config_formulario_qr')
+                .select('*')
+                .eq('negocio_id', negocioId)
+                .eq('formulario_activo', true)
+                .single();
+
+            if (data) {
+                configForm = data;
+                if (data.color_primario) document.documentElement.style.setProperty('--cyan', data.color_primario);
+                if (data.color_secundario) document.documentElement.style.setProperty('--purple', data.color_secundario);
+                if (data.mensaje_bienvenida) document.getElementById('heroSub').textContent = data.mensaje_bienvenida;
+                if (data.notificar_whatsapp) {
+                    const waNum = data.notificar_whatsapp.replace(/\D/g, '');
+                    document.getElementById('btnWhatsapp').href = `https://wa.me/52${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
+                }
+            }
+        } catch(e) { console.warn('Config load error:', e); }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SERVICES CATALOG
+    // ═══════════════════════════════════════════════════════════════════
+    async function loadServicesCatalog() {
+        try {
+            const { data: servicios } = await sb.from('climas_catalogo_servicios_publico')
+                .select('*')
+                .eq('negocio_id', negocioId)
+                .eq('activo', true)
+                .order('orden', { ascending: true });
+
+            if (servicios && servicios.length > 0) {
+                renderServices(servicios);
+            } else {
+                renderDefaultServices();
+            }
+        } catch(e) {
+            console.warn('Services load error:', e);
+            renderDefaultServices();
+        }
+    }
+
+    function renderServices(servicios) {
+        const grid = document.getElementById('servicesGrid');
+        const categoryIcons = { instalacion:'🔧', mantenimiento:'🧹', reparacion:'🔩', emergencia:'🚨', general:'❄️', venta:'🏷️' };
+
+        grid.innerHTML = servicios.map(s => `
+            <div class="service-card" onclick="selectService('${s.nombre}')">
+                ${s.en_promocion ? `<div class="service-promo">OFERTA</div>` : ''}
+                <div class="service-icon">${s.icono || categoryIcons[s.categoria] || '❄️'}</div>
+                <div class="service-name">${s.nombre}</div>
+                ${s.mostrar_precio && s.precio_desde ? `
+                    <div class="service-price">
+                        ${s.en_promocion && s.precio_promocion ? `<s style="color:var(--text3);">$${num(s.precio_desde)}</s> $${num(s.precio_promocion)}` : `Desde $${num(s.precio_desde)}`}
+                        ${s.precio_hasta ? ` - $${num(s.precio_hasta)}` : ''}
+                    </div>` : ''}
+                ${s.descripcion ? `<div class="service-desc">${truncate(s.descripcion, 60)}</div>` : ''}
+                ${s.tiempo_estimado ? `<div class="service-desc">⏱ ${s.tiempo_estimado}</div>` : ''}
+            </div>
+        `).join('');
+    }
+
+    function renderDefaultServices() {
+        const defaults = [
+            { icon:'🔧', name:'Instalación', desc:'Minisplits y aires', price:'Desde $2,500' },
+            { icon:'🧹', name:'Mantenimiento', desc:'Preventivo y correctivo', price:'Desde $500' },
+            { icon:'🔩', name:'Reparación', desc:'Diagnóstico y arreglo', price:'Desde $800' },
+            { icon:'🏷️', name:'Venta de Equipos', desc:'Todas las marcas', price:'Cotización' },
+            { icon:'📄', name:'Contratos', desc:'Mantenimiento periódico', price:'Planes mensuales' },
+            { icon:'🚨', name:'Emergencias', desc:'Servicio 24/7', price:'Disponible' }
+        ];
+        document.getElementById('servicesGrid').innerHTML = defaults.map(s => `
+            <div class="service-card" onclick="selectService('${s.name}')">
+                <div class="service-icon">${s.icon}</div>
+                <div class="service-name">${s.name}</div>
+                <div class="service-price">${s.price}</div>
+                <div class="service-desc">${s.desc}</div>
+            </div>
+        `).join('');
+    }
+
+    function selectService(name) {
+        // Pre-select the matching chip and scroll to form
+        const chipMap = {
+            'Instalación':'instalacion','Mantenimiento':'mantenimiento','Reparación':'reparacion',
+            'Venta de Equipos':'cotizacion','Contratos':'contrato','Emergencias':'emergencia'
+        };
+        const val = chipMap[name];
+        if (val) {
+            document.querySelectorAll('#serviceChips .chip').forEach(c => {
+                c.classList.toggle('active', c.dataset.val === val);
+            });
+            // Show/hide equipo and BTU calc based on selection
+            updateStep2UI(val);
+        }
+        document.getElementById('formSection').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function updateStep2UI(tipo) {
+        const showBTU = ['instalacion','cotizacion','contrato'].includes(tipo);
+        document.getElementById('btuCalc').style.display = showBTU ? 'block' : 'none';
+        if (tipo === 'emergencia') {
+            document.querySelectorAll('#tieneEquipo .chip').forEach(c => {
+                if (c.dataset.val === 'si') { c.classList.add('active'); toggleEquipoFields(true); }
+                else c.classList.remove('active');
+            });
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // FORM NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════
+    let currentStep = 1;
+    function nextStep(step) {
+        // Validate current step
+        if (step > currentStep) {
+            if (!validateStep(currentStep)) return;
+        }
+        currentStep = step;
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        document.getElementById(`step${step}`).classList.add('active');
+        document.querySelectorAll('.step-dot').forEach(d => {
+            const s = parseInt(d.dataset.step);
+            d.classList.toggle('active', s === step);
+            d.classList.toggle('done', s < step);
+        });
+        document.getElementById('formContainer').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function validateStep(step) {
+        if (step === 1) {
+            const nombre = document.getElementById('fNombre').value.trim();
+            const tel = document.getElementById('fTelefono').value.trim();
+            if (!nombre) { shake('fNombre'); return false; }
+            if (!tel || tel.length < 10) { shake('fTelefono'); return false; }
+            return true;
+        }
+        if (step === 2) {
+            const sel = document.querySelector('#serviceChips .chip.active');
+            if (!sel) {
+                document.getElementById('serviceChips').style.animation = 'fadeIn .3s';
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
+
+    function shake(id) {
+        const el = document.getElementById(id);
+        el.style.borderColor = 'var(--red)';
+        el.style.animation = 'none';
+        el.offsetHeight; // reflow
+        el.style.animation = 'shake .3s ease';
+        setTimeout(() => { el.style.borderColor = ''; el.style.animation = ''; }, 600);
+        el.focus();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // CHIPS
+    // ═══════════════════════════════════════════════════════════════════
+    function selectChip(el, groupId) {
+        document.querySelectorAll(`#${groupId} .chip`).forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        if (groupId === 'serviceChips') updateStep2UI(el.dataset.val);
+    }
+
+    function toggleEquipoFields(show) {
+        document.getElementById('equipoFields').style.display = show ? 'block' : 'none';
+        if (!show) document.getElementById('btuCalc').style.display = 'block';
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // BTU CALCULATOR
+    // ═══════════════════════════════════════════════════════════════════
+    function calcBTU() {
+        const tipo = document.getElementById('fTipoEspacio').value;
+        const m2 = parseFloat(document.getElementById('fMetros').value);
+        if (!tipo || !m2 || m2 < 1) { document.getElementById('btuResult').style.display = 'none'; return; }
+
+        // BTU calculation: base + type multiplier
+        const multipliers = { recamara:500, sala:600, oficina:550, local:650, bodega:700 };
+        const base = m2 * (multipliers[tipo] || 600);
+        const btu = Math.ceil(base / 6000) * 6000; // Round up to nearest 6000
+
+        const tons = btu / 12000;
+        const recs = {
+            6000: '½ Tonelada - Ideal para espacios pequeños',
+            12000: '1 Tonelada - Habitaciones y oficinas',
+            18000: '1.5 Toneladas - Salas y locales medianos',
+            24000: '2 Toneladas - Espacios grandes',
+            36000: '3 Toneladas - Locales comerciales'
+        };
+        const rec = btu <= 6000 ? recs[6000] : btu <= 12000 ? recs[12000] : btu <= 18000 ? recs[18000] : btu <= 24000 ? recs[24000] : recs[36000];
+
+        document.getElementById('btuValue').textContent = btu.toLocaleString();
+        document.getElementById('btuRec').textContent = `💡 ${rec}`;
+        document.getElementById('btuResult').style.display = 'block';
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PHOTO HANDLING
+    // ═══════════════════════════════════════════════════════════════════
+    function handlePhotos(input) {
+        const max = 3;
+        const files = Array.from(input.files).slice(0, max - selectedPhotos.length);
+
+        files.forEach(file => {
+            if (file.size > 5 * 1024 * 1024) return; // Max 5MB per photo
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectedPhotos.push({ data: e.target.result, name: file.name });
+                renderPhotoPreviews();
+            };
+            reader.readAsDataURL(file);
+        });
+        input.value = '';
+    }
+
+    function renderPhotoPreviews() {
+        const container = document.getElementById('photoPreviews');
+        container.innerHTML = selectedPhotos.map((p, i) => `
+            <div class="photo-preview-wrap">
+                <img class="photo-preview" src="${p.data}" alt="Foto ${i+1}">
+                <button class="photo-remove" onclick="removePhoto(${i})">✕</button>
+            </div>
+        `).join('');
+
+        const zone = document.getElementById('photoZone');
+        zone.style.display = selectedPhotos.length >= 3 ? 'none' : 'block';
+    }
+
+    function removePhoto(i) {
+        selectedPhotos.splice(i, 1);
+        renderPhotoPreviews();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SUBMIT FORM
+    // ═══════════════════════════════════════════════════════════════════
+    async function submitForm() {
+        if (!validateStep(3)) return;
+        if (isSpam()) {
+            console.warn('Spam detected, silently ignoring.');
+            showSuccess('SPAM-BLOCKED'); // Show fake success to bot
+            return;
+        }
+
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.textContent = '⏳ Enviando...';
+
+        try {
+            const tipoServicio = document.querySelector('#serviceChips .chip.active')?.dataset.val || 'cotizacion';
+            const tieneEquipo = document.querySelector('#tieneEquipo .chip.active')?.dataset.val === 'si';
+            const horario = document.querySelector('#horarioChips .chip.active')?.dataset.val || 'cualquier';
+            const token = generateToken();
+
+            // Upload photos if any
+            let fotosUrls = [];
+            for (const photo of selectedPhotos) {
+                try {
+                    const fileName = `qr_${token}_${Date.now()}_${Math.random().toString(36).substr(2,4)}.jpg`;
+                    const base64 = photo.data.split(',')[1];
+                    const blob = base64ToBlob(base64, 'image/jpeg');
+                    const { data: uploadData } = await sb.storage
+                        .from('comprobantes')
+                        .upload(`climas-solicitudes/${fileName}`, blob, { contentType: 'image/jpeg' });
+                    if (uploadData?.path) {
+                        const { data: urlData } = sb.storage.from('comprobantes').getPublicUrl(uploadData.path);
+                        if (urlData?.publicUrl) fotosUrls.push(urlData.publicUrl);
+                    }
+                } catch(e) { console.warn('Photo upload error:', e); }
+            }
+
+            const solicitudData = {
+                negocio_id: negocioId || null,
+                nombre_completo: sanitize(document.getElementById('fNombre').value),
+                telefono: sanitize(document.getElementById('fTelefono').value),
+                email: sanitize(document.getElementById('fEmail').value) || null,
+                direccion: sanitize(document.getElementById('fDireccion').value),
+                colonia: sanitize(document.getElementById('fColonia').value) || null,
+                codigo_postal: sanitize(document.getElementById('fCP').value) || null,
+                tipo_servicio: tipoServicio,
+                tiene_equipo_actual: tieneEquipo,
+                marca_equipo_actual: sanitize(document.getElementById('fMarca').value) || null,
+                antiguedad_equipo: document.getElementById('fAntiguedad').value || null,
+                problema_reportado: sanitize(document.getElementById('fProblema').value) || null,
+                tipo_espacio: document.getElementById('fTipoEspacio').value || null,
+                metros_cuadrados: parseFloat(document.getElementById('fMetros').value) || null,
+                horario_contacto_preferido: horario,
+                notas_cliente: sanitize(document.getElementById('fNotas').value) || null,
+                fotos: fotosUrls.length > 0 ? fotosUrls : [],
+                estado: 'nueva',
+                fuente: 'qr_web_climas',
+                token_seguimiento: token
+            };
+
+            const { error } = await sb.from('climas_solicitudes_qr').insert(solicitudData);
+
+            if (error) throw error;
+
+            lastSubmitTime = Date.now();
+            showSuccess(token);
+
+        } catch(e) {
+            console.error('Submit error:', e);
+            btn.disabled = false;
+            btn.textContent = '📤 Enviar Solicitud';
+            alert('Error al enviar. Intenta de nuevo o contáctanos por WhatsApp.');
+        }
+    }
+
+    function showSuccess(token) {
+        document.getElementById('mainContent').style.display = 'none';
+        document.getElementById('trackingToken').textContent = token;
+        document.getElementById('successScreen').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Enable chat for follow-up
+        chatSolicitudId = token;
+        document.getElementById('chatFab').style.display = 'flex';
+    }
+
+    function generateToken() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let token = 'CL-';
+        for (let i = 0; i < 6; i++) token += chars[Math.floor(Math.random() * chars.length)];
+        return token;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // CHAT SYSTEM
+    // ═══════════════════════════════════════════════════════════════════
+    let chatOpen = false;
+    function toggleChat() {
+        chatOpen = !chatOpen;
+        document.getElementById('chatPanel').classList.toggle('open', chatOpen);
+        if (chatOpen) document.getElementById('chatInput').focus();
+    }
+
+    async function sendChat() {
+        const input = document.getElementById('chatInput');
+        const msg = input.value.trim();
+        if (!msg || msg.length > 500) return;
+
+        // Generate visitor ID on first message
+        if (!chatVisitanteId) chatVisitanteId = 'visitor-' + Math.random().toString(36).substr(2, 9);
+
+        // Add to UI
+        addChatMsg(msg, true);
+        input.value = '';
+
+        try {
+            if (sb) {
+                await sb.from('climas_chat_solicitud').insert({
+                    solicitud_id: null, // Will be linked if they submitted a form
+                    es_cliente: true,
+                    remitente_nombre: document.getElementById('fNombre')?.value?.trim() || 'Visitante Web',
+                    mensaje: sanitize(msg),
+                    tipo_mensaje: 'texto'
+                });
+            }
+        } catch(e) { console.warn('Chat send error:', e); }
+    }
+
+    function addChatMsg(text, isMe) {
+        const container = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = `chat-msg ${isMe ? 'me' : 'them'}`;
+        div.innerHTML = `<div>${text}</div><div class="time">${new Date().toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'})}</div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SCAN TRACKING
+    // ═══════════════════════════════════════════════════════════════════
+    async function registerScan(tId) {
+        try {
+            if (!sb) return;
+            const platform = /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'ios' :
+                           /Android/.test(navigator.userAgent) ? 'android' : 'web';
+            await sb.from('tarjetas_servicio_escaneos').insert({
+                tarjeta_id: tId,
+                user_agent: navigator.userAgent?.substring(0, 500),
+                plataforma: platform,
+                accion: 'ver_climas'
+            });
+        } catch(e) { /* silent */ }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PARTICLES (snowflakes)
+    // ═══════════════════════════════════════════════════════════════════
+    function createParticles() {
+        const container = document.getElementById('particles');
+        const flakes = ['❄', '❆', '✦', '•'];
+        for (let i = 0; i < 12; i++) {
+            const s = document.createElement('span');
+            s.className = 'snowflake';
+            s.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+            s.style.left = Math.random() * 100 + '%';
+            s.style.fontSize = (10 + Math.random() * 12) + 'px';
+            s.style.animationDuration = (4 + Math.random() * 6) + 's';
+            s.style.animationDelay = Math.random() * 5 + 's';
+            container.appendChild(s);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EMERGENCY BUTTON
+    // ═══════════════════════════════════════════════════════════════════
+    document.getElementById('btnEmergency').addEventListener('click', (e) => {
+        e.preventDefault();
+        // Pre-select emergency service
+        document.querySelectorAll('#serviceChips .chip').forEach(c => {
+            c.classList.toggle('active', c.dataset.val === 'emergencia');
+        });
+        updateStep2UI('emergencia');
+        document.getElementById('formSection').scrollIntoView({ behavior:'smooth' });
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // UTILITIES
+    // ═══════════════════════════════════════════════════════════════════
+    function num(n) { return Number(n).toLocaleString('es-MX'); }
+    function truncate(s, len) { return s.length > len ? s.substring(0, len) + '...' : s; }
+    function base64ToBlob(b64, type) {
+        const bytes = atob(b64);
+        const arr = new Uint8Array(bytes.length);
+        for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+        return new Blob([arr], { type });
+    }
+
+    // Shake animation
+    const style = document.createElement('style');
+    style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}';
+    document.head.appendChild(style);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // START
+    // ═══════════════════════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

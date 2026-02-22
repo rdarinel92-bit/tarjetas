@@ -3551,10 +3551,47 @@ END:VCARD`;
             const params = getParams();
             console.log('📋 Params:', params);
             
+            // ═══ REDIRECT: Si el módulo es climas, pollos, etc → landing dedicada ═══
+            if (params.modulo) {
+                const dedicatedPages = {
+                    'climas': './climas/',
+                    // Agregar más módulos con landing dedicada aquí:
+                    // 'pollos': './pollos/',
+                    // 'purificadora': './purificadora/',
+                };
+                const target = dedicatedPages[params.modulo.toLowerCase()];
+                if (target) {
+                    const redirectUrl = new URL(target, window.location.href);
+                    redirectUrl.search = window.location.search;
+                    console.log(`🔄 Redirigiendo a landing dedicada: ${params.modulo} → ${redirectUrl}`);
+                    window.location.replace(redirectUrl.toString());
+                    return;
+                }
+            }
+
             if (!params.codigo) {
                 console.log('❌ No hay código de tarjeta');
                 showError('No se especificó código de tarjeta');
                 return;
+            }
+
+            // ═══ PRE-CHECK: Si la tarjeta tiene módulo dedicado, redirigir ═══
+            try {
+                const preCheck = await supabaseRequest(`tarjetas_servicio?codigo=eq.${params.codigo}&activa=eq.true&select=modulo,negocio_id`);
+                if (preCheck && preCheck.length > 0) {
+                    const mod = (preCheck[0].modulo || '').toLowerCase();
+                    const dedicatedPages = { 'climas': './climas/' };
+                    const target = dedicatedPages[mod];
+                    if (target) {
+                        const redirectUrl = new URL(target, window.location.href);
+                        redirectUrl.search = window.location.search;
+                        console.log(`🔄 Tarjeta es de ${mod}, redirigiendo a landing dedicada`);
+                        window.location.replace(redirectUrl.toString());
+                        return;
+                    }
+                }
+            } catch(e) {
+                console.warn('Pre-check redirect failed, continuing normally:', e);
             }
             
             // Timeout de 10 segundos para evitar cargando infinito
