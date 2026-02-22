@@ -1,5 +1,4 @@
 ﻿<!DOCTYPE html>
-<!-- v11.12b-20260220 -->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -2328,15 +2327,14 @@
                 <span>✓</span>
                 Descarga gratuita para Android (~100 MB)
             </div>
-            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v11.12b/app-release.apk" 
+            <a href="https://github.com/rdarinel92-bit/tarjetas/releases/download/v10.5/app-release.apk" 
                class="modal-btn-primary" 
-               target="_blank"
-               rel="noopener noreferrer"
+               id="btnDescargarApk"
                onclick="iniciarDescarga(event)">
-                📱 Descargar Aplicación
+                📱 Descargar App para Android
             </a>
-            <p id="downloadProgress" style="display:none; font-size: 12px; color: var(--success); margin-top: 12px;">
-                ⏳ Descarga iniciada... Por favor espera, el archivo es grande (~100 MB)
+            <p id="downloadProgress" style="display:none; text-align:center; font-size:12px; color:#10B981; margin:8px 0;">
+                ⏳ Descarga iniciada... revisa tus descargas.
             </p>
             <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)">
                 Cancelar
@@ -2770,31 +2768,30 @@
 
         // Iniciar descarga con feedback visual
         const iniciarDescarga = (event) => {
-            event.preventDefault();
-            
-            // Mostrar mensaje de espera
             const prog = document.getElementById('downloadProgress');
-            if (prog) {
-                prog.style.display = 'block';
-            }
+            if (prog) prog.style.display = 'block';
             
-            // Cambiar texto del botón temporalmente
             const btn = event.target.closest('a');
-            const url = btn ? btn.href : 'https://github.com/rdarinel92-bit/tarjetas/releases/download/v11.12b/app-release.apk';
-            
             if (btn) {
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '⏳ Iniciando descarga...';
+                btn.innerHTML = '⏳ Descargando APK...';
                 btn.style.pointerEvents = 'none';
                 
+                // Restaurar botón después de 5 segundos
+                setTimeout(() => {
+                    btn.innerHTML = '✅ Descarga iniciada';
+                    btn.style.pointerEvents = 'auto';
+                }, 3000);
+                
+                // Restaurar texto original después de 8 segundos
                 setTimeout(() => {
                     btn.innerHTML = originalText;
-                    btn.style.pointerEvents = 'auto';
-                }, 5000);
+                    if (prog) prog.style.display = 'none';
+                }, 8000);
             }
             
-            // Abrir descarga en nueva pestaña para evitar conflictos con redirects
-            window.open(url, '_blank');
+            // No prevenir default - dejar que el link descargue el APK
+            return true;
         };
 
         // Cerrar modal con ESC
@@ -3554,13 +3551,14 @@ END:VCARD`;
             // ═══ REDIRECT: Si el módulo es climas, pollos, etc → landing dedicada ═══
             if (params.modulo) {
                 const dedicatedPages = {
-                    'climas': './climas/',
+                    'climas': '../climas/',
                     // Agregar más módulos con landing dedicada aquí:
-                    // 'pollos': './pollos/',
-                    // 'purificadora': './purificadora/',
+                    // 'pollos': '../pollos/',
+                    // 'purificadora': '../purificadora/',
                 };
                 const target = dedicatedPages[params.modulo.toLowerCase()];
                 if (target) {
+                    // Construir URL preservando todos los params originales
                     const redirectUrl = new URL(target, window.location.href);
                     redirectUrl.search = window.location.search;
                     console.log(`🔄 Redirigiendo a landing dedicada: ${params.modulo} → ${redirectUrl}`);
@@ -3580,7 +3578,7 @@ END:VCARD`;
                 const preCheck = await supabaseRequest(`tarjetas_servicio?codigo=eq.${params.codigo}&activa=eq.true&select=modulo,negocio_id`);
                 if (preCheck && preCheck.length > 0) {
                     const mod = (preCheck[0].modulo || '').toLowerCase();
-                    const dedicatedPages = { 'climas': './climas/' };
+                    const dedicatedPages = { 'climas': '../climas/' };
                     const target = dedicatedPages[mod];
                     if (target) {
                         const redirectUrl = new URL(target, window.location.href);
@@ -3730,19 +3728,28 @@ END:VCARD`;
         let lastMessageCount = 0;
 
         // Sistema de sonidos de notificacion
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let audioCtx = null;
+        const getAudioCtx = () => {
+            if (!audioCtx) {
+                try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+            }
+            return audioCtx;
+        };
         const playNotificationSound = () => {
             try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const ctx = getAudioCtx();
+                if (!ctx) return;
+                if (ctx.state === 'suspended') ctx.resume();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
                 osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(1108, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.start(audioCtx.currentTime);
-                osc.stop(audioCtx.currentTime + 0.3);
+                gain.connect(ctx.destination);
+                osc.frequency.setValueAtTime(880, ctx.currentTime);
+                osc.frequency.setValueAtTime(1108, ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.3);
             } catch(e) { console.warn('Sonido no disponible'); }
         };
 
@@ -3914,9 +3921,7 @@ END:VCARD`;
                     tarjeta_id: currentTarjeta.id,
                     negocio_id: currentTarjeta.negocio_id,
                     visitante_id: visitanteId,
-                    visitante_nombre: localStorage.getItem('rd_chat_nombre') || null,
-                    visitante_email: localStorage.getItem('rd_chat_email') || null,
-                    visitante_telefono: localStorage.getItem('rd_chat_telefono') || null,
+                    visitante_nombre: localStorage.getItem('rd_chat_nombre') || 'Visitante',
                     mensaje: mensaje,
                     es_respuesta: false
                 };
@@ -4262,9 +4267,6 @@ END:VCARD`;
                 socialSection.style.display = 'block';
             }
         };
-
-        // ═══ MODIFICAR RENDER TARJETA PARA INCLUIR NUEVAS SECCIONES ═══
-        const originalRenderTarjeta = renderTarjeta;
 
         // Iniciar
         document.addEventListener('DOMContentLoaded', () => {
