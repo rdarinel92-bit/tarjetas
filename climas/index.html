@@ -644,13 +644,16 @@
         // Contact buttons
         if (t.whatsapp || t.telefono_principal) {
             const wa = t.whatsapp || t.telefono_principal;
-            const waNum = wa.replace(/\D/g, '');
-            document.getElementById('btnWhatsapp').href = `https://wa.me/52${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
-            document.getElementById('successWa').href = `https://wa.me/52${waNum}?text=${encodeURIComponent('Hola, acabo de enviar una solicitud de servicio de climatización.')}`;
+            let waNum = wa.replace(/\D/g, '');
+            // Si ya empieza con 52 (código México), no duplicar
+            if (!waNum.startsWith('52')) waNum = '52' + waNum;
+            document.getElementById('btnWhatsapp').href = `https://wa.me/${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
+            document.getElementById('successWa').href = `https://wa.me/${waNum}?text=${encodeURIComponent('Hola, acabo de enviar una solicitud de servicio de climatización.')}`;
         }
         if (t.telefono_principal) {
-            const tel = t.telefono_principal.replace(/\D/g, '');
-            document.getElementById('btnCall').href = `tel:+52${tel}`;
+            let tel = t.telefono_principal.replace(/\D/g, '');
+            if (!tel.startsWith('52')) tel = '52' + tel;
+            document.getElementById('btnCall').href = `tel:+${tel}`;
         }
 
         // Promo
@@ -683,8 +686,9 @@
                 if (data.color_secundario) document.documentElement.style.setProperty('--purple', data.color_secundario);
                 if (data.mensaje_bienvenida) document.getElementById('heroSub').textContent = data.mensaje_bienvenida;
                 if (data.notificar_whatsapp) {
-                    const waNum = data.notificar_whatsapp.replace(/\D/g, '');
-                    document.getElementById('btnWhatsapp').href = `https://wa.me/52${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
+                    let waNum = data.notificar_whatsapp.replace(/\D/g, '');
+                    if (!waNum.startsWith('52')) waNum = '52' + waNum;
+                    document.getElementById('btnWhatsapp').href = `https://wa.me/${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
                 }
             }
         } catch(e) { console.warn('Config load error:', e); }
