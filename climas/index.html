@@ -541,7 +541,8 @@
     let configForm = null;
     let selectedPhotos = [];
     let formStartTime = Date.now();
-    let chatSolicitudId = null;
+    let chatSolicitudId = null;  // UUID from DB
+    let chatSolicitudToken = null;  // tracking token
     let chatVisitanteId = null;
     let realtimeChannel = null;
 
@@ -961,6 +962,7 @@
                 problema_reportado: sanitize(document.getElementById('fProblema').value) || null,
                 tipo_espacio: document.getElementById('fTipoEspacio').value || null,
                 metros_cuadrados: parseFloat(document.getElementById('fMetros').value) || null,
+                capacidad_btu_actual: parseInt(document.getElementById('btuValue')?.textContent?.replace(/,/g,'')) || null,
                 horario_contacto_preferido: horario,
                 notas_cliente: sanitize(document.getElementById('fNotas').value) || null,
                 fotos: fotosUrls.length > 0 ? fotosUrls : [],
@@ -969,12 +971,12 @@
                 token_seguimiento: token
             };
 
-            const { error } = await sb.from('climas_solicitudes_qr').insert(solicitudData);
+            const { data: insertedData, error } = await sb.from('climas_solicitudes_qr').insert(solicitudData).select('id').single();
 
             if (error) throw error;
 
             lastSubmitTime = Date.now();
-            showSuccess(token);
+            showSuccess(token, insertedData?.id || null);
 
         } catch(e) {
             console.error('Submit error:', e);
@@ -984,14 +986,15 @@
         }
     }
 
-    function showSuccess(token) {
+    function showSuccess(token, solicitudUuid) {
         document.getElementById('mainContent').style.display = 'none';
         document.getElementById('trackingToken').textContent = token;
         document.getElementById('successScreen').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Enable chat for follow-up
-        chatSolicitudId = token;
+        // Enable chat for follow-up — store UUID for linking messages
+        chatSolicitudId = solicitudUuid || null;
+        chatSolicitudToken = token;
         document.getElementById('chatFab').style.display = 'flex';
     }
 
@@ -1016,6 +1019,7 @@
         const input = document.getElementById('chatInput');
         const msg = input.value.trim();
         if (!msg || msg.length > 500) return;
+        if (!chatSolicitudId) { console.warn('No solicitud ID for chat'); return; }
 
         // Generate visitor ID on first message
         if (!chatVisitanteId) chatVisitanteId = 'visitor-' + Math.random().toString(36).substr(2, 9);
@@ -1027,7 +1031,7 @@
         try {
             if (sb) {
                 await sb.from('climas_chat_solicitud').insert({
-                    solicitud_id: null, // Will be linked if they submitted a form
+                    solicitud_id: chatSolicitudId,
                     es_cliente: true,
                     remitente_nombre: document.getElementById('fNombre')?.value?.trim() || 'Visitante Web',
                     mensaje: sanitize(msg),
