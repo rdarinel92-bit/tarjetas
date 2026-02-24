@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>❄️ Servicios de Climatización - Cotización Gratis</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❄️</text></svg>">
+    <meta name="theme-color" content="#0D0D14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Servicios profesionales de aires acondicionados, minisplits, climatización. Cotización gratis.">
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        :root {
+            --bg:#0A0A0F; --bg2:#12121A; --card:#1A1A2E; --glass:rgba(26,26,46,0.85);
+            --cyan:#00D9FF; --cyan-d:#0099B3; --cyan-g:rgba(0,217,255,0.15);
+            --purple:#8B5CF6; --purple-g:rgba(139,92,246,0.15);
+            --green:#10B981; --green-g:rgba(16,185,129,0.15);
+            --yellow:#FBBF24; --red:#EF4444; --whatsapp:#25D366;
+            --text:#FFF; --text2:rgba(255,255,255,0.7); --text3:rgba(255,255,255,0.4);
+            --border:rgba(255,255,255,0.08); --border-c:rgba(0,217,255,0.2);
+            --radius:16px; --radius-s:10px;
+        }
+        html { scroll-behavior:smooth; }
+        body { font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+
+        /* ═══ LOADING ═══ */
+        .loading { position:fixed; inset:0; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:9999; transition:opacity .5s,visibility .5s; }
+        .loading.hide { opacity:0; visibility:hidden; }
+        .loader { width:64px; height:64px; position:relative; }
+        .loader::before,.loader::after { content:''; position:absolute; border-radius:50%; }
+        .loader::before { inset:0; border:3px solid transparent; border-top-color:var(--cyan); animation:spin .8s linear infinite; }
+        .loader::after { inset:8px; border:3px solid transparent; border-top-color:var(--purple); animation:spin 1.2s linear infinite reverse; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .loading p { margin-top:20px; color:var(--text2); font-size:14px; }
+
+        /* ═══ HERO ═══ */
+        .hero { position:relative; padding:0 0 20px; overflow:hidden; }
+        .hero-bg { position:absolute; top:0; left:0; right:0; height:300px; background:linear-gradient(180deg,rgba(0,217,255,0.12) 0%,rgba(139,92,246,0.06) 50%,transparent 100%); pointer-events:none; }
+        .hero-particles { position:absolute; top:0; left:0; right:0; height:300px; overflow:hidden; pointer-events:none; }
+        .snowflake { position:absolute; color:var(--cyan); font-size:16px; opacity:0.15; animation:fall linear infinite; }
+        @keyframes fall { 0% { transform:translateY(-20px) rotate(0deg); opacity:0; } 10% { opacity:0.15; } 90% { opacity:0.15; } 100% { transform:translateY(300px) rotate(360deg); opacity:0; } }
+        .hero-content { position:relative; z-index:1; padding:32px 20px 16px; text-align:center; }
+        .hero-badge { display:inline-flex; align-items:center; gap:6px; background:var(--cyan-g); border:1px solid var(--border-c); border-radius:20px; padding:6px 14px; font-size:12px; font-weight:600; color:var(--cyan); margin-bottom:16px; }
+        .hero-icon { font-size:56px; display:block; margin-bottom:12px; animation:float 3s ease-in-out infinite; filter:drop-shadow(0 8px 24px rgba(0,217,255,0.3)); }
+        @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+        .hero-title { font-size:1.8rem; font-weight:800; margin-bottom:6px; background:linear-gradient(135deg,var(--cyan),var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.2; }
+        .hero-sub { font-size:14px; color:var(--text2); max-width:320px; margin:0 auto 16px; line-height:1.5; }
+        .hero-stats { display:flex; justify-content:center; gap:24px; margin-top:12px; }
+        .stat { text-align:center; }
+        .stat-num { font-size:1.3rem; font-weight:800; color:var(--cyan); }
+        .stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
+
+        /* ═══ SECTION ═══ */
+        .section { padding:0 16px; margin-bottom:24px; }
+        .section-title { font-size:16px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+        .section-title span { font-size:20px; }
+
+        /* ═══ QUICK ACTIONS ═══ */
+        .actions { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; padding:0 16px; margin-bottom:24px; }
+        .action-login { border-color:rgba(139,92,246,0.3); background:rgba(139,92,246,0.08); }
+        .action-login:active { background:rgba(139,92,246,0.15); }
+        .action-login .label { color:var(--purple); }
+
+        /* ═══ MODAL LOGIN ═══ */
+        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:10000; opacity:0; visibility:hidden; transition:all .3s; padding:20px; }
+        .modal-overlay.active { opacity:1; visibility:visible; }
+        .modal-box { background:linear-gradient(145deg, var(--card), #0D0D14); border:1px solid rgba(0,217,255,0.2); border-radius:20px; max-width:340px; width:100%; padding:32px 24px; text-align:center; transform:scale(0.9) translateY(20px); transition:transform .3s; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+        .modal-overlay.active .modal-box { transform:scale(1) translateY(0); }
+        .modal-icon { font-size:56px; margin-bottom:16px; display:block; }
+        .modal-title { font-size:22px; font-weight:700; background:linear-gradient(135deg, var(--cyan), var(--purple)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:12px; }
+        .modal-text { font-size:14px; color:var(--text2); line-height:1.6; margin-bottom:20px; }
+        .modal-badge { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); border-radius:30px; font-size:11px; font-weight:600; color:#10B981; margin-bottom:24px; }
+        .modal-btn-primary { display:block; width:100%; padding:16px 24px; background:linear-gradient(135deg, var(--cyan), var(--purple)); border:none; border-radius:14px; font-size:15px; font-weight:600; color:#fff; cursor:pointer; transition:all .3s; text-decoration:none; margin-bottom:12px; }
+        .modal-btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,217,255,0.3); }
+        .modal-btn-secondary { display:block; width:100%; padding:14px 24px; background:transparent; border:1px solid rgba(255,255,255,0.2); border-radius:14px; font-size:14px; font-weight:500; color:var(--text2); cursor:pointer; transition:all .3s; }
+        .modal-btn-secondary:hover { border-color:rgba(255,255,255,0.4); color:#fff; }
+        .modal-note { font-size:11px; color:var(--text3); margin-top:16px; line-height:1.5; }
+        .action-btn { background:var(--card); border:1px solid var(--border); border-radius:var(--radius-s); padding:14px 8px; text-align:center; cursor:pointer; transition:all .2s; text-decoration:none; color:var(--text); display:flex; flex-direction:column; align-items:center; gap:6px; }
+        .action-btn:active { transform:scale(0.96); }
+        .action-btn .icon { font-size:24px; }
+        .action-btn .label { font-size:11px; font-weight:600; color:var(--text2); }
+        .action-whatsapp { border-color:rgba(37,211,102,0.3); background:rgba(37,211,102,0.08); }
+        .action-whatsapp:active { background:rgba(37,211,102,0.15); }
+        .action-call { border-color:var(--border-c); background:var(--cyan-g); }
+        .action-emergency { border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08); }
+        .action-emergency .label { color:var(--red); }
+
+        /* ═══ SERVICES ═══ */
+
+
+        /* ═══ FORM ═══ */
+        .form-container { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px; position:relative; overflow:hidden; }
+        .form-container::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--cyan),var(--purple)); }
+        .form-step { display:none; animation:fadeIn .3s ease; }
+        .form-step.active { display:block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+        .step-indicator { display:flex; justify-content:center; gap:8px; margin-bottom:20px; }
+        .step-dot { width:32px; height:4px; border-radius:2px; background:var(--border); transition:all .3s; }
+        .step-dot.active { background:var(--cyan); width:48px; }
+        .step-dot.done { background:var(--green); }
+        .form-title { font-size:16px; font-weight:700; margin-bottom:4px; }
+        .form-subtitle { font-size:12px; color:var(--text3); margin-bottom:16px; }
+        .form-group { margin-bottom:14px; }
+        .form-label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; }
+        .form-input { width:100%; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius-s); padding:12px 14px; color:var(--text); font-size:14px; font-family:inherit; transition:border-color .2s; outline:none; }
+        .form-input:focus { border-color:var(--cyan); }
+        .form-input::placeholder { color:var(--text3); }
+        textarea.form-input { min-height:80px; resize:vertical; }
+        select.form-input { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.4)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; }
+        .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .form-chips { display:flex; flex-wrap:wrap; gap:8px; }
+        .chip { padding:8px 14px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--border); background:var(--bg2); color:var(--text2); transition:all .2s; }
+        .chip.active { background:var(--cyan-g); border-color:var(--cyan); color:var(--cyan); }
+        .chip:active { transform:scale(0.96); }
+        .btn-next,.btn-back,.btn-submit { width:100%; padding:14px; border:none; border-radius:var(--radius-s); font-size:14px; font-weight:700; cursor:pointer; transition:all .2s; font-family:inherit; }
+        .btn-next { background:linear-gradient(135deg,var(--cyan),var(--purple)); color:#fff; margin-top:8px; }
+        .btn-next:active { transform:scale(0.98); filter:brightness(0.9); }
+        .btn-next:disabled { opacity:0.5; cursor:not-allowed; }
+        .btn-back { background:transparent; color:var(--text3); border:1px solid var(--border); margin-top:8px; }
+        .btn-submit { background:linear-gradient(135deg,var(--green),#059669); color:#fff; margin-top:8px; font-size:15px; }
+        .btn-submit:active { transform:scale(0.98); }
+        .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px; }
+        .urgency-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .urgency-card { padding:12px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--bg2); cursor:pointer; text-align:center; transition:all .2s; }
+        .urgency-card.active { border-color:var(--cyan); background:var(--cyan-g); }
+        .urgency-card .u-icon { font-size:24px; margin-bottom:4px; }
+        .urgency-card .u-text { font-size:12px; font-weight:600; }
+        .urgency-card .u-desc { font-size:10px; color:var(--text3); margin-top:2px; }
+
+        /* ═══ PHOTO UPLOAD ═══ */
+        .photo-zone { border:2px dashed var(--border); border-radius:var(--radius); padding:24px; text-align:center; cursor:pointer; transition:all .2s; }
+        .photo-zone:hover { border-color:var(--cyan); background:var(--cyan-g); }
+        .photo-zone .pz-icon { font-size:32px; margin-bottom:8px; }
+        .photo-zone .pz-text { font-size:13px; color:var(--text2); }
+        .photo-zone .pz-hint { font-size:11px; color:var(--text3); margin-top:4px; }
+        .photo-previews { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+        .photo-preview { width:64px; height:64px; border-radius:8px; object-fit:cover; border:2px solid var(--border); }
+        .photo-preview-wrap { position:relative; }
+        .photo-remove { position:absolute; top:-6px; right:-6px; width:20px; height:20px; background:var(--red); color:#fff; border:none; border-radius:50%; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+        /* ═══ BTU CALCULATOR PRO ═══ */
+        .calc-card { background:linear-gradient(135deg,var(--cyan-g),var(--purple-g)); border:1px solid var(--border-c); border-radius:var(--radius); padding:16px; margin-bottom:14px; }
+        .calc-title { font-size:14px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+        .calc-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+        .calc-factors { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+        .calc-factor { padding:10px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--bg2); cursor:pointer; text-align:center; transition:all .2s; font-size:11px; }
+        .calc-factor:active { transform:scale(0.96); }
+        .calc-factor.active { border-color:var(--cyan); background:var(--cyan-g); color:var(--cyan); }
+        .calc-factor .cf-icon { font-size:20px; margin-bottom:3px; }
+        .calc-factor .cf-label { font-weight:600; font-size:11px; }
+        .calc-factor .cf-val { font-size:10px; color:var(--text3); margin-top:1px; }
+        .calc-result { background:var(--bg); border-radius:var(--radius-s); padding:14px; text-align:center; margin-top:12px; }
+        .calc-result .btu { font-size:1.8rem; font-weight:800; color:var(--cyan); }
+        .calc-result .btu-label { font-size:11px; color:var(--text3); margin-top:2px; }
+        .calc-result .btu-rec { font-size:12px; color:var(--green); margin-top:6px; font-weight:600; }
+        .calc-result .btu-details { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; text-align:left; }
+        .calc-result .btu-detail { font-size:11px; color:var(--text2); padding:6px 8px; background:var(--bg2); border-radius:6px; }
+        .calc-result .btu-detail strong { color:var(--text); }
+        /* Room Visualizer */
+        .room-viz { background:var(--bg); border:1px solid var(--border-c); border-radius:var(--radius); padding:12px; margin-top:12px; position:relative; }
+        .room-viz canvas { width:100%; border-radius:8px; display:block; touch-action:none; cursor:grab; }
+        .room-viz canvas:active { cursor:grabbing; }
+        .room-controls { display:flex; gap:6px; position:absolute; top:16px; right:16px; z-index:2; }
+        .room-controls button { width:34px; height:34px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:rgba(13,13,20,0.85); color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); transition:all .2s; }
+        .room-controls button:active { transform:scale(0.92); background:rgba(0,217,255,0.2); }
+        .room-hint { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-size:9px; color:rgba(255,255,255,0.35); pointer-events:none; }
+        .room-dims { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; }
+        .room-dims .form-group { margin-bottom:0; }
+        .room-dims .form-label { font-size:10px; }
+        .room-dims .form-input { padding:8px 10px; font-size:13px; text-align:center; }
+        .room-legend { display:flex; gap:12px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
+        .room-legend span { font-size:10px; color:var(--text3); display:flex; align-items:center; gap:4px; }
+        .room-legend .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+        /* ═══ MEASUREMENT GUIDE ═══ */
+        .measure-btn { display:flex; align-items:center; gap:6px; background:var(--bg2); border:1px dashed var(--cyan); border-radius:var(--radius-s); padding:8px 12px; color:var(--cyan); font-size:11px; font-weight:600; cursor:pointer; transition:all .2s; margin-bottom:10px; width:100%; justify-content:center; }
+        .measure-btn:active { transform:scale(0.97); }
+        .measure-guide { display:none; background:var(--bg); border:1px solid var(--border-c); border-radius:var(--radius); padding:14px; margin-bottom:12px; animation:fadeIn .3s; }
+        .measure-guide.show { display:block; }
+        .mg-title { font-size:13px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+        .mg-methods { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+        .mg-method { padding:10px; border:1px solid var(--border); border-radius:var(--radius-s); cursor:pointer; text-align:center; transition:all .2s; background:var(--bg2); }
+        .mg-method:active { transform:scale(0.96); }
+        .mg-method.active { border-color:var(--cyan); background:var(--cyan-g); }
+        .mg-method .mg-icon { font-size:24px; margin-bottom:4px; }
+        .mg-method .mg-label { font-size:11px; font-weight:600; }
+        .mg-method .mg-size { font-size:10px; color:var(--text3); }
+        .mg-counter { display:none; background:var(--bg2); border-radius:var(--radius-s); padding:14px; text-align:center; }
+        .mg-counter.show { display:block; }
+        .mg-counter-label { font-size:12px; color:var(--text2); margin-bottom:8px; }
+        .mg-counter-row { display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:8px; }
+        .mg-counter-btn { width:44px; height:44px; border-radius:50%; border:2px solid var(--cyan); background:var(--cyan-g); color:var(--cyan); font-size:22px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; }
+        .mg-counter-btn:active { transform:scale(0.9); background:var(--cyan); color:var(--bg); }
+        .mg-counter-val { font-size:2rem; font-weight:800; color:var(--text); min-width:50px; }
+        .mg-counter-result { font-size:14px; color:var(--cyan); font-weight:700; margin-top:6px; }
+        .mg-apply { margin-top:10px; padding:10px; border-radius:var(--radius-s); background:linear-gradient(135deg,var(--cyan),var(--cyan-d)); color:#000; border:none; font-size:12px; font-weight:700; cursor:pointer; width:100%; transition:all .2s; }
+        .mg-apply:active { transform:scale(0.97); }
+        .mg-dim-select { display:flex; gap:8px; margin-bottom:10px; justify-content:center; }
+        .mg-dim-chip { padding:6px 14px; border-radius:20px; border:1px solid var(--border); font-size:11px; font-weight:600; cursor:pointer; transition:all .2s; background:var(--bg2); color:var(--text2); }
+        .mg-dim-chip.active { border-color:var(--cyan); background:var(--cyan-g); color:var(--cyan); }
+        .mg-dim-chip:active { transform:scale(0.95); }
+
+        /* ═══ INSTALL SUB-FLOW ═══ */
+        .install-flow { background:linear-gradient(135deg,rgba(0,217,255,0.05),rgba(139,92,246,0.05)); border:1px solid var(--border-c); border-radius:var(--radius); padding:16px; margin-bottom:14px; transition:all .3s; }
+        .install-flow .if-title { font-size:13px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+        .install-option { display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--border); border-radius:var(--radius-s); cursor:pointer; transition:all .2s; margin-bottom:8px; background:var(--bg2); }
+        .install-option:hover { border-color:var(--cyan); }
+        .install-option.active { border-color:var(--cyan); background:var(--cyan-g); }
+        .install-option .io-icon { font-size:28px; flex-shrink:0; }
+        .install-option .io-info { flex:1; }
+        .install-option .io-title { font-size:13px; font-weight:600; }
+        .install-option .io-desc { font-size:11px; color:var(--text3); margin-top:2px; }
+        .brand-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+        .brand-chip { padding:10px 8px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--bg2); cursor:pointer; text-align:center; transition:all .2s; font-size:12px; font-weight:500; }
+        .brand-chip.active { border-color:var(--cyan); background:var(--cyan-g); color:var(--cyan); }
+        .brand-chip:active { transform:scale(0.96); }
+
+        /* ═══ SUCCESS ═══ */
+        .success-screen { display:none; text-align:center; padding:40px 20px; }
+        .success-screen.show { display:block; }
+        .success-icon { font-size:64px; margin-bottom:16px; animation:float 3s ease-in-out infinite; }
+        .success-title { font-size:1.5rem; font-weight:800; margin-bottom:8px; background:linear-gradient(135deg,var(--cyan),var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .success-text { font-size:14px; color:var(--text2); margin-bottom:8px; line-height:1.6; }
+        .success-token { background:var(--card); border:1px solid var(--border-c); border-radius:var(--radius-s); padding:12px 20px; display:inline-block; margin:12px 0; }
+        .success-token code { font-size:18px; font-weight:700; color:var(--cyan); letter-spacing:2px; }
+        .success-actions { display:flex; flex-direction:column; gap:10px; margin-top:20px; max-width:300px; margin-left:auto; margin-right:auto; }
+        .success-btn { padding:12px 24px; border-radius:var(--radius-s); font-size:14px; font-weight:600; cursor:pointer; border:none; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; transition:all .2s; font-family:inherit; }
+        .success-btn.wa { background:var(--whatsapp); color:#fff; }
+        .success-btn.track { background:var(--card); color:var(--cyan); border:1px solid var(--border-c); }
+
+        /* ═══ TESTIMONIALS ═══ */
+        .testimonials { display:flex; gap:12px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; padding-bottom:8px; }
+        .testimonials::-webkit-scrollbar { display:none; }
+        .testimonial { flex:0 0 85%; scroll-snap-align:start; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; }
+        .test-stars { color:var(--yellow); margin-bottom:8px; font-size:14px; }
+        .test-text { font-size:13px; color:var(--text2); line-height:1.5; margin-bottom:8px; font-style:italic; }
+        .test-author { font-size:12px; font-weight:600; }
+
+        /* ═══ GUARANTEE BADGES ═══ */
+        .badges { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+        .badge { text-align:center; padding:12px 8px; background:var(--card); border:1px solid var(--border); border-radius:var(--radius-s); }
+        .badge-icon { font-size:24px; margin-bottom:4px; }
+        .badge-text { font-size:10px; font-weight:600; color:var(--text2); line-height:1.3; }
+
+        /* ═══ PROMO BANNER ═══ */
+        .promo-banner { background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(0,217,255,0.1)); border:1px solid var(--border-c); border-radius:var(--radius); padding:16px; text-align:center; position:relative; overflow:hidden; display:none; }
+        .promo-banner.show { display:block; }
+        .promo-badge { display:inline-block; background:var(--red); color:#fff; font-size:11px; font-weight:700; padding:3px 10px; border-radius:10px; margin-bottom:8px; }
+        .promo-text { font-size:14px; font-weight:600; }
+        .promo-discount { font-size:24px; font-weight:800; color:var(--cyan); }
+
+        /* ═══ CHAT FLOATING ═══ */
+        .chat-fab { position:fixed; bottom:20px; right:20px; width:56px; height:56px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); border:none; cursor:pointer; z-index:100; display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; box-shadow:0 4px 20px rgba(0,217,255,0.3); transition:all .3s; }
+        .chat-fab:hover { transform:scale(1.05); }
+        .chat-fab .badge-count { position:absolute; top:-4px; right:-4px; width:20px; height:20px; background:var(--red); border-radius:50%; font-size:11px; font-weight:700; display:none; align-items:center; justify-content:center; }
+        .chat-panel { position:fixed; bottom:0; left:0; right:0; top:0; background:var(--bg); z-index:200; display:none; flex-direction:column; }
+        .chat-panel.open { display:flex; }
+        .chat-header { padding:14px 16px; background:var(--card); display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--border); }
+        .chat-close { background:none; border:none; color:var(--text2); font-size:20px; cursor:pointer; padding:4px; }
+        .chat-header-info { flex:1; }
+        .chat-header-info h3 { font-size:14px; font-weight:600; }
+        .chat-header-info p { font-size:11px; color:var(--text3); }
+        .chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
+        .chat-msg { max-width:80%; padding:10px 14px; border-radius:16px; font-size:13px; line-height:1.4; animation:fadeIn .3s; }
+        .chat-msg.them { background:var(--card); align-self:flex-start; border-bottom-left-radius:4px; }
+        .chat-msg.me { background:linear-gradient(135deg,var(--cyan-g),var(--purple-g)); border:1px solid var(--border-c); align-self:flex-end; border-bottom-right-radius:4px; }
+        .chat-msg .time { font-size:10px; color:var(--text3); margin-top:4px; }
+        .chat-input-bar { padding:12px 16px; background:var(--card); display:flex; gap:8px; border-top:1px solid var(--border); }
+        .chat-input { flex:1; background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:10px 16px; color:var(--text); font-size:13px; outline:none; font-family:inherit; }
+        .chat-input:focus { border-color:var(--cyan); }
+        .chat-send { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--purple)); border:none; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+        /* ═══ FOOTER ═══ */
+        .footer { text-align:center; padding:24px 16px 40px; color:var(--text3); font-size:11px; }
+        .footer a { color:var(--cyan); text-decoration:none; }
+
+        /* ═══ ERROR ═══ */
+        .error-screen { display:none; text-align:center; padding:60px 20px; }
+        .error-screen.show { display:block; }
+        .error-icon { font-size:64px; margin-bottom:16px; }
+        .error-title { font-size:1.3rem; font-weight:700; margin-bottom:8px; color:var(--red); }
+
+        /* Honeypot - hidden from users, visible to bots */
+        .hp-field { position:absolute; left:-9999px; opacity:0; height:0; width:0; overflow:hidden; }
+
+        @media(min-width:480px) {
+
+            .actions { grid-template-columns:repeat(4,1fr); }
+        }
+        @media(min-width:768px) {
+            body { max-width:480px; margin:0 auto; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading" id="loadingScreen">
+    <div class="loader"></div>
+    <p>Cargando servicios...</p>
+</div>
+
+<!-- ERROR -->
+<div class="error-screen" id="errorScreen">
+    <div class="error-icon">😓</div>
+    <h2 class="error-title">Servicio no disponible</h2>
+    <p style="color:var(--text2);">No pudimos cargar la información. Intenta de nuevo.</p>
+    <button onclick="location.reload()" style="margin-top:20px;padding:12px 32px;background:var(--cyan);color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;">Reintentar</button>
+</div>
+
+<!-- MAIN CONTENT (hidden until loaded) -->
+<div id="mainContent" style="display:none;">
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-particles" id="particles"></div>
+        <div class="hero-content">
+            <div class="hero-badge">❄️ Servicio Profesional Certificado</div>
+            <span class="hero-icon">🌡️</span>
+            <h1 class="hero-title" id="heroTitle">Climatización Profesional</h1>
+            <p class="hero-sub" id="heroSub">Instalación, mantenimiento y reparación de aires acondicionados y minisplits</p>
+            <div class="hero-stats" id="heroStats" style="display:none;">
+                <div class="stat"><div class="stat-num" id="statYears">5+</div><div class="stat-label">Años exp.</div></div>
+                <div class="stat"><div class="stat-num" id="statClients">500+</div><div class="stat-label">Clientes</div></div>
+                <div class="stat"><div class="stat-num" id="statServices">1000+</div><div class="stat-label">Servicios</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="actions" id="quickActions">
+        <a class="action-btn action-whatsapp" id="btnWhatsapp" href="#" target="_blank">
+            <span class="icon">💬</span><span class="label">WhatsApp</span>
+        </a>
+        <a class="action-btn action-call" id="btnCall" href="#">
+            <span class="icon">📞</span><span class="label">Llamar</span>
+        </a>
+        <a class="action-btn" id="btnCotizar" href="#formSection">
+            <span class="icon">📋</span><span class="label">Cotizar</span>
+        </a>
+        <a class="action-btn action-emergency" id="btnEmergency" href="#formSection">
+            <span class="icon">🚨</span><span class="label">Emergencia</span>
+        </a>
+        <a class="action-btn action-login" href="javascript:void(0)" onclick="mostrarModalLogin()">
+            <span class="icon">🔐</span><span class="label">Acceder</span>
+        </a>
+    </div>
+
+    <!-- MODAL INICIAR SESIÓN -->
+    <div class="modal-overlay" id="modalLogin" onclick="cerrarModalLogin(event)">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <span class="modal-icon">🔐</span>
+            <h2 class="modal-title">Acceso a Clientes</h2>
+            <p class="modal-text">
+                Para iniciar sesión necesitas la app <strong>Robert Darin Fintech</strong> instalada en tu teléfono.
+            </p>
+            <div class="modal-badge">
+                <span>✓</span>
+                Descarga gratuita para Android (~100 MB)
+            </div>
+            <a href="https://rdarinel92-bit.github.io/tarjetas/downloads/" 
+               class="modal-btn-primary" 
+               target="_blank">
+                📱 Descargar App para Android
+            </a>
+            <button class="modal-btn-secondary" onclick="cerrarModalLogin(event)">
+                Cancelar
+            </button>
+            <p class="modal-note">
+                ¿No eres cliente? Contáctanos por WhatsApp para registrarte.
+            </p>
+        </div>
+    </div>
+
+    <!-- PROMO BANNER -->
+    <div class="section">
+        <div class="promo-banner" id="promoBanner">
+            <div class="promo-badge">🔥 PROMOCIÓN</div>
+            <div class="promo-discount" id="promoDiscount"></div>
+            <div class="promo-text" id="promoText"></div>
+        </div>
+    </div>
+
+
+    <!-- TRUST BADGES -->
+    <div class="section">
+        <div class="badges">
+            <div class="badge"><div class="badge-icon">🛡️</div><div class="badge-text">Garantía en todo servicio</div></div>
+            <div class="badge"><div class="badge-icon">⚡</div><div class="badge-text">Respuesta en menos de 1 hora</div></div>
+            <div class="badge"><div class="badge-icon">👨‍🔧</div><div class="badge-text">Técnicos certificados</div></div>
+        </div>
+    </div>
+
+    <!-- FORM SECTION -->
+    <div class="section" id="formSection">
+        <div class="section-title"><span>📝</span> Solicita tu Cotización Gratis</div>
+        <div class="form-container" id="formContainer">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step-dot active" data-step="1"></div>
+                <div class="step-dot" data-step="2"></div>
+                <div class="step-dot" data-step="3"></div>
+            </div>
+
+            <!-- STEP 1: Contact Info -->
+            <div class="form-step active" id="step1">
+                <div class="form-title">¿Cómo te contactamos?</div>
+                <div class="form-subtitle">Tu información está segura y protegida</div>
+                <div class="form-group">
+                    <label class="form-label">Nombre completo *</label>
+                    <input class="form-input" id="fNombre" type="text" placeholder="Tu nombre" required maxlength="100" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Teléfono / WhatsApp *</label>
+                    <input class="form-input" id="fTelefono" type="tel" placeholder="10 dígitos" required maxlength="15" autocomplete="tel">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Correo electrónico</label>
+                    <input class="form-input" id="fEmail" type="email" placeholder="tu@email.com" maxlength="100" autocomplete="email">
+                </div>
+                <!-- Honeypot -->
+                <div class="hp-field" aria-hidden="true">
+                    <label>No llenar este campo</label>
+                    <input type="text" id="fWebsite" name="website" tabindex="-1" autocomplete="off">
+                </div>
+                <button class="btn-next" onclick="nextStep(2)">Continuar →</button>
+            </div>
+
+            <!-- STEP 2: Service Details -->
+            <div class="form-step" id="step2">
+                <div class="form-title">¿Qué servicio necesitas?</div>
+                <div class="form-subtitle">Selecciona el tipo de servicio</div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de servicio *</label>
+                    <div class="form-chips" id="serviceChips">
+                        <div class="chip" data-val="instalacion" onclick="selectChip(this,'serviceChips')">🔧 Instalación</div>
+                        <div class="chip" data-val="mantenimiento" onclick="selectChip(this,'serviceChips')">🧹 Mantenimiento</div>
+                        <div class="chip" data-val="reparacion" onclick="selectChip(this,'serviceChips')">🔩 Reparación</div>
+                        <div class="chip" data-val="cotizacion" onclick="selectChip(this,'serviceChips')">💰 Cotización</div>
+                        <div class="chip" data-val="emergencia" onclick="selectChip(this,'serviceChips')">🚨 Emergencia</div>
+                        <div class="chip" data-val="contrato" onclick="selectChip(this,'serviceChips')">📄 Contrato</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">¿Tienes equipo actualmente?</label>
+                    <div class="form-chips" id="tieneEquipo">
+                        <div class="chip" data-val="si" onclick="selectChip(this,'tieneEquipo');toggleEquipoFields(true)">Sí tengo equipo</div>
+                        <div class="chip" data-val="no" onclick="selectChip(this,'tieneEquipo');toggleEquipoFields(false)">No, equipo nuevo</div>
+                    </div>
+                </div>
+
+                <div id="equipoFields" style="display:none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Marca</label>
+                            <input class="form-input" id="fMarca" placeholder="Ej: Mirage, LG...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Antigüedad</label>
+                            <select class="form-input" id="fAntiguedad">
+                                <option value="">Selecciona...</option>
+                                <option value="0-2">Menos de 2 años</option>
+                                <option value="2-5">2 a 5 años</option>
+                                <option value="5-10">5 a 10 años</option>
+                                <option value="10+">Más de 10 años</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Problema que presenta</label>
+                        <textarea class="form-input" id="fProblema" placeholder="Describe el problema: no enfría, hace ruido, gotea..."></textarea>
+                    </div>
+                </div>
+
+                <!-- INSTALL SUB-FLOW: shown when "Instalación" selected -->
+                <div class="install-flow" id="installFlow" style="display:none;">
+                    <div class="if-title">📦 ¿Ya tienes el equipo?</div>
+                    <div class="install-option" id="optYaTengo" onclick="selectInstallOption('ya_tengo')">
+                        <div class="io-icon">✅</div>
+                        <div class="io-info">
+                            <div class="io-title">Ya compré mi equipo</div>
+                            <div class="io-desc">Solo necesito que lo instalen</div>
+                        </div>
+                    </div>
+                    <div class="install-option" id="optComprar" onclick="selectInstallOption('comprar')">
+                        <div class="io-icon">🛒</div>
+                        <div class="io-info">
+                            <div class="io-title">Quiero comprar equipo + instalación</div>
+                            <div class="io-desc">Me recomiendan el equipo ideal y lo instalan</div>
+                        </div>
+                    </div>
+
+                    <!-- Sub-flow: Ya tengo equipo comprado -->
+                    <div id="installYaTengo" style="display:none;">
+                        <div class="form-row" style="margin-top:12px;">
+                            <div class="form-group">
+                                <label class="form-label">Marca del equipo</label>
+                                <input class="form-input" id="fMarcaNuevo" placeholder="Ej: Mirage, Carrier...">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Capacidad (BTU o Tons)</label>
+                                <input class="form-input" id="fCapacidadNuevo" placeholder="Ej: 12000 BTU / 1 Ton">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notas sobre el equipo</label>
+                            <input class="form-input" id="fNotasEquipo" placeholder="Ej: Ya está en caja, incluye tubería...">
+                        </div>
+                    </div>
+
+                    <!-- Sub-flow: Quiero comprar equipo + instalación -->
+                    <div id="installComprar" style="display:none;">
+                        <div class="form-group" style="margin-top:12px;">
+                            <label class="form-label">¿Preferencia de marca?</label>
+                            <div class="brand-grid" id="brandGrid">
+                                <div class="brand-chip" data-val="mirage" onclick="selectBrand(this)">Mirage</div>
+                                <div class="brand-chip" data-val="carrier" onclick="selectBrand(this)">Carrier</div>
+                                <div class="brand-chip" data-val="lg" onclick="selectBrand(this)">LG</div>
+                                <div class="brand-chip" data-val="samsung" onclick="selectBrand(this)">Samsung</div>
+                                <div class="brand-chip" data-val="hisense" onclick="selectBrand(this)">Hisense</div>
+                                <div class="brand-chip" data-val="sin_preferencia" onclick="selectBrand(this)">🤷 Sin preferencia</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">💰 Presupuesto aproximado</label>
+                            <div class="form-chips" id="presupuestoChips">
+                                <div class="chip" data-val="5000-10000" onclick="selectChip(this,'presupuestoChips')">$5,000 - $10,000</div>
+                                <div class="chip" data-val="10000-15000" onclick="selectChip(this,'presupuestoChips')">$10,000 - $15,000</div>
+                                <div class="chip" data-val="15000-25000" onclick="selectChip(this,'presupuestoChips')">$15,000 - $25,000</div>
+                                <div class="chip" data-val="25000+" onclick="selectChip(this,'presupuestoChips')">$25,000+</div>
+                                <div class="chip" data-val="abierto" onclick="selectChip(this,'presupuestoChips')">💬 Abierto</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ SERVICE-SPECIFIC SECTIONS ═══ -->
+
+                <!-- MANTENIMIENTO: Tipo de mantenimiento -->
+                <div id="mantenimientoFields" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">🔧 Tipo de mantenimiento</label>
+                        <div class="form-chips" id="tipoMantenimientoChips">
+                            <div class="chip" data-val="preventivo" onclick="selectChip(this,'tipoMantenimientoChips')">🛡️ Preventivo</div>
+                            <div class="chip" data-val="correctivo" onclick="selectChip(this,'tipoMantenimientoChips')">🔧 Correctivo</div>
+                            <div class="chip" data-val="limpieza" onclick="selectChip(this,'tipoMantenimientoChips')">🧹 Limpieza General</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REPARACIÓN: Síntomas -->
+                <div id="reparacionFields" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">🩺 ¿Qué presenta tu equipo? (selecciona los que apliquen)</label>
+                        <div class="form-chips" id="sintomasChips">
+                            <div class="chip" data-val="no_enfria" onclick="toggleMultiChip(this)">🌡️ No enfría</div>
+                            <div class="chip" data-val="ruido" onclick="toggleMultiChip(this)">🔊 Hace ruido</div>
+                            <div class="chip" data-val="gotea" onclick="toggleMultiChip(this)">💧 Gotea</div>
+                            <div class="chip" data-val="no_enciende" onclick="toggleMultiChip(this)">⚫ No enciende</div>
+                            <div class="chip" data-val="olor" onclick="toggleMultiChip(this)">👃 Olor raro</div>
+                            <div class="chip" data-val="congela" onclick="toggleMultiChip(this)">🧊 Se congela</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COTIZACIÓN: ¿Qué quieres cotizar? -->
+                <div id="cotizacionFields" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">💰 ¿Qué te interesa cotizar?</label>
+                        <div class="form-chips" id="tipoCotizacionChips">
+                            <div class="chip" data-val="instalacion_nueva" onclick="selectChip(this,'tipoCotizacionChips')">🆕 Instalación nueva</div>
+                            <div class="chip" data-val="cambio_equipo" onclick="selectChip(this,'tipoCotizacionChips')">🔄 Cambio de equipo</div>
+                            <div class="chip" data-val="mantenimiento_plan" onclick="selectChip(this,'tipoCotizacionChips')">📋 Plan mantenimiento</div>
+                            <div class="chip" data-val="sistema_central" onclick="selectChip(this,'tipoCotizacionChips')">🏢 Sistema central</div>
+                            <div class="chip" data-val="otro" onclick="selectChip(this,'tipoCotizacionChips')">💬 Otro</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Describe brevemente qué necesitas</label>
+                        <textarea class="form-input" id="fDescCotizacion" placeholder="Ej: Quiero cotizar 3 minisplits para mi oficina..."></textarea>
+                    </div>
+                </div>
+
+                <!-- EMERGENCIA: Tipo de emergencia -->
+                <div id="emergenciaFields" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">⚠️ ¿Qué tipo de emergencia?</label>
+                        <div class="form-chips" id="tipoEmergenciaChips">
+                            <div class="chip" data-val="fuga_gas" onclick="selectChip(this,'tipoEmergenciaChips')">💨 Fuga de gas</div>
+                            <div class="chip" data-val="cortocircuito" onclick="selectChip(this,'tipoEmergenciaChips')">⚡ Cortocircuito</div>
+                            <div class="chip" data-val="no_enciende" onclick="selectChip(this,'tipoEmergenciaChips')">⚫ No enciende</div>
+                            <div class="chip" data-val="goteo_excesivo" onclick="selectChip(this,'tipoEmergenciaChips')">🌊 Goteo excesivo</div>
+                            <div class="chip" data-val="ruido_fuerte" onclick="selectChip(this,'tipoEmergenciaChips')">📢 Ruido fuerte</div>
+                            <div class="chip" data-val="humo" onclick="selectChip(this,'tipoEmergenciaChips')">🔥 Humo / Olor quemado</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTRATO: Frecuencia y tipo propiedad -->
+                <div id="contratoFields" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">📅 ¿Cada cuánto necesitas mantenimiento?</label>
+                        <div class="form-chips" id="frecuenciaChips">
+                            <div class="chip" data-val="mensual" onclick="selectChip(this,'frecuenciaChips')">Mensual</div>
+                            <div class="chip" data-val="bimestral" onclick="selectChip(this,'frecuenciaChips')">Bimestral</div>
+                            <div class="chip" data-val="trimestral" onclick="selectChip(this,'frecuenciaChips')">Trimestral</div>
+                            <div class="chip" data-val="semestral" onclick="selectChip(this,'frecuenciaChips')">Semestral</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">🏠 Tipo de propiedad</label>
+                        <div class="form-chips" id="tipoPropiedadChips">
+                            <div class="chip" data-val="casa" onclick="selectChip(this,'tipoPropiedadChips')">🏡 Casa</div>
+                            <div class="chip" data-val="oficina" onclick="selectChip(this,'tipoPropiedadChips')">🏢 Oficina</div>
+                            <div class="chip" data-val="negocio" onclick="selectChip(this,'tipoPropiedadChips')">🏪 Negocio</div>
+                            <div class="chip" data-val="edificio" onclick="selectChip(this,'tipoPropiedadChips')">🏬 Edificio</div>
+                            <div class="chip" data-val="industrial" onclick="selectChip(this,'tipoPropiedadChips')">🏭 Industrial</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">¿Para cuándo lo necesitas?</label>
+                    <div class="form-chips" id="urgenciaChips">
+                        <div class="chip" data-val="hoy" onclick="selectChip(this,'urgenciaChips')">🔴 Hoy / Urgente</div>
+                        <div class="chip" data-val="esta_semana" onclick="selectChip(this,'urgenciaChips')">🟡 Esta semana</div>
+                        <div class="chip" data-val="este_mes" onclick="selectChip(this,'urgenciaChips')">🟢 Este mes</div>
+                        <div class="chip" data-val="solo_cotizar" onclick="selectChip(this,'urgenciaChips')">💬 Solo cotizar</div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="cantidadEquiposGroup">
+                    <label class="form-label">¿Cuántos equipos?</label>
+                    <div class="form-chips" id="cantidadChips">
+                        <div class="chip active" data-val="1" onclick="selectChip(this,'cantidadChips')">1</div>
+                        <div class="chip" data-val="2" onclick="selectChip(this,'cantidadChips')">2</div>
+                        <div class="chip" data-val="3" onclick="selectChip(this,'cantidadChips')">3</div>
+                        <div class="chip" data-val="4+" onclick="selectChip(this,'cantidadChips')">4+</div>
+                    </div>
+                </div>
+
+                <!-- BTU Calculator PRO -->
+                <div class="calc-card" id="btuCalc" style="display:none;">
+                    <div class="calc-title">🧮 Calculadora Inteligente de BTU</div>
+
+                    <!-- Measurement Guide Button -->
+                    <div class="measure-btn" onclick="toggleMeasureGuide()">
+                        📐 ¿No sabes las medidas? Toca aquí para medirlas fácil
+                    </div>
+
+                    <!-- Measurement Guide Panel -->
+                    <div class="measure-guide" id="measureGuide">
+                        <div class="mg-title">📐 Guía de Medición Rápida</div>
+                        <p style="font-size:11px;color:var(--text3);margin-bottom:10px;">Elige un método y cuenta cuántos caben en tu espacio:</p>
+
+                        <div class="mg-methods">
+                            <div class="mg-method active" data-method="pasos" data-size="0.75" onclick="selectMeasureMethod(this)">
+                                <div class="mg-icon">🦶</div>
+                                <div class="mg-label">Pasos</div>
+                                <div class="mg-size">~75 cm c/u</div>
+                            </div>
+                            <div class="mg-method" data-method="baldosas" data-size="0.60" onclick="selectMeasureMethod(this)">
+                                <div class="mg-icon">🔲</div>
+                                <div class="mg-label">Baldosas</div>
+                                <div class="mg-size">~60 cm c/u</div>
+                            </div>
+                            <div class="mg-method" data-method="brazos" data-size="1.65" onclick="selectMeasureMethod(this)">
+                                <div class="mg-icon">💪</div>
+                                <div class="mg-label">Brazos</div>
+                                <div class="mg-size">~1.65 m c/u</div>
+                            </div>
+                            <div class="mg-method" data-method="puertas" data-size="0.90" onclick="selectMeasureMethod(this)">
+                                <div class="mg-icon">🚪</div>
+                                <div class="mg-label">Ancho puerta</div>
+                                <div class="mg-size">~90 cm c/u</div>
+                            </div>
+                        </div>
+
+                        <!-- Which dimension are we measuring? -->
+                        <div class="mg-dim-select">
+                            <div class="mg-dim-chip active" data-dim="largo" onclick="selectMeasureDim(this)">📏 Largo</div>
+                            <div class="mg-dim-chip" data-dim="ancho" onclick="selectMeasureDim(this)">↔️ Ancho</div>
+                        </div>
+
+                        <div class="mg-counter show" id="mgCounter">
+                            <div class="mg-counter-label" id="mgCounterLabel">¿Cuántos <strong>pasos</strong> caben en el <strong>largo</strong>?</div>
+                            <div class="mg-counter-row">
+                                <button class="mg-counter-btn" onclick="adjustCount(-1)">−</button>
+                                <div class="mg-counter-val" id="mgCountVal">0</div>
+                                <button class="mg-counter-btn" onclick="adjustCount(1)">+</button>
+                            </div>
+                            <div class="mg-counter-result" id="mgCountResult">= 0.0 metros</div>
+                            <button class="mg-apply" onclick="applyMeasurement()">✅ Aplicar al <span id="mgApplyDim">Largo</span></button>
+                        </div>
+                    </div>
+
+                    <!-- Room Dimensions -->
+                    <div style="margin-bottom:8px;">
+                        <label class="form-label">📏 Dimensiones del espacio</label>
+                        <div class="room-dims">
+                            <div class="form-group">
+                                <label class="form-label">Largo (m)</label>
+                                <input class="form-input" id="fLargo" type="number" min="1" max="50" step="0.5" placeholder="5" oninput="calcBTUPro()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Ancho (m)</label>
+                                <input class="form-input" id="fAncho" type="number" min="1" max="50" step="0.5" placeholder="4" oninput="calcBTUPro()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Alto (m)</label>
+                                <input class="form-input" id="fAlto" type="number" min="2" max="10" step="0.1" placeholder="2.5" oninput="calcBTUPro()">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Space Type -->
+                    <div class="form-group">
+                        <label class="form-label">Tipo de espacio</label>
+                        <select class="form-input" id="fTipoEspacio" onchange="calcBTUPro()">
+                            <option value="">Selecciona...</option>
+                            <option value="recamara">Recámara</option>
+                            <option value="sala">Sala / Comedor</option>
+                            <option value="oficina">Oficina</option>
+                            <option value="local">Local comercial</option>
+                            <option value="bodega">Bodega / Nave</option>
+                            <option value="cocina">Cocina</option>
+                            <option value="consultorio">Consultorio / Clínica</option>
+                        </select>
+                    </div>
+
+                    <!-- Extra Factors -->
+                    <label class="form-label" style="margin-top:8px;">Factores adicionales (toca los que apliquen)</label>
+                    <div class="calc-factors" id="btuFactors">
+                        <div class="calc-factor" data-factor="sol" onclick="toggleFactor(this)">
+                            <div class="cf-icon">☀️</div>
+                            <div class="cf-label">Le da sol directo</div>
+                            <div class="cf-val">+15% BTU</div>
+                        </div>
+                        <div class="calc-factor" data-factor="ventanas" onclick="toggleFactor(this)">
+                            <div class="cf-icon">🪟</div>
+                            <div class="cf-label">Muchas ventanas</div>
+                            <div class="cf-val">+10% BTU</div>
+                        </div>
+                        <div class="calc-factor" data-factor="ultimo_piso" onclick="toggleFactor(this)">
+                            <div class="cf-icon">🏢</div>
+                            <div class="cf-label">Último piso / techo</div>
+                            <div class="cf-val">+12% BTU</div>
+                        </div>
+                        <div class="calc-factor" data-factor="cocina" onclick="toggleFactor(this)">
+                            <div class="cf-icon">🍳</div>
+                            <div class="cf-label">Cocina / equipos</div>
+                            <div class="cf-val">+20% BTU</div>
+                        </div>
+                    </div>
+
+                    <!-- People count -->
+                    <div class="form-group" style="margin-top:10px;">
+                        <label class="form-label">👥 Personas que usan el espacio</label>
+                        <div class="form-chips" id="personasChips">
+                            <div class="chip active" data-val="1-2" onclick="selectChip(this,'personasChips');calcBTUPro()">1-2</div>
+                            <div class="chip" data-val="3-5" onclick="selectChip(this,'personasChips');calcBTUPro()">3-5</div>
+                            <div class="chip" data-val="6-10" onclick="selectChip(this,'personasChips');calcBTUPro()">6-10</div>
+                            <div class="chip" data-val="10+" onclick="selectChip(this,'personasChips');calcBTUPro()">10+</div>
+                        </div>
+                    </div>
+
+                    <!-- Room Visualizer -->
+                    <div class="room-viz" id="roomViz" style="display:none;">
+                        <div class="room-controls">
+                            <button onclick="roomZoom(1.15)" title="Acercar">+</button>
+                            <button onclick="roomZoom(0.87)" title="Alejar">−</button>
+                            <button onclick="roomReset()" title="Restablecer">↻</button>
+                        </div>
+                        <canvas id="roomCanvas" width="600" height="400"></canvas>
+                        <div class="room-hint">👆 Toca para girar · Pellizca para zoom · 2 dedos para mover</div>
+                        <div class="room-legend">
+                            <span><span class="dot" style="background:#00D9FF;"></span> Minisplit</span>
+                            <span><span class="dot" style="background:rgba(0,217,255,0.3);"></span> Flujo de aire</span>
+                            <span><span class="dot" style="background:#10B981;"></span> Zona fría</span>
+                            <span><span class="dot" style="background:#FBBF24;"></span> Zona cálida</span>
+                        </div>
+                    </div>
+
+                    <!-- Result -->
+                    <div class="calc-result" id="btuResult" style="display:none;">
+                        <div class="btu" id="btuValue">12,000</div>
+                        <div class="btu-label">BTU recomendados</div>
+                        <div class="btu-rec" id="btuRec">Minisplit 1 tonelada</div>
+                        <div class="btu-details" id="btuDetails"></div>
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn-back" onclick="nextStep(1)">← Atrás</button>
+                    <button class="btn-next" onclick="nextStep(3)">Continuar →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Location & Submit -->
+            <div class="form-step" id="step3">
+                <div class="form-title">¿Dónde es el servicio?</div>
+                <div class="form-subtitle">Necesitamos tu ubicación para atenderte</div>
+                <div class="form-group">
+                    <label class="form-label">Dirección completa *</label>
+                    <textarea class="form-input" id="fDireccion" placeholder="Calle, número, colonia, municipio..." required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Colonia</label>
+                        <input class="form-input" id="fColonia" placeholder="Tu colonia">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Municipio / Ciudad</label>
+                        <input class="form-input" id="fCiudad" placeholder="Ej: Emiliano Zapata">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">C.P.</label>
+                        <input class="form-input" id="fCP" type="text" placeholder="Ej: 86600" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Referencia</label>
+                        <input class="form-input" id="fReferencia" placeholder="Cerca de...">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">¿Cuándo prefieres que te contactemos?</label>
+                    <div class="form-chips" id="horarioChips">
+                        <div class="chip" data-val="manana" onclick="selectChip(this,'horarioChips')">🌅 Mañana</div>
+                        <div class="chip" data-val="tarde" onclick="selectChip(this,'horarioChips')">🌇 Tarde</div>
+                        <div class="chip" data-val="cualquier" onclick="selectChip(this,'horarioChips')">🕐 Cualquier hora</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notas adicionales</label>
+                    <textarea class="form-input" id="fNotas" placeholder="Cualquier detalle extra que quieras darnos..."></textarea>
+                </div>
+
+                <!-- Photo upload -->
+                <div class="form-group">
+                    <label class="form-label">📸 Fotos del equipo o espacio (opcional)</label>
+                    <div class="photo-zone" id="photoZone" onclick="document.getElementById('photoInput').click()">
+                        <div class="pz-icon">📷</div>
+                        <div class="pz-text">Toca para agregar fotos</div>
+                        <div class="pz-hint">Máximo 3 fotos</div>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotos(this)">
+                    <div class="photo-previews" id="photoPreviews"></div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="btn-back" onclick="nextStep(2)">← Atrás</button>
+                    <button class="btn-submit" id="btnSubmit" onclick="submitForm()">📤 Enviar Solicitud</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="section" id="testimonialsSection" style="display:none;">
+        <div class="section-title"><span>⭐</span> Lo que dicen nuestros clientes</div>
+        <div class="testimonials" id="testimonialsList"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p id="footerName">Servicios de Climatización</p>
+        <p style="margin-top:4px;">Cotización sin compromiso · Garantía en servicio</p>
+        <p style="margin-top:8px;">
+            <a href="https://rdarinel92-bit.github.io/tarjetas/" id="footerPowered">Powered by Robert Darin</a>
+        </p>
+    </div>
+
+</div>
+
+<!-- CHAT -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" style="display:none;">
+    💬
+    <span class="badge-count" id="chatBadge">0</span>
+</button>
+<div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+        <button class="chat-close" onclick="toggleChat()">✕</button>
+        <div class="chat-header-info">
+            <h3>Chat en vivo</h3>
+            <p>Te respondemos lo antes posible</p>
+        </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg them">
+            <div>¡Hola! 👋 ¿En qué podemos ayudarte? Escríbenos tu pregunta sobre aires acondicionados o climatización.</div>
+            <div class="time">Ahora</div>
+        </div>
+    </div>
+    <div class="chat-input-bar">
+        <input class="chat-input" id="chatInput" placeholder="Escribe tu mensaje..." maxlength="500" onkeypress="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+</div>
+
+<!-- SUCCESS SCREEN (replaces form) -->
+<div class="success-screen" id="successScreen">
+    <div class="success-icon">✅</div>
+    <h2 class="success-title">¡Solicitud Enviada!</h2>
+    <p class="success-text">Un especialista revisará tu solicitud y te contactará pronto.</p>
+    <p class="success-text">Tu código de seguimiento:</p>
+    <div class="success-token"><code id="trackingToken">---</code></div>
+    <p class="success-text" style="font-size:12px;">Guarda este código para dar seguimiento a tu solicitud.</p>
+    <div class="success-actions">
+        <a class="success-btn wa" id="successWa" href="#" target="_blank">💬 Escribirnos por WhatsApp</a>
+        <button class="success-btn track" onclick="location.reload()">🔄 Enviar otra solicitud</button>
+    </div>
+</div>
+
+<script>
+    // ═══════════════════════════════════════════════════════════════════
+    // CONFIGURATION
+    // ═══════════════════════════════════════════════════════════════════
+    const _k = ['eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp','XVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn','JlZiI6InF0ZnN4ZnZ4cWlpaG5vZnJwbW','11Iiwicm9sZSI6ImFub24iLCJpYXQiOj','E3NjczMjU5MDIsImV4cCI6MjA4MjkwMT','kwMn0.D4LrG8FlnqfK0Zhi2Ex0z2UGeo','VSr6u1XR2jnxis9Bg'];
+    const SB_URL = 'https://qtfsxfvxqiihnofrpmmu.supabase.co';
+    const SB_KEY = _k.join('');
+
+    let sb = null;
+    try { sb = supabase.createClient(SB_URL, SB_KEY); } catch(e) { console.warn('Supabase init failed:', e); }
+
+    let negocioId = null;
+    let tarjetaId = null;
+    let configForm = null;
+    let selectedPhotos = [];
+    let formStartTime = Date.now();
+    let chatSolicitudId = null;  // UUID from DB
+    let chatSolicitudToken = null;  // tracking token
+    let chatVisitanteId = null;
+    let realtimeChannel = null;
+
+    // ═══════════════════════════════════════════════════════════════════
+    // ANTI-SPAM / SECURITY
+    // ═══════════════════════════════════════════════════════════════════
+    const RATE_LIMIT_MS = 30000; // 30 seconds between submissions
+    let lastSubmitTime = 0;
+    const MIN_FORM_TIME_MS = 5000; // Form must be open at least 5 seconds (anti-bot)
+
+    function isSpam() {
+        // 1. Honeypot check
+        const hp = document.getElementById('fWebsite');
+        if (hp && hp.value) return true;
+        // 2. Time check (bots fill forms instantly)
+        if (Date.now() - formStartTime < MIN_FORM_TIME_MS) return true;
+        // 3. Rate limit
+        if (Date.now() - lastSubmitTime < RATE_LIMIT_MS) return true;
+        return false;
+    }
+
+    function sanitize(str) {
+        if (!str) return '';
+        return String(str).replace(/[<>]/g, '').trim().substring(0, 500);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // URL PARAMS
+    // ═══════════════════════════════════════════════════════════════════
+    function getParams() {
+        const p = new URLSearchParams(window.location.search);
+        return {
+            codigo: p.get('codigo') || p.get('c') || null,
+            negocio: p.get('negocio') || p.get('n') || null,
+            modulo: p.get('modulo') || p.get('m') || 'climas'
+        };
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════════
+    async function init() {
+        try {
+            const params = getParams();
+
+            // Try loading from tarjeta code first
+            if (params.codigo) {
+                const { data: tarjeta } = await sb.from('tarjetas_servicio')
+                    .select('*')
+                    .eq('codigo', params.codigo)
+                    .eq('activa', true)
+                    .single();
+
+                if (tarjeta) {
+                    tarjetaId = tarjeta.id;
+                    negocioId = tarjeta.negocio_id;
+                    applyTarjetaData(tarjeta);
+                    registerScan(tarjeta.id);
+                }
+            }
+
+            // If we have negocio_id, load climas-specific data
+            if (negocioId || params.negocio) {
+                negocioId = negocioId || params.negocio;
+                await loadClimasConfig();
+                // Services catalog removed
+            } else {
+                // Fallback: show default services
+                renderDefaultServices();
+            }
+
+            // Show content
+            document.getElementById('loadingScreen').classList.add('hide');
+            document.getElementById('mainContent').style.display = 'block';
+            createParticles();
+            formStartTime = Date.now();
+
+        } catch(e) {
+            console.error('Init error:', e);
+            document.getElementById('loadingScreen').classList.add('hide');
+            // Still show the page with defaults instead of error
+            document.getElementById('mainContent').style.display = 'block';
+            renderDefaultServices();
+            createParticles();
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // APPLY TARJETA DATA
+    // ═══════════════════════════════════════════════════════════════════
+    function applyTarjetaData(t) {
+        if (t.nombre_negocio || t.titulo) {
+            document.getElementById('heroTitle').textContent = t.nombre_negocio || t.titulo;
+            document.title = `❄️ ${t.nombre_negocio || t.titulo}`;
+        }
+        if (t.slogan) document.getElementById('heroSub').textContent = t.slogan;
+        if (t.nombre_negocio) document.getElementById('footerName').textContent = t.nombre_negocio;
+
+        // Contact buttons
+        if (t.whatsapp || t.telefono_principal) {
+            const wa = t.whatsapp || t.telefono_principal;
+            let waNum = wa.replace(/\D/g, '');
+            // Si ya empieza con 52 (código México), no duplicar
+            if (!waNum.startsWith('52')) waNum = '52' + waNum;
+            document.getElementById('btnWhatsapp').href = `https://wa.me/${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
+            document.getElementById('successWa').href = `https://wa.me/${waNum}?text=${encodeURIComponent('Hola, acabo de enviar una solicitud de servicio de climatización.')}`;
+        }
+        if (t.telefono_principal) {
+            let tel = t.telefono_principal.replace(/\D/g, '');
+            if (!tel.startsWith('52')) tel = '52' + tel;
+            document.getElementById('btnCall').href = `tel:+${tel}`;
+        }
+
+        // Promo
+        if (t.promocion_activa && t.promocion_texto) {
+            document.getElementById('promoBanner').classList.add('show');
+            document.getElementById('promoText').textContent = t.promocion_texto;
+            if (t.promocion_descuento) document.getElementById('promoDiscount').textContent = `${t.promocion_descuento}% OFF`;
+        }
+
+        // Colors
+        if (t.color_primario) {
+            document.documentElement.style.setProperty('--cyan', t.color_primario);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // LOAD CLIMAS CONFIG
+    // ═══════════════════════════════════════════════════════════════════
+    async function loadClimasConfig() {
+        try {
+            const { data } = await sb.from('climas_config_formulario_qr')
+                .select('*')
+                .eq('negocio_id', negocioId)
+                .eq('formulario_activo', true)
+                .single();
+
+            if (data) {
+                configForm = data;
+                if (data.color_primario) document.documentElement.style.setProperty('--cyan', data.color_primario);
+                if (data.color_secundario) document.documentElement.style.setProperty('--purple', data.color_secundario);
+                if (data.mensaje_bienvenida) document.getElementById('heroSub').textContent = data.mensaje_bienvenida;
+                if (data.notificar_whatsapp) {
+                    let waNum = data.notificar_whatsapp.replace(/\D/g, '');
+                    if (!waNum.startsWith('52')) waNum = '52' + waNum;
+                    document.getElementById('btnWhatsapp').href = `https://wa.me/${waNum}?text=${encodeURIComponent('Hola, me interesa información sobre sus servicios de climatización.')}`;
+                }
+            }
+        } catch(e) { console.warn('Config load error:', e); }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+
+
+    function updateStep2UI(tipo) {
+        const equipoGroup = document.querySelector('#tieneEquipo').closest('.form-group');
+        const equipoFields = document.getElementById('equipoFields');
+        const btuCalc = document.getElementById('btuCalc');
+        const cantGroup = document.getElementById('cantidadEquiposGroup');
+        const urgGroup = document.querySelector('#urgenciaChips').closest('.form-group');
+        const subtitle = document.querySelector('#step2 .form-subtitle');
+        const installFlow = document.getElementById('installFlow');
+
+        // Service-specific sections
+        const mantenimientoFields = document.getElementById('mantenimientoFields');
+        const reparacionFields = document.getElementById('reparacionFields');
+        const cotizacionFields = document.getElementById('cotizacionFields');
+        const emergenciaFields = document.getElementById('emergenciaFields');
+        const contratoFields = document.getElementById('contratoFields');
+
+        // Reset ALL visibility
+        equipoGroup.style.display = 'block';
+        equipoFields.style.display = 'none';
+        btuCalc.style.display = 'none';
+        cantGroup.style.display = 'block';
+        urgGroup.style.display = 'block';
+        installFlow.style.display = 'none';
+        mantenimientoFields.style.display = 'none';
+        reparacionFields.style.display = 'none';
+        cotizacionFields.style.display = 'none';
+        emergenciaFields.style.display = 'none';
+        contratoFields.style.display = 'none';
+
+        // Clear previous auto-selections on equipo chips
+        document.querySelectorAll('#tieneEquipo .chip').forEach(c => c.classList.remove('active'));
+        // Clear service-specific chips
+        document.querySelectorAll('#tipoMantenimientoChips .chip, #sintomasChips .chip, #tipoCotizacionChips .chip, #tipoEmergenciaChips .chip, #frecuenciaChips .chip, #tipoPropiedadChips .chip').forEach(c => c.classList.remove('active'));
+        // Reset install sub-flow
+        resetInstallFlow();
+
+        switch(tipo) {
+            case 'instalacion':
+                subtitle.textContent = 'Cuéntanos sobre la instalación que necesitas';
+                equipoGroup.style.display = 'none';
+                installFlow.style.display = 'block';
+                btuCalc.style.display = 'block';
+                break;
+
+            case 'mantenimiento':
+                subtitle.textContent = 'Dinos qué equipo necesita mantenimiento';
+                document.querySelector('#tieneEquipo .chip[data-val="si"]').classList.add('active');
+                equipoFields.style.display = 'block';
+                mantenimientoFields.style.display = 'block';
+                document.getElementById('fProblema').placeholder = 'Ej: Último mantenimiento hace 6 meses, poca fuerza, gotea...';
+                break;
+
+            case 'reparacion':
+                subtitle.textContent = 'Describe el problema con tu equipo';
+                document.querySelector('#tieneEquipo .chip[data-val="si"]').classList.add('active');
+                equipoFields.style.display = 'block';
+                reparacionFields.style.display = 'block';
+                document.getElementById('fProblema').placeholder = 'Describe el problema con más detalle si quieres...';
+                cantGroup.style.display = 'none';
+                break;
+
+            case 'cotizacion':
+                subtitle.textContent = 'Te preparamos una cotización sin compromiso';
+                equipoGroup.style.display = 'none';
+                cotizacionFields.style.display = 'block';
+                btuCalc.style.display = 'block';
+                break;
+
+            case 'emergencia':
+                subtitle.textContent = '⚠️ Atención urgente - Te contactamos de inmediato';
+                document.querySelector('#tieneEquipo .chip[data-val="si"]').classList.add('active');
+                equipoFields.style.display = 'block';
+                emergenciaFields.style.display = 'block';
+                document.getElementById('fProblema').placeholder = 'Describe brevemente qué está pasando...';
+                document.querySelectorAll('#urgenciaChips .chip').forEach(c => {
+                    c.classList.toggle('active', c.dataset.val === 'hoy');
+                });
+                urgGroup.style.display = 'none';
+                cantGroup.style.display = 'none';
+                break;
+
+            case 'contrato':
+                subtitle.textContent = 'Planes de mantenimiento periódico';
+                equipoGroup.style.display = 'none';
+                contratoFields.style.display = 'block';
+                btuCalc.style.display = 'block';
+                document.querySelectorAll('#urgenciaChips .chip').forEach(c => {
+                    c.classList.toggle('active', c.dataset.val === 'solo_cotizar');
+                });
+                urgGroup.style.display = 'none';
+                break;
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // INSTALL SUB-FLOW
+    // ═══════════════════════════════════════════════════════════════════
+    let installOption = null; // 'ya_tengo' | 'comprar'
+
+    function selectInstallOption(opt) {
+        installOption = opt;
+        document.getElementById('optYaTengo').classList.toggle('active', opt === 'ya_tengo');
+        document.getElementById('optComprar').classList.toggle('active', opt === 'comprar');
+        document.getElementById('installYaTengo').style.display = opt === 'ya_tengo' ? 'block' : 'none';
+        document.getElementById('installComprar').style.display = opt === 'comprar' ? 'block' : 'none';
+
+        // Auto-set tiene_equipo hidden chip
+        document.querySelectorAll('#tieneEquipo .chip').forEach(c => {
+            c.classList.toggle('active', (opt === 'ya_tengo' && c.dataset.val === 'si') || (opt === 'comprar' && c.dataset.val === 'no'));
+        });
+    }
+
+    function selectBrand(el) {
+        document.querySelectorAll('#brandGrid .brand-chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    function resetInstallFlow() {
+        installOption = null;
+        document.getElementById('optYaTengo').classList.remove('active');
+        document.getElementById('optComprar').classList.remove('active');
+        document.getElementById('installYaTengo').style.display = 'none';
+        document.getElementById('installComprar').style.display = 'none';
+        document.querySelectorAll('#brandGrid .brand-chip').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('#presupuestoChips .chip').forEach(c => c.classList.remove('active'));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // FORM NAVIGATION
+    // ═══════════════════════════════════════════════════════════════════
+    let currentStep = 1;
+    function nextStep(step) {
+        // Validate current step
+        if (step > currentStep) {
+            if (!validateStep(currentStep)) return;
+        }
+        currentStep = step;
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        document.getElementById(`step${step}`).classList.add('active');
+        document.querySelectorAll('.step-dot').forEach(d => {
+            const s = parseInt(d.dataset.step);
+            d.classList.toggle('active', s === step);
+            d.classList.toggle('done', s < step);
+        });
+        document.getElementById('formContainer').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function validateStep(step) {
+        if (step === 1) {
+            const nombre = document.getElementById('fNombre').value.trim();
+            const tel = document.getElementById('fTelefono').value.trim();
+            if (!nombre) { shake('fNombre'); return false; }
+            if (!tel || tel.length < 10) { shake('fTelefono'); return false; }
+            return true;
+        }
+        if (step === 2) {
+            const sel = document.querySelector('#serviceChips .chip.active');
+            if (!sel) {
+                document.getElementById('serviceChips').style.animation = 'fadeIn .3s';
+                return false;
+            }
+            return true;
+        }
+        if (step === 3) {
+            const dir = document.getElementById('fDireccion').value.trim();
+            if (!dir) { shake('fDireccion'); return false; }
+            return true;
+        }
+        return true;
+    }
+
+    function shake(id) {
+        const el = document.getElementById(id);
+        el.style.borderColor = 'var(--red)';
+        el.style.animation = 'none';
+        el.offsetHeight; // reflow
+        el.style.animation = 'shake .3s ease';
+        setTimeout(() => { el.style.borderColor = ''; el.style.animation = ''; }, 600);
+        el.focus();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // CHIPS
+    // ═══════════════════════════════════════════════════════════════════
+    function selectChip(el, groupId) {
+        document.querySelectorAll(`#${groupId} .chip`).forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        if (groupId === 'serviceChips') updateStep2UI(el.dataset.val);
+    }
+
+    function toggleEquipoFields(show) {
+        document.getElementById('equipoFields').style.display = show ? 'block' : 'none';
+        // Show BTU calc based on current service type
+        const tipoServicio = document.querySelector('#serviceChips .chip.active')?.dataset.val;
+        if (!show && (tipoServicio === 'instalacion' || tipoServicio === 'cotizacion' || tipoServicio === 'contrato')) {
+            document.getElementById('btuCalc').style.display = 'block';
+        }
+    }
+
+    // Multi-select chip toggle (for symptoms in reparación)
+    function toggleMultiChip(el) {
+        el.classList.toggle('active');
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // BTU CALCULATOR PRO + ROOM VISUALIZER
+    // ═══════════════════════════════════════════════════════════════════
+    let activeFactors = new Set();
+
+    // ─── 3D Camera State ───
+    var cam = { angle: 0, zoom: 1, panX: 0, panY: 0 };
+    var roomParams = { largo: 4, ancho: 3, alto: 2.8, btu: 12000 };
+    var _roomDrag = null;
+    var _roomPinch = null;
+
+    function roomZoom(factor) {
+        cam.zoom = Math.max(0.4, Math.min(2.5, cam.zoom * factor));
+        drawRoom(roomParams.largo, roomParams.ancho, roomParams.alto, roomParams.btu);
+    }
+    function roomReset() {
+        cam.angle = 0; cam.zoom = 1; cam.panX = 0; cam.panY = 0;
+        drawRoom(roomParams.largo, roomParams.ancho, roomParams.alto, roomParams.btu);
+    }
+
+    // Touch & Mouse handlers for 3D canvas
+    document.addEventListener('DOMContentLoaded', function() {
+        var c = document.getElementById('roomCanvas');
+        if (!c) return;
+
+        // ── Mouse drag to rotate ──
+        c.addEventListener('mousedown', function(e) {
+            _roomDrag = { x: e.clientX, y: e.clientY, mode: e.shiftKey ? 'pan' : 'rotate' };
+        });
+        window.addEventListener('mousemove', function(e) {
+            if (!_roomDrag) return;
+            var dx = e.clientX - _roomDrag.x;
+            var dy = e.clientY - _roomDrag.y;
+            if (_roomDrag.mode === 'rotate') {
+                cam.angle += dx * 0.008;
+            } else {
+                cam.panX += dx; cam.panY += dy;
+            }
+            _roomDrag.x = e.clientX; _roomDrag.y = e.clientY;
+            drawRoom(roomParams.largo, roomParams.ancho, roomParams.alto, roomParams.btu);
+        });
+        window.addEventListener('mouseup', function() { _roomDrag = null; });
+
+        // ── Mouse wheel to zoom ──
+        c.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            roomZoom(e.deltaY < 0 ? 1.08 : 0.93);
+        }, { passive: false });
+
+        // ── Touch: 1 finger rotate, 2 finger pinch-zoom & pan ──
+        c.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                _roomDrag = { x: e.touches[0].clientX, y: e.touches[0].clientY, mode: 'rotate' };
+                _roomPinch = null;
+            } else if (e.touches.length === 2) {
+                _roomDrag = null;
+                var dx = e.touches[1].clientX - e.touches[0].clientX;
+                var dy = e.touches[1].clientY - e.touches[0].clientY;
+                var dist = Math.hypot(dx, dy);
+                var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                _roomPinch = { dist: dist, cx: cx, cy: cy };
+            }
+        }, { passive: false });
+        c.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (e.touches.length === 1 && _roomDrag) {
+                var dx = e.touches[0].clientX - _roomDrag.x;
+                cam.angle += dx * 0.008;
+                _roomDrag.x = e.touches[0].clientX;
+                _roomDrag.y = e.touches[0].clientY;
+                drawRoom(roomParams.largo, roomParams.ancho, roomParams.alto, roomParams.btu);
+            } else if (e.touches.length === 2 && _roomPinch) {
+                var dx = e.touches[1].clientX - e.touches[0].clientX;
+                var dy = e.touches[1].clientY - e.touches[0].clientY;
+                var dist = Math.hypot(dx, dy);
+                var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                // Pinch zoom
+                var scale = dist / _roomPinch.dist;
+                cam.zoom = Math.max(0.4, Math.min(2.5, cam.zoom * scale));
+                // Pan
+                cam.panX += cx - _roomPinch.cx;
+                cam.panY += cy - _roomPinch.cy;
+                _roomPinch = { dist: dist, cx: cx, cy: cy };
+                drawRoom(roomParams.largo, roomParams.ancho, roomParams.alto, roomParams.btu);
+            }
+        }, { passive: false });
+        c.addEventListener('touchend', function(e) {
+            if (e.touches.length === 0) { _roomDrag = null; _roomPinch = null; }
+            else if (e.touches.length === 1) {
+                _roomPinch = null;
+                _roomDrag = { x: e.touches[0].clientX, y: e.touches[0].clientY, mode: 'rotate' };
+            }
+        });
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // MEASUREMENT GUIDE
+    // ═══════════════════════════════════════════════════════════════════
+    let mgMethod = 'pasos';
+    let mgSize = 0.75;
+    let mgDim = 'largo';
+    let mgCount = 0;
+
+    function toggleMeasureGuide() {
+        var guide = document.getElementById('measureGuide');
+        guide.classList.toggle('show');
+    }
+
+    function selectMeasureMethod(el) {
+        document.querySelectorAll('.mg-method').forEach(function(m) { m.classList.remove('active'); });
+        el.classList.add('active');
+        mgMethod = el.dataset.method;
+        mgSize = parseFloat(el.dataset.size);
+        mgCount = 0;
+        updateMeasureCounter();
+    }
+
+    function selectMeasureDim(el) {
+        document.querySelectorAll('.mg-dim-chip').forEach(function(c) { c.classList.remove('active'); });
+        el.classList.add('active');
+        mgDim = el.dataset.dim;
+        mgCount = 0;
+        updateMeasureCounter();
+    }
+
+    function adjustCount(delta) {
+        mgCount = Math.max(0, mgCount + delta);
+        updateMeasureCounter();
+    }
+
+    function updateMeasureCounter() {
+        var methodNames = { pasos:'pasos', baldosas:'baldosas', brazos:'brazos extendidos', puertas:'anchos de puerta' };
+        var dimNames = { largo:'largo', ancho:'ancho' };
+        var dimLabels = { largo:'Largo', ancho:'Ancho' };
+        document.getElementById('mgCountVal').textContent = mgCount;
+        document.getElementById('mgCounterLabel').innerHTML = '¿Cuántos <strong>' + methodNames[mgMethod] + '</strong> caben en el <strong>' + dimNames[mgDim] + '</strong>?';
+        var metros = (mgCount * mgSize).toFixed(1);
+        document.getElementById('mgCountResult').textContent = '= ' + metros + ' metros';
+        document.getElementById('mgApplyDim').textContent = dimLabels[mgDim];
+    }
+
+    function applyMeasurement() {
+        var metros = parseFloat((mgCount * mgSize).toFixed(1));
+        if (metros < 0.5) return;
+        var inputId = mgDim === 'largo' ? 'fLargo' : 'fAncho';
+        document.getElementById(inputId).value = metros;
+
+        // Auto-switch to the other dimension
+        if (mgDim === 'largo') {
+            var anchoChip = document.querySelector('.mg-dim-chip[data-dim="ancho"]');
+            selectMeasureDim(anchoChip);
+        } else {
+            // Both done — close guide
+            document.getElementById('measureGuide').classList.remove('show');
+        }
+        mgCount = 0;
+        updateMeasureCounter();
+        calcBTUPro();
+    }
+
+    function toggleFactor(el) {
+        const f = el.dataset.factor;
+        if (activeFactors.has(f)) { activeFactors.delete(f); el.classList.remove('active'); }
+        else { activeFactors.add(f); el.classList.add('active'); }
+        calcBTUPro();
+    }
+
+    function calcBTUPro() {
+        const largo = parseFloat(document.getElementById('fLargo').value) || 0;
+        const ancho = parseFloat(document.getElementById('fAncho').value) || 0;
+        const alto = parseFloat(document.getElementById('fAlto').value) || 2.5;
+        const tipo = document.getElementById('fTipoEspacio').value;
+        const personas = document.querySelector('#personasChips .chip.active')?.dataset.val || '1-2';
+
+        if (!largo || !ancho || largo < 1 || ancho < 1) {
+            document.getElementById('btuResult').style.display = 'none';
+            document.getElementById('roomViz').style.display = 'none';
+            return;
+        }
+
+        const m2 = largo * ancho;
+        const m3 = m2 * alto;
+
+        // Base BTU per m² by space type
+        const typeMultiplier = { recamara:500, sala:600, oficina:550, local:650, bodega:700, cocina:700, consultorio:600 };
+        let btu = m2 * (typeMultiplier[tipo] || 600);
+
+        // Factor: sun exposure +15%
+        if (activeFactors.has('sol')) btu *= 1.15;
+        // Factor: many windows +10%
+        if (activeFactors.has('ventanas')) btu *= 1.10;
+        // Factor: top floor / exposed roof +12%
+        if (activeFactors.has('ultimo_piso')) btu *= 1.12;
+        // Factor: kitchen / heat-producing equipment +20%
+        if (activeFactors.has('cocina')) btu *= 1.20;
+
+        // Factor: people
+        const personasBTU = { '1-2':0, '3-5':1200, '6-10':3000, '10+':6000 };
+        btu += (personasBTU[personas] || 0);
+
+        // Factor: ceiling height (above 2.8m adds extra)
+        if (alto > 2.8) btu *= 1 + ((alto - 2.8) * 0.08);
+
+        // Tabasco climate factor: high humidity & heat (+10%)
+        btu *= 1.10;
+
+        // Round to nearest standard BTU
+        const stdBTU = [6000,9000,12000,18000,24000,30000,36000,42000,48000,54000,60000];
+        btu = stdBTU.find(s => s >= btu) || 60000;
+
+        const tons = btu / 12000;
+        const recs = {
+            6000: '½ Tonelada – Espacios pequeños (hasta 12m²)',
+            9000: '¾ Tonelada – Recámaras (12-15m²)',
+            12000: '1 Tonelada – Rec./oficinas (15-20m²)',
+            18000: '1.5 Toneladas – Salas/locales (20-30m²)',
+            24000: '2 Toneladas – Espacios grandes (30-40m²)',
+            30000: '2.5 Toneladas – Locales grandes (40-50m²)',
+            36000: '3 Toneladas – Comercios (50-60m²)',
+            42000: '3.5 Toneladas – Naves (60-70m²)',
+            48000: '4 Toneladas – Naves grandes (70-85m²)',
+            54000: '4.5 Toneladas – Industrial (85-100m²)',
+            60000: '5 Toneladas – Industrial grande (100m²+)'
+        };
+        const rec = recs[btu] || tons.toFixed(1) + ' Toneladas';
+
+        document.getElementById('btuValue').textContent = btu.toLocaleString();
+        document.getElementById('btuRec').textContent = '💡 ' + rec;
+        document.getElementById('btuDetails').innerHTML =
+            '<div class="btu-detail"><strong>📏 Área:</strong> ' + m2.toFixed(1) + 'm² (' + m3.toFixed(1) + 'm³)</div>' +
+            '<div class="btu-detail"><strong>❄️ Toneladas:</strong> ' + tons.toFixed(1) + ' ton</div>';
+        document.getElementById('btuResult').style.display = 'block';
+
+        // Maintain hidden fMetros for form submission compatibility
+        let mInput = document.getElementById('fMetros');
+        if (!mInput) {
+            mInput = document.createElement('input');
+            mInput.type = 'hidden'; mInput.id = 'fMetros';
+            document.getElementById('btuCalc').appendChild(mInput);
+        }
+        mInput.value = m2;
+
+        // Draw 3D room visualization
+        drawRoom(largo, ancho, alto, btu);
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // ISOMETRIC ROOM VISUALIZER (Enhanced Realistic)
+    // ═══════════════════════════════════════════════════════════════════
+    function drawRoom(largo, ancho, alto, btu) {
+        // Store params for interactive redraws
+        roomParams = { largo: largo, ancho: ancho, alto: alto, btu: btu };
+
+        const canvas = document.getElementById('roomCanvas');
+        if (!canvas) return;
+        // HiDPI support
+        const dpr = window.devicePixelRatio || 1;
+        const cssW = canvas.parentElement.clientWidth - 24;
+        const cssH = Math.min(380, cssW * 0.72);
+        canvas.width = cssW * dpr;
+        canvas.height = cssH * dpr;
+        canvas.style.width = cssW + 'px';
+        canvas.style.height = cssH + 'px';
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+        const W = cssW;
+        const H = cssH;
+        ctx.clearRect(0, 0, W, H);
+        document.getElementById('roomViz').style.display = 'block';
+
+        // ─── Isometric helpers with camera rotation, zoom & pan ───
+        var maxD = Math.max(largo, ancho, 3);
+        var baseSc = Math.min(42, (W * 0.38) / maxD);
+        var sc = baseSc * cam.zoom;
+        var ox = W * 0.48 + cam.panX;
+        var oy = H * 0.62 + cam.panY;
+        var cosA = Math.cos(cam.angle);
+        var sinA = Math.sin(cam.angle);
+        function ix(x,y){
+            var rx = x * cosA - y * sinA;
+            var ry = x * sinA + y * cosA;
+            return ox + (rx - ry) * sc * 0.866;
+        }
+        function iy(x,y,z){
+            var rx = x * cosA - y * sinA;
+            var ry = x * sinA + y * cosA;
+            return oy + (rx + ry) * sc * 0.5 - z * sc;
+        }
+
+        // ─── Ambient shadow under room ───
+        ctx.save();
+        var shx = ix(largo*0.5, ancho*0.5);
+        var shy = iy(largo*0.5, ancho*0.5, 0) + 12;
+        var shg = ctx.createRadialGradient(shx, shy, 0, shx, shy, maxD * sc * 0.7);
+        shg.addColorStop(0, 'rgba(0,0,0,0.18)');
+        shg.addColorStop(1, 'transparent');
+        ctx.fillStyle = shg;
+        ctx.fillRect(0, 0, W, H);
+        ctx.restore();
+
+        // ─── Floor with tile pattern ───
+        ctx.beginPath();
+        ctx.moveTo(ix(0,0), iy(0,0,0));
+        ctx.lineTo(ix(largo,0), iy(largo,0,0));
+        ctx.lineTo(ix(largo,ancho), iy(largo,ancho,0));
+        ctx.lineTo(ix(0,ancho), iy(0,ancho,0));
+        ctx.closePath();
+        var flGrad = ctx.createLinearGradient(ix(0,ancho), iy(0,ancho,0), ix(largo,0), iy(largo,0,0));
+        flGrad.addColorStop(0, 'rgba(30,35,55,0.95)');
+        flGrad.addColorStop(1, 'rgba(20,25,42,0.95)');
+        ctx.fillStyle = flGrad;
+        ctx.fill();
+
+        // Floor tile grid
+        var tileSize = 0.6;
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.lineWidth = 0.5;
+        for (var ti = tileSize; ti < largo; ti += tileSize) {
+            ctx.beginPath(); ctx.moveTo(ix(ti,0), iy(ti,0,0)); ctx.lineTo(ix(ti,ancho), iy(ti,ancho,0)); ctx.stroke();
+        }
+        for (var tj = tileSize; tj < ancho; tj += tileSize) {
+            ctx.beginPath(); ctx.moveTo(ix(0,tj), iy(0,tj,0)); ctx.lineTo(ix(largo,tj), iy(largo,tj,0)); ctx.stroke();
+        }
+        // Floor border highlight
+        ctx.beginPath();
+        ctx.moveTo(ix(0,0), iy(0,0,0)); ctx.lineTo(ix(largo,0), iy(largo,0,0));
+        ctx.lineTo(ix(largo,ancho), iy(largo,ancho,0)); ctx.lineTo(ix(0,ancho), iy(0,ancho,0)); ctx.closePath();
+        ctx.strokeStyle = 'rgba(0,217,255,0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // ─── Back wall with gradient & texture ───
+        ctx.beginPath();
+        ctx.moveTo(ix(0,0), iy(0,0,0)); ctx.lineTo(ix(largo,0), iy(largo,0,0));
+        ctx.lineTo(ix(largo,0), iy(largo,0,alto)); ctx.lineTo(ix(0,0), iy(0,0,alto)); ctx.closePath();
+        var bwGrad = ctx.createLinearGradient(ix(0,0), iy(0,0,alto), ix(0,0), iy(0,0,0));
+        bwGrad.addColorStop(0, 'rgba(100,80,160,0.14)');
+        bwGrad.addColorStop(0.5, 'rgba(80,65,130,0.10)');
+        bwGrad.addColorStop(1, 'rgba(60,50,100,0.06)');
+        ctx.fillStyle = bwGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(139,92,246,0.25)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // ─── Right wall with gradient ───
+        ctx.beginPath();
+        ctx.moveTo(ix(largo,0), iy(largo,0,0)); ctx.lineTo(ix(largo,ancho), iy(largo,ancho,0));
+        ctx.lineTo(ix(largo,ancho), iy(largo,ancho,alto)); ctx.lineTo(ix(largo,0), iy(largo,0,alto)); ctx.closePath();
+        var rwGrad = ctx.createLinearGradient(ix(largo,0), iy(largo,0,alto), ix(largo,ancho), iy(largo,ancho,0));
+        rwGrad.addColorStop(0, 'rgba(0,160,220,0.10)');
+        rwGrad.addColorStop(1, 'rgba(0,120,170,0.04)');
+        ctx.fillStyle = rwGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(0,217,255,0.18)';
+        ctx.stroke();
+
+        // ─── Ceiling (top face, translucent) ───
+        ctx.beginPath();
+        ctx.moveTo(ix(0,0), iy(0,0,alto)); ctx.lineTo(ix(largo,0), iy(largo,0,alto));
+        ctx.lineTo(ix(largo,ancho), iy(largo,ancho,alto)); ctx.lineTo(ix(0,ancho), iy(0,ancho,alto)); ctx.closePath();
+        ctx.fillStyle = 'rgba(40,45,70,0.12)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+
+        // ─── Wall edges (highlighted) ───
+        ctx.lineWidth = 1.2;
+        // Back-left vertical
+        ctx.beginPath(); ctx.moveTo(ix(0,0), iy(0,0,0)); ctx.lineTo(ix(0,0), iy(0,0,alto));
+        ctx.strokeStyle = 'rgba(139,92,246,0.35)'; ctx.stroke();
+        // Back-right vertical
+        ctx.beginPath(); ctx.moveTo(ix(largo,0), iy(largo,0,0)); ctx.lineTo(ix(largo,0), iy(largo,0,alto));
+        ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.stroke();
+        // Front-right vertical
+        ctx.beginPath(); ctx.moveTo(ix(largo,ancho), iy(largo,ancho,0)); ctx.lineTo(ix(largo,ancho), iy(largo,ancho,alto));
+        ctx.strokeStyle = 'rgba(0,217,255,0.2)'; ctx.stroke();
+        // Top back edge
+        ctx.beginPath(); ctx.moveTo(ix(0,0), iy(0,0,alto)); ctx.lineTo(ix(largo,0), iy(largo,0,alto));
+        ctx.strokeStyle = 'rgba(139,92,246,0.2)'; ctx.stroke();
+        // Top right edge
+        ctx.beginPath(); ctx.moveTo(ix(largo,0), iy(largo,0,alto)); ctx.lineTo(ix(largo,ancho), iy(largo,ancho,alto));
+        ctx.strokeStyle = 'rgba(0,217,255,0.15)'; ctx.stroke();
+
+        // ─── Window on right wall (if ventanas factor active) ───
+        if (activeFactors.has('ventanas')) {
+            var wX = largo;
+            var wY1 = ancho * 0.25, wY2 = ancho * 0.65;
+            var wZ1 = alto * 0.35, wZ2 = alto * 0.75;
+            ctx.beginPath();
+            ctx.moveTo(ix(wX,wY1), iy(wX,wY1,wZ1)); ctx.lineTo(ix(wX,wY2), iy(wX,wY2,wZ1));
+            ctx.lineTo(ix(wX,wY2), iy(wX,wY2,wZ2)); ctx.lineTo(ix(wX,wY1), iy(wX,wY1,wZ2)); ctx.closePath();
+            var winGrad = ctx.createLinearGradient(ix(wX,wY1), iy(wX,wY1,wZ2), ix(wX,wY2), iy(wX,wY2,wZ1));
+            winGrad.addColorStop(0, 'rgba(135,206,250,0.25)');
+            winGrad.addColorStop(0.5, 'rgba(200,230,255,0.18)');
+            winGrad.addColorStop(1, 'rgba(135,206,250,0.12)');
+            ctx.fillStyle = winGrad;
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            // Window cross
+            var wMidY = (wY1+wY2)/2, wMidZ = (wZ1+wZ2)/2;
+            ctx.beginPath(); ctx.moveTo(ix(wX,wMidY), iy(wX,wMidY,wZ1)); ctx.lineTo(ix(wX,wMidY), iy(wX,wMidY,wZ2));
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1; ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(ix(wX,wY1), iy(wX,wY1,wMidZ)); ctx.lineTo(ix(wX,wY2), iy(wX,wY2,wMidZ));
+            ctx.stroke();
+            // Sun glow through window
+            if (activeFactors.has('sol')) {
+                var sgx = ix(wX, wMidY); var sgy = iy(wX, wMidY, wMidZ);
+                var sgg = ctx.createRadialGradient(sgx, sgy, 0, sgx, sgy, 40);
+                sgg.addColorStop(0, 'rgba(251,191,36,0.15)'); sgg.addColorStop(1, 'transparent');
+                ctx.fillStyle = sgg; ctx.fillRect(sgx-50, sgy-50, 100, 100);
+            }
+        }
+
+        // ─── Baseboard / molding ───
+        ctx.lineWidth = 2.5;
+        // Back wall baseboard
+        ctx.beginPath(); ctx.moveTo(ix(0,0), iy(0,0,0)); ctx.lineTo(ix(largo,0), iy(largo,0,0));
+        ctx.strokeStyle = 'rgba(139,92,246,0.3)'; ctx.stroke();
+        // Right wall baseboard
+        ctx.beginPath(); ctx.moveTo(ix(largo,0), iy(largo,0,0)); ctx.lineTo(ix(largo,ancho), iy(largo,ancho,0));
+        ctx.strokeStyle = 'rgba(0,217,255,0.2)'; ctx.stroke();
+
+        // ─── Temperature heatmap on floor ───
+        var zoneData = [
+            { x:largo*0.2, y:ancho*0.2, r:Math.min(largo,ancho)*0.4, c1:'rgba(16,185,129,0.18)', c2:'rgba(16,185,129,0)' },
+            { x:largo*0.45, y:ancho*0.45, r:Math.min(largo,ancho)*0.35, c1:'rgba(16,185,129,0.09)', c2:'rgba(16,185,129,0)' },
+            { x:largo*0.8, y:ancho*0.8, r:Math.min(largo,ancho)*0.4, c1:'rgba(251,191,36,0.14)', c2:'rgba(251,191,36,0)' }
+        ];
+        zoneData.forEach(function(z) {
+            var zx = ix(z.x, z.y); var zy = iy(z.x, z.y, 0.01);
+            var rr = z.r * sc * 0.5;
+            var zg = ctx.createRadialGradient(zx, zy, 0, zx, zy, rr);
+            zg.addColorStop(0, z.c1); zg.addColorStop(1, z.c2);
+            ctx.beginPath(); ctx.arc(zx, zy, rr, 0, Math.PI*2); ctx.fillStyle = zg; ctx.fill();
+        });
+
+        // ═══ REALISTIC MINISPLIT UNIT ═══
+        var uX = largo * 0.5;
+        var uY = 0;
+        var uZ = alto * 0.82;
+        var uW = Math.min(1.3, largo * 0.28);
+        var uH = 0.30;
+        var uD = 0.22; // depth into room
+
+        // Unit front face (on wall)
+        var f1 = [ix(uX-uW/2, uY), iy(uX-uW/2, uY, uZ)];
+        var f2 = [ix(uX+uW/2, uY), iy(uX+uW/2, uY, uZ)];
+        var f3 = [ix(uX+uW/2, uY), iy(uX+uW/2, uY, uZ+uH)];
+        var f4 = [ix(uX-uW/2, uY), iy(uX-uW/2, uY, uZ+uH)];
+
+        // Unit bottom face (depth)
+        var b1 = [ix(uX-uW/2, uY+uD), iy(uX-uW/2, uY+uD, uZ)];
+        var b2 = [ix(uX+uW/2, uY+uD), iy(uX+uW/2, uY+uD, uZ)];
+
+        // Unit side face (right)
+        var s1 = f2, s2 = b2;
+        var s3 = [ix(uX+uW/2, uY+uD), iy(uX+uW/2, uY+uD, uZ+uH)];
+        var s4 = f3;
+
+        // Bottom face
+        ctx.beginPath();
+        ctx.moveTo(f1[0],f1[1]); ctx.lineTo(f2[0],f2[1]);
+        ctx.lineTo(b2[0],b2[1]); ctx.lineTo(b1[0],b1[1]); ctx.closePath();
+        ctx.fillStyle = '#8a8a8a'; ctx.fill();
+        ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 0.5; ctx.stroke();
+
+        // Air vent slits on bottom
+        for (var si = 0; si < 5; si++) {
+            var st = (si + 1) / 6;
+            var sx1 = f1[0] + (f2[0]-f1[0]) * st;
+            var sy1 = f1[1] + (f2[1]-f1[1]) * st;
+            var sx2 = b1[0] + (b2[0]-b1[0]) * st;
+            var sy2 = b1[1] + (b2[1]-b1[1]) * st;
+            ctx.beginPath(); ctx.moveTo(sx1,sy1); ctx.lineTo(sx2,sy2);
+            ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 1; ctx.stroke();
+        }
+
+        // Front face (main body)
+        ctx.beginPath();
+        ctx.moveTo(f1[0],f1[1]); ctx.lineTo(f2[0],f2[1]);
+        ctx.lineTo(f3[0],f3[1]); ctx.lineTo(f4[0],f4[1]); ctx.closePath();
+        var ufGrad = ctx.createLinearGradient(f4[0],f4[1], f1[0],f1[1]);
+        ufGrad.addColorStop(0, '#f5f5f5');
+        ufGrad.addColorStop(0.3, '#e8e8e8');
+        ufGrad.addColorStop(0.7, '#e0e0e0');
+        ufGrad.addColorStop(1, '#d0d0d0');
+        ctx.fillStyle = ufGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(180,180,180,0.8)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Brand logo area (subtle dark rectangle)
+        var logoW = uW * 0.18;
+        var logoX = uX + uW * 0.15;
+        var logoZ = uZ + uH * 0.55;
+        ctx.beginPath();
+        ctx.moveTo(ix(logoX-logoW/2,uY), iy(logoX-logoW/2,uY,logoZ-0.04));
+        ctx.lineTo(ix(logoX+logoW/2,uY), iy(logoX+logoW/2,uY,logoZ-0.04));
+        ctx.lineTo(ix(logoX+logoW/2,uY), iy(logoX+logoW/2,uY,logoZ+0.04));
+        ctx.lineTo(ix(logoX-logoW/2,uY), iy(logoX-logoW/2,uY,logoZ+0.04));
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(100,100,100,0.12)'; ctx.fill();
+
+        // Side face (right)
+        ctx.beginPath();
+        ctx.moveTo(s1[0],s1[1]); ctx.lineTo(s2[0],s2[1]);
+        ctx.lineTo(s3[0],s3[1]); ctx.lineTo(s4[0],s4[1]); ctx.closePath();
+        ctx.fillStyle = '#c8c8c8'; ctx.fill();
+        ctx.strokeStyle = 'rgba(150,150,150,0.5)'; ctx.lineWidth = 0.5; ctx.stroke();
+
+        // LED indicator strip
+        var led1 = [f1[0] + (f2[0]-f1[0])*0.08, f1[1] + (f2[1]-f1[1])*0.08];
+        var led2 = [f1[0] + (f2[0]-f1[0])*0.92, f1[1] + (f2[1]-f1[1])*0.92];
+        ctx.beginPath(); ctx.moveTo(led1[0], led1[1] - 3); ctx.lineTo(led2[0], led2[1] - 3);
+        ctx.strokeStyle = '#00D9FF'; ctx.lineWidth = 2.5;
+        ctx.shadowColor = '#00D9FF'; ctx.shadowBlur = 12; ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Unit shadow on wall
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(f1[0]-2, f1[1]+4); ctx.lineTo(f2[0]+2, f2[1]+4);
+        ctx.lineTo(f3[0]+2, f3[1]-2); ctx.lineTo(f4[0]-2, f4[1]-2); ctx.closePath();
+        ctx.fillStyle = 'rgba(0,0,0,0.08)'; ctx.fill();
+        ctx.restore();
+
+        // ═══ AIRFLOW (curved streams) ═══
+        var streams = 3;
+        for (var s = 0; s < streams; s++) {
+            var sOffset = (s - 1) * uW * 0.25;
+            ctx.beginPath();
+            var startPx = ix(uX + sOffset, uY + uD * 0.5);
+            var startPy = iy(uX + sOffset, uY + uD * 0.5, uZ - 0.05);
+            ctx.moveTo(startPx, startPy);
+
+            var pts = 12;
+            for (var p = 1; p <= pts; p++) {
+                var t = p / pts;
+                var curveY = uY + uD * 0.5 + t * ancho * 0.65;
+                var curveZ = uZ - 0.05 - t * t * (alto * 0.5);
+                var curveX = uX + sOffset + Math.sin(t * Math.PI * 1.5) * 0.3;
+                ctx.lineTo(ix(curveX, curveY), iy(curveX, curveY, Math.max(curveZ, 0.3)));
+            }
+            var flowGrd = ctx.createLinearGradient(startPx, startPy, ix(uX, ancho*0.6), iy(uX, ancho*0.6, alto*0.3));
+            flowGrd.addColorStop(0, 'rgba(0,217,255,0.45)');
+            flowGrd.addColorStop(0.5, 'rgba(0,217,255,0.20)');
+            flowGrd.addColorStop(1, 'rgba(0,217,255,0.03)');
+            ctx.strokeStyle = flowGrd;
+            ctx.lineWidth = 2.5 - s * 0.3;
+            ctx.stroke();
+
+            // Airflow particles along stream
+            for (var pp = 0; pp < 4; pp++) {
+                var pt = (pp + 0.5) / 4;
+                var ppY = uY + uD*0.5 + pt * ancho * 0.65;
+                var ppZ = uZ - 0.05 - pt*pt*(alto*0.5);
+                var ppX = uX + sOffset + Math.sin(pt * Math.PI*1.5) * 0.3;
+                ppZ = Math.max(ppZ, 0.3);
+                ctx.beginPath();
+                ctx.arc(ix(ppX,ppY), iy(ppX,ppY,ppZ), 2.5 - pt, 0, Math.PI*2);
+                ctx.fillStyle = 'rgba(0,217,255,' + (0.5 - pt*0.4) + ')';
+                ctx.fill();
+            }
+        }
+
+        // ═══ DIMENSION LABELS ═══
+        // Dimension lines with arrows
+        ctx.strokeStyle = 'rgba(0,217,255,0.5)';
+        ctx.lineWidth = 1;
+
+        // Largo dimension line (along front edge)
+        var dl_y = ancho + 0.3;
+        ctx.beginPath(); ctx.moveTo(ix(0,dl_y), iy(0,dl_y,0)); ctx.lineTo(ix(largo,dl_y), iy(largo,dl_y,0));
+        ctx.setLineDash([3,3]); ctx.stroke(); ctx.setLineDash([]);
+        // Ticks
+        ctx.beginPath(); ctx.moveTo(ix(0,dl_y-0.15), iy(0,dl_y-0.15,0)); ctx.lineTo(ix(0,dl_y+0.15), iy(0,dl_y+0.15,0)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ix(largo,dl_y-0.15), iy(largo,dl_y-0.15,0)); ctx.lineTo(ix(largo,dl_y+0.15), iy(largo,dl_y+0.15,0)); ctx.stroke();
+
+        ctx.font = '700 12px Inter,system-ui,sans-serif';
+        ctx.fillStyle = '#00D9FF';
+        ctx.textAlign = 'center';
+        ctx.fillText(largo + ' m', ix(largo/2, dl_y+0.1), iy(largo/2, dl_y+0.1, 0) + 14);
+
+        // Ancho dimension line
+        var dl_x = largo + 0.3;
+        ctx.beginPath(); ctx.moveTo(ix(dl_x,0), iy(dl_x,0,0)); ctx.lineTo(ix(dl_x,ancho), iy(dl_x,ancho,0));
+        ctx.setLineDash([3,3]); ctx.strokeStyle = 'rgba(0,217,255,0.5)'; ctx.stroke(); ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(ix(dl_x-0.15,0), iy(dl_x-0.15,0,0)); ctx.lineTo(ix(dl_x+0.15,0), iy(dl_x+0.15,0,0)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ix(dl_x-0.15,ancho), iy(dl_x-0.15,ancho,0)); ctx.lineTo(ix(dl_x+0.15,ancho), iy(dl_x+0.15,ancho,0)); ctx.stroke();
+        ctx.fillText(ancho + ' m', ix(dl_x+0.1, ancho/2) + 16, iy(dl_x+0.1, ancho/2, 0) + 4);
+
+        // Alto dimension line
+        var al_x = -0.4, al_y = 0;
+        ctx.beginPath(); ctx.moveTo(ix(al_x,al_y), iy(al_x,al_y,0)); ctx.lineTo(ix(al_x,al_y), iy(al_x,al_y,alto));
+        ctx.setLineDash([3,3]); ctx.strokeStyle = 'rgba(139,92,246,0.5)'; ctx.stroke(); ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(ix(al_x-0.12,al_y), iy(al_x-0.12,al_y,0)); ctx.lineTo(ix(al_x+0.12,al_y), iy(al_x+0.12,al_y,0)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(ix(al_x-0.12,al_y), iy(al_x-0.12,al_y,alto)); ctx.lineTo(ix(al_x+0.12,al_y), iy(al_x+0.12,al_y,alto)); ctx.stroke();
+        ctx.fillStyle = '#8B5CF6';
+        ctx.save();
+        ctx.translate(ix(al_x,al_y) - 16, iy(al_x,al_y,alto/2));
+        ctx.rotate(-Math.PI/2);
+        ctx.fillText(alto + ' m', 0, 0);
+        ctx.restore();
+
+        // m² centered on floor
+        var m2 = largo * ancho;
+        ctx.font = '800 15px Inter,system-ui,sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillText(m2.toFixed(1) + ' m²', ix(largo/2, ancho/2), iy(largo/2, ancho/2, 0.05));
+
+        // BTU badge above minisplit
+        ctx.font = '800 13px Inter,system-ui,sans-serif';
+        ctx.fillStyle = '#10B981';
+        var bx = ix(uX, uY);
+        var by = iy(uX, uY, alto) - 8;
+        ctx.shadowColor = 'rgba(16,185,129,0.4)'; ctx.shadowBlur = 6;
+        ctx.fillText(btu.toLocaleString() + ' BTU', bx, by);
+        ctx.shadowBlur = 0;
+
+        // Minisplit label
+        ctx.font = '600 10px Inter,system-ui,sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.fillText('❄️ Minisplit', bx, by - 16);
+
+        // Sun icon if factor active
+        if (activeFactors.has('sol') && !activeFactors.has('ventanas')) {
+            ctx.font = '18px sans-serif';
+            ctx.fillText('☀️', ix(largo+0.2, ancho*0.4), iy(largo+0.2, ancho*0.4, alto*0.7));
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PHOTO HANDLING
+    // ═══════════════════════════════════════════════════════════════════
+    function handlePhotos(input) {
+        const max = 3;
+        const files = Array.from(input.files).slice(0, max - selectedPhotos.length);
+
+        files.forEach(file => {
+            if (file.size > 5 * 1024 * 1024) return; // Max 5MB per photo
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectedPhotos.push({ data: e.target.result, name: file.name });
+                renderPhotoPreviews();
+            };
+            reader.readAsDataURL(file);
+        });
+        input.value = '';
+    }
+
+    function renderPhotoPreviews() {
+        const container = document.getElementById('photoPreviews');
+        container.innerHTML = selectedPhotos.map((p, i) => `
+            <div class="photo-preview-wrap">
+                <img class="photo-preview" src="${p.data}" alt="Foto ${i+1}">
+                <button class="photo-remove" onclick="removePhoto(${i})">✕</button>
+            </div>
+        `).join('');
+
+        const zone = document.getElementById('photoZone');
+        zone.style.display = selectedPhotos.length >= 3 ? 'none' : 'block';
+    }
+
+    function removePhoto(i) {
+        selectedPhotos.splice(i, 1);
+        renderPhotoPreviews();
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // BUILD NOTAS CLIENTE (enriched with BTU Pro data)
+    // ═══════════════════════════════════════════════════════════════════
+    function buildNotasCliente() {
+        var parts = [];
+        var userNotes = sanitize(document.getElementById('fNotas').value);
+        if (userNotes) parts.push(userNotes);
+
+        // Service-specific data
+        var tipoServicio = document.querySelector('#serviceChips .chip.active')?.dataset.val || '';
+
+        if (tipoServicio === 'mantenimiento') {
+            var tipoMant = document.querySelector('#tipoMantenimientoChips .chip.active')?.dataset.val;
+            if (tipoMant) {
+                var mantLabels = { preventivo:'🛡️ Preventivo', correctivo:'🔧 Correctivo', limpieza:'🧹 Limpieza General' };
+                parts.push('Tipo mantenimiento: ' + (mantLabels[tipoMant] || tipoMant));
+            }
+        }
+
+        if (tipoServicio === 'reparacion') {
+            var sintomas = [];
+            document.querySelectorAll('#sintomasChips .chip.active').forEach(function(c) { sintomas.push(c.textContent.trim()); });
+            if (sintomas.length) parts.push('Síntomas: ' + sintomas.join(', '));
+        }
+
+        if (tipoServicio === 'cotizacion') {
+            var tipoCot = document.querySelector('#tipoCotizacionChips .chip.active')?.dataset.val;
+            if (tipoCot) {
+                var cotLabels = { instalacion_nueva:'🆕 Instalación nueva', cambio_equipo:'🔄 Cambio equipo', mantenimiento_plan:'📋 Plan mantenimiento', sistema_central:'🏢 Sistema central', otro:'💬 Otro' };
+                parts.push('Cotizar: ' + (cotLabels[tipoCot] || tipoCot));
+            }
+            var descCot = sanitize(document.getElementById('fDescCotizacion')?.value);
+            if (descCot) parts.push('Detalle cotización: ' + descCot);
+        }
+
+        if (tipoServicio === 'emergencia') {
+            var tipoEmerg = document.querySelector('#tipoEmergenciaChips .chip.active')?.dataset.val;
+            if (tipoEmerg) {
+                var emergLabels = { fuga_gas:'💨 Fuga de gas', cortocircuito:'⚡ Cortocircuito', no_enciende:'⚫ No enciende', goteo_excesivo:'🌊 Goteo excesivo', ruido_fuerte:'📢 Ruido fuerte', humo:'🔥 Humo/Olor quemado' };
+                parts.push('🚨 Emergencia: ' + (emergLabels[tipoEmerg] || tipoEmerg));
+            }
+        }
+
+        if (tipoServicio === 'contrato') {
+            var frecuencia = document.querySelector('#frecuenciaChips .chip.active')?.dataset.val;
+            if (frecuencia) parts.push('📅 Frecuencia: ' + frecuencia);
+            var tipoProp = document.querySelector('#tipoPropiedadChips .chip.active')?.dataset.val;
+            if (tipoProp) {
+                var propLabels = { casa:'🏡 Casa', oficina:'🏢 Oficina', negocio:'🏪 Negocio', edificio:'🏬 Edificio', industrial:'🏭 Industrial' };
+                parts.push('Propiedad: ' + (propLabels[tipoProp] || tipoProp));
+            }
+        }
+
+        // Add room dimension info
+        var largo = parseFloat(document.getElementById('fLargo')?.value) || 0;
+        var ancho = parseFloat(document.getElementById('fAncho')?.value) || 0;
+        var alto = parseFloat(document.getElementById('fAlto')?.value) || 0;
+        if (largo && ancho) {
+            parts.push('📏 Dimensiones: ' + largo + 'm × ' + ancho + 'm × ' + (alto || 2.5) + 'm (' + (largo*ancho).toFixed(1) + 'm², ' + (largo*ancho*(alto||2.5)).toFixed(1) + 'm³)');
+        }
+
+        // Add factors
+        if (activeFactors.size > 0) {
+            var factorLabels = { sol:'☀️ Sol directo', ventanas:'🪟 Muchas ventanas', ultimo_piso:'🏢 Último piso/techo', cocina:'🍳 Cocina/equipos' };
+            var factorList = [];
+            activeFactors.forEach(function(f) { if (factorLabels[f]) factorList.push(factorLabels[f]); });
+            if (factorList.length) parts.push('Factores: ' + factorList.join(', '));
+        }
+
+        // Add personas
+        var personas = document.querySelector('#personasChips .chip.active')?.dataset.val;
+        if (personas && personas !== '1-2') parts.push('👥 Personas: ' + personas);
+
+        return parts.length > 0 ? parts.join(' | ') : null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SUBMIT FORM
+    // ═══════════════════════════════════════════════════════════════════
+    async function submitForm() {
+        if (!validateStep(3)) return;
+        if (isSpam()) {
+            console.warn('Spam detected, silently ignoring.');
+            showSuccess('SPAM-BLOCKED'); // Show fake success to bot
+            return;
+        }
+
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.textContent = '⏳ Enviando...';
+
+        try {
+            const tipoServicio = document.querySelector('#serviceChips .chip.active')?.dataset.val || 'cotizacion';
+            const tieneEquipo = document.querySelector('#tieneEquipo .chip.active')?.dataset.val === 'si';
+            const horario = document.querySelector('#horarioChips .chip.active')?.dataset.val || 'cualquier';
+            const urgencia = document.querySelector('#urgenciaChips .chip.active')?.dataset.val || null;
+            const cantEquipos = document.querySelector('#cantidadChips .chip.active')?.dataset.val || '1';
+            const marcaPref = document.querySelector('#brandGrid .brand-chip.active')?.dataset.val || null;
+            const presupuesto = document.querySelector('#presupuestoChips .chip.active')?.dataset.val || null;
+            const token = generateToken();
+
+            // Upload photos if any
+            let fotosUrls = [];
+            for (const photo of selectedPhotos) {
+                try {
+                    const fileName = `qr_${token}_${Date.now()}_${Math.random().toString(36).substr(2,4)}.jpg`;
+                    const base64 = photo.data.split(',')[1];
+                    const blob = base64ToBlob(base64, 'image/jpeg');
+                    const { data: uploadData } = await sb.storage
+                        .from('comprobantes')
+                        .upload(`climas-solicitudes/${fileName}`, blob, { contentType: 'image/jpeg' });
+                    if (uploadData?.path) {
+                        const { data: urlData } = sb.storage.from('comprobantes').getPublicUrl(uploadData.path);
+                        if (urlData?.publicUrl) fotosUrls.push(urlData.publicUrl);
+                    }
+                } catch(e) { console.warn('Photo upload error:', e); }
+            }
+
+            const solicitudData = {
+                negocio_id: negocioId || null,
+                nombre_completo: sanitize(document.getElementById('fNombre').value),
+                telefono: sanitize(document.getElementById('fTelefono').value),
+                email: sanitize(document.getElementById('fEmail').value) || null,
+                direccion: sanitize(document.getElementById('fDireccion').value),
+                colonia: sanitize(document.getElementById('fColonia').value) || null,
+                ciudad: sanitize(document.getElementById('fCiudad').value) || null,
+                codigo_postal: sanitize(document.getElementById('fCP').value) || null,
+                referencia_ubicacion: sanitize(document.getElementById('fReferencia').value) || null,
+                tipo_servicio: tipoServicio,
+                tiene_equipo_actual: tieneEquipo,
+                marca_equipo_actual: sanitize(document.getElementById('fMarca').value) || sanitize(document.getElementById('fMarcaNuevo')?.value) || marcaPref || null,
+                modelo_equipo_actual: sanitize(document.getElementById('fCapacidadNuevo')?.value) || null,
+                antiguedad_equipo: document.getElementById('fAntiguedad').value || null,
+                problema_reportado: sanitize(document.getElementById('fProblema').value) || sanitize(document.getElementById('fNotasEquipo')?.value) || null,
+                presupuesto_estimado: presupuesto,
+                tipo_espacio: document.getElementById('fTipoEspacio').value || null,
+                metros_cuadrados: parseFloat(document.getElementById('fMetros')?.value) || null,
+                capacidad_btu_actual: parseInt(document.getElementById('btuValue')?.textContent?.replace(/,/g,'')) || null,
+                cantidad_equipos_deseados: cantEquipos === '4+' ? 4 : parseInt(cantEquipos) || 1,
+                disponibilidad_visita: urgencia,
+                horario_contacto_preferido: horario,
+                notas_cliente: buildNotasCliente(),
+                fotos: fotosUrls.length > 0 ? fotosUrls : [],
+                estado: 'nueva',
+                fuente: 'qr_web_climas',
+                token_seguimiento: token
+            };
+
+            const { data: insertedData, error } = await sb.from('climas_solicitudes_qr').insert(solicitudData).select('id').single();
+
+            if (error) throw error;
+
+            lastSubmitTime = Date.now();
+            showSuccess(token, insertedData?.id || null);
+
+        } catch(e) {
+            console.error('Submit error:', e);
+            btn.disabled = false;
+            btn.textContent = '📤 Enviar Solicitud';
+            alert('Error al enviar. Intenta de nuevo o contáctanos por WhatsApp.');
+        }
+    }
+
+    function showSuccess(token, solicitudUuid) {
+        document.getElementById('mainContent').style.display = 'none';
+        document.getElementById('trackingToken').textContent = token;
+        document.getElementById('successScreen').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Enable chat for follow-up — store UUID for linking messages
+        chatSolicitudId = solicitudUuid || null;
+        chatSolicitudToken = token;
+        document.getElementById('chatFab').style.display = 'flex';
+
+        // Subscribe to Realtime for chat responses from admin
+        if (sb && chatSolicitudId) {
+            try {
+                if (realtimeChannel) { sb.removeChannel(realtimeChannel); }
+                realtimeChannel = sb.channel('chat_climas_' + chatSolicitudId)
+                    .on('postgres_changes', {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'climas_chat_solicitud',
+                        filter: 'solicitud_id=eq.' + chatSolicitudId
+                    }, (payload) => {
+                        const msg = payload.new;
+                        if (msg && !msg.es_cliente) {
+                            addChatMsg(msg.mensaje, false);
+                            // Show badge if chat is closed
+                            if (!chatOpen) {
+                                const badge = document.getElementById('chatBadge');
+                                const count = parseInt(badge.textContent || '0') + 1;
+                                badge.textContent = count;
+                                badge.style.display = 'flex';
+                            }
+                        }
+                    })
+                    .subscribe();
+            } catch(e) { console.warn('Realtime chat subscribe error:', e); }
+        }
+    }
+
+    function generateToken() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let token = 'CL-';
+        for (let i = 0; i < 6; i++) token += chars[Math.floor(Math.random() * chars.length)];
+        return token;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // CHAT SYSTEM
+    // ═══════════════════════════════════════════════════════════════════
+    let chatOpen = false;
+    function toggleChat() {
+        chatOpen = !chatOpen;
+        document.getElementById('chatPanel').classList.toggle('open', chatOpen);
+        if (chatOpen) {
+            document.getElementById('chatInput').focus();
+            // Clear badge
+            const badge = document.getElementById('chatBadge');
+            badge.textContent = '0';
+            badge.style.display = 'none';
+        }
+    }
+
+    async function sendChat() {
+        const input = document.getElementById('chatInput');
+        const msg = input.value.trim();
+        if (!msg || msg.length > 500) return;
+        if (!chatSolicitudId) { console.warn('No solicitud ID for chat'); return; }
+
+        // Generate visitor ID on first message
+        if (!chatVisitanteId) chatVisitanteId = 'visitor-' + Math.random().toString(36).substr(2, 9);
+
+        // Add to UI
+        addChatMsg(msg, true);
+        input.value = '';
+
+        try {
+            if (sb) {
+                await sb.from('climas_chat_solicitud').insert({
+                    solicitud_id: chatSolicitudId,
+                    es_cliente: true,
+                    remitente_nombre: document.getElementById('fNombre')?.value?.trim() || 'Visitante Web',
+                    mensaje: sanitize(msg),
+                    tipo_mensaje: 'texto'
+                });
+            }
+        } catch(e) { console.warn('Chat send error:', e); }
+    }
+
+    function addChatMsg(text, isMe) {
+        const container = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = `chat-msg ${isMe ? 'me' : 'them'}`;
+        div.innerHTML = `<div>${text}</div><div class="time">${new Date().toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'})}</div>`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // SCAN TRACKING
+    // ═══════════════════════════════════════════════════════════════════
+    async function registerScan(tId) {
+        try {
+            if (!sb) return;
+            const platform = /iPhone|iPad|iPod/.test(navigator.userAgent) ? 'ios' :
+                           /Android/.test(navigator.userAgent) ? 'android' : 'web';
+            await sb.from('tarjetas_servicio_escaneos').insert({
+                tarjeta_id: tId,
+                user_agent: navigator.userAgent?.substring(0, 500),
+                plataforma: platform,
+                accion: 'ver_climas'
+            });
+        } catch(e) { /* silent */ }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // PARTICLES (snowflakes)
+    // ═══════════════════════════════════════════════════════════════════
+    function createParticles() {
+        const container = document.getElementById('particles');
+        const flakes = ['❄', '❆', '✦', '•'];
+        for (let i = 0; i < 12; i++) {
+            const s = document.createElement('span');
+            s.className = 'snowflake';
+            s.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+            s.style.left = Math.random() * 100 + '%';
+            s.style.fontSize = (10 + Math.random() * 12) + 'px';
+            s.style.animationDuration = (4 + Math.random() * 6) + 's';
+            s.style.animationDelay = Math.random() * 5 + 's';
+            container.appendChild(s);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════
+    // EMERGENCY BUTTON
+    // ═══════════════════════════════════════════════════════════════════
+    // ═══ MODAL LOGIN ═══
+    function mostrarModalLogin() {
+        document.getElementById('modalLogin').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function cerrarModalLogin(event) {
+        if (event) event.stopPropagation();
+        document.getElementById('modalLogin').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarModalLogin(); });
+
+    document.getElementById('btnEmergency').addEventListener('click', (e) => {
+        e.preventDefault();
+        // Pre-select emergency service
+        document.querySelectorAll('#serviceChips .chip').forEach(c => {
+            c.classList.toggle('active', c.dataset.val === 'emergencia');
+        });
+        updateStep2UI('emergencia');
+        document.getElementById('formSection').scrollIntoView({ behavior:'smooth' });
+    });
+
+    // ═══════════════════════════════════════════════════════════════════
+    // UTILITIES
+    // ═══════════════════════════════════════════════════════════════════
+    function num(n) { return Number(n).toLocaleString('es-MX'); }
+    function truncate(s, len) { return s.length > len ? s.substring(0, len) + '...' : s; }
+    function base64ToBlob(b64, type) {
+        const bytes = atob(b64);
+        const arr = new Uint8Array(bytes.length);
+        for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+        return new Blob([arr], { type });
+    }
+
+    // Shake animation
+    const style = document.createElement('style');
+    style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}';
+    document.head.appendChild(style);
+
+    // ═══════════════════════════════════════════════════════════════════
+    // START
+    // ═══════════════════════════════════════════════════════════════════
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

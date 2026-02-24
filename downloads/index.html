@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descargar Robert Darin Fintech</title>
+<meta name="description" content="Descarga la app Robert Darin Fintech para Android. Control total de tus servicios de climatización.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:#0D0D14;
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.container{
+  max-width:420px;
+  width:100%;
+  text-align:center;
+}
+.logo{
+  font-size:64px;
+  margin-bottom:16px;
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.08)}
+}
+h1{
+  font-size:24px;
+  font-weight:700;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:8px;
+}
+.subtitle{
+  color:#9CA3AF;
+  font-size:14px;
+  margin-bottom:32px;
+}
+.card{
+  background:linear-gradient(145deg,#1A1A2E,#16213E);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:32px 24px;
+  margin-bottom:20px;
+}
+.version-badge{
+  display:inline-block;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;
+  padding:6px 16px;
+  border-radius:20px;
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:20px;
+}
+.features{
+  text-align:left;
+  margin:20px 0;
+}
+.feature{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:14px;
+  color:#D1D5DB;
+}
+.feature:last-child{border:none}
+.feature-icon{
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+.fi-blue{background:rgba(59,130,246,0.15)}
+.fi-green{background:rgba(16,185,129,0.15)}
+.fi-purple{background:rgba(139,92,246,0.15)}
+.fi-orange{background:rgba(251,146,60,0.15)}
+.fi-cyan{background:rgba(0,217,255,0.15)}
+.fi-red{background:rgba(239,68,68,0.15)}
+
+.download-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  width:100%;
+  padding:16px 24px;
+  background:linear-gradient(135deg,#10B981,#059669);
+  color:#fff;
+  border:none;
+  border-radius:14px;
+  font-size:17px;
+  font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+  transition:all 0.3s;
+  box-shadow:0 4px 20px rgba(16,185,129,0.3);
+}
+.download-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 28px rgba(16,185,129,0.45);
+}
+.download-btn:active{transform:translateY(0)}
+
+.btn-icon{font-size:24px}
+.btn-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.3}
+.btn-label{font-size:11px;font-weight:400;opacity:0.85}
+.btn-main{font-size:17px}
+
+.info-row{
+  display:flex;
+  justify-content:center;
+  gap:24px;
+  margin-top:16px;
+  font-size:12px;
+  color:#6B7280;
+}
+.info-item{display:flex;align-items:center;gap:4px}
+
+.security-note{
+  margin-top:24px;
+  padding:16px;
+  background:rgba(251,191,36,0.08);
+  border:1px solid rgba(251,191,36,0.15);
+  border-radius:12px;
+  font-size:12px;
+  color:#FBBF24;
+  line-height:1.5;
+}
+.security-note strong{color:#FCD34D}
+
+.steps{
+  margin-top:24px;
+  text-align:left;
+}
+.steps h3{
+  font-size:14px;
+  color:#9CA3AF;
+  margin-bottom:12px;
+  text-align:center;
+}
+.step{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:8px 0;
+  font-size:13px;
+  color:#D1D5DB;
+}
+.step-num{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:700;
+  flex-shrink:0;
+}
+
+.footer{
+  margin-top:32px;
+  font-size:12px;
+  color:#4B5563;
+}
+.footer a{color:#667eea;text-decoration:none}
+
+.loading-bar{
+  width:100%;
+  height:3px;
+  background:rgba(255,255,255,0.05);
+  border-radius:3px;
+  margin-top:12px;
+  overflow:hidden;
+  display:none;
+}
+.loading-bar.active{display:block}
+.loading-bar-inner{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#10B981,#059669);
+  border-radius:3px;
+  transition:width 0.3s;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="logo">📱</div>
+  <h1>Robert Darin Fintech</h1>
+  <p class="subtitle">Tu plataforma financiera empresarial</p>
+
+  <div class="card">
+    <div class="version-badge">✨ Última versión</div>
+    
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon fi-cyan">❄️</div>
+        <span>Servicios de Climatización</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon fi-green">💰</div>
+        <span>Préstamos y Finanzas</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon fi-purple">📊</div>
+        <span>Dashboard con KPIs en tiempo real</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon fi-blue">💬</div>
+        <span>Chat integrado con notificaciones</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon fi-orange">🔔</div>
+        <span>Alertas y recordatorios</span>
+      </div>
+      <div class="feature">
+        <div class="feature-icon fi-red">🔐</div>
+        <span>Seguridad con roles y permisos</span>
+      </div>
+    </div>
+
+    <a id="downloadBtn" class="download-btn" href="https://github.com/rdarinel92-bit/tarjetas/releases/latest/download/app-release.apk" onclick="startDownload()">
+      <span class="btn-icon">⬇️</span>
+      <span class="btn-text">
+        <span class="btn-label">Gratis para Android</span>
+        <span class="btn-main">Descargar APK</span>
+      </span>
+    </a>
+
+    <div class="loading-bar" id="loadingBar">
+      <div class="loading-bar-inner" id="loadingBarInner"></div>
+    </div>
+
+    <div class="info-row">
+      <span class="info-item">📦 ~100 MB</span>
+      <span class="info-item">📱 Android 5+</span>
+      <span class="info-item">🔒 Seguro</span>
+    </div>
+  </div>
+
+  <div class="security-note">
+    <strong>⚠️ Nota de instalación:</strong><br>
+    Android puede mostrar una advertencia al instalar. Esto es normal para apps fuera de Play Store. 
+    Toca <strong>"Instalar de todas formas"</strong> para continuar.
+  </div>
+
+  <div class="steps">
+    <h3>📋 Pasos para instalar</h3>
+    <div class="step">
+      <span class="step-num">1</span>
+      <span>Toca <strong>"Descargar APK"</strong> arriba</span>
+    </div>
+    <div class="step">
+      <span class="step-num">2</span>
+      <span>Abre el archivo descargado desde notificaciones</span>
+    </div>
+    <div class="step">
+      <span class="step-num">3</span>
+      <span>Si pide permiso, activa <strong>"Fuentes desconocidas"</strong></span>
+    </div>
+    <div class="step">
+      <span class="step-num">4</span>
+      <span>Toca <strong>"Instalar"</strong> y espera unos segundos</span>
+    </div>
+    <div class="step">
+      <span class="step-num">5</span>
+      <span>¡Listo! Abre la app e inicia sesión</span>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Powered by <a href="https://rdarinel92-bit.github.io/tarjetas/">Robert Darin</a></p>
+  </div>
+</div>
+
+<script>
+function startDownload(){
+  const bar = document.getElementById('loadingBar');
+  const inner = document.getElementById('loadingBarInner');
+  bar.classList.add('active');
+  let w = 0;
+  const timer = setInterval(()=>{
+    w += Math.random()*15;
+    if(w > 95) w = 95;
+    inner.style.width = w+'%';
+  }, 300);
+  setTimeout(()=>{
+    clearInterval(timer);
+    inner.style.width = '100%';
+    setTimeout(()=> bar.classList.remove('active'), 2000);
+  }, 5000);
+}
+</script>
+
+</body>
+</html>
